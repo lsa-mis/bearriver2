@@ -17,6 +17,7 @@ gem "puma", ">= 5.0"
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem "jsbundling-rails"
 
+gem 'haml', '~> 6.3'
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
 
@@ -70,4 +71,8 @@ group :development, :test do
   gem "capybara"
   gem "webdrivers"
   gem "faker"
+end
+
+group :development, :staging do
+  gem "letter_opener_web"
 end
