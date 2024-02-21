@@ -1,0 +1,28 @@
+%footer.footer.fixed-bottom
+  .container-responsive
+    .row.justify-content-around
+      .footer-col-rt.col-3
+        %a{:href => "https://lsa.umich.edu/bearriver/"}
+          %span{:style => "color: rgb(255,203,5);"} Bear River Writers' Conference
+      .footer-col-rt.col-4
+        %i.fa.fa-map-marker
+        %a{:href => "http://campusinfo.umich.edu/campusmap", :target => "_blank"}
+          435 S. State Street
+          %br
+          %i.fa.fa-map-marker.invisible
+          Room 3187
+          %br
+          %i.fa.fa-map-marker.invisible
+          Ann Arbor, MI 48109-1003
+        .email
+          %i.fa.fa-envelope
+          %a{:href => "bearriver-questions@umich.edu"} bearriver-questions@umich.edu
+
+      .footer-col-lf.col-4.text-right
+        %i.fa.fa-lock
+        = link_to "Admin", admin_root_path
+
+    .row
+      .copyright.col.text-center
+        &copy; Regents of the University of Michigan
+        = Date.today.year

@@ -1,0 +1,39 @@
+- provide(:title, 'Conference Information')
+
+%div.container.pt-4
+  - if current_application_settings.opendate > Time.now
+    = "Application for the #{current_application_settings.contest_year} conference will be open:"
+    %p.m-3
+      = current_application_settings.opendate.to_s(:special_date)
+      until
+      = (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_s(:special_date)
+    Please return to the
+    = link_to "Application Page", root_url
+    after that date and time.
+
+  - else
+    -if user_signed_in? && user_has_application?(current_user)
+      - if ["registration_offered", "registration_accepted"].include? Application.active_conference_applications.find_by(user_id: current_user).offer_status
+        - if !user_has_payments?(current_user)
+          %p
+            To accept your offer  
+            = button_to "Pay the Application Fee", make_payment_path(amount: current_application_settings.registration_fee), class: 'btn btn-success'
+        - else
+          %p
+            You may use the links in the 'Your Details' box to the right to view or manage your payments.
+      - else
+        - if current_application_settings.application_closed_directions.present?
+          = raw(current_application_settings.application_closed_directions)
+    - elsif user_signed_in? && user_has_special_payment?(current_user)
+      = raw(current_application_settings.special_scholarship_acceptance_directions)
+      = link_to 'Create an Application', new_application_path, class: 'btn btn-sm btn-success'
+    - else
+      - if current_application_settings.application_closed_directions.present?
+        = raw(current_application_settings.application_closed_directions)
+
+  %div.mt-4
+    The Bear River Staff,
+  %p
+    Feel free to reach out with any questions to
+    %br
+    = mail_to "bearriver-questions@umich.edu"
