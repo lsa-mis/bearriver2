@@ -1,13 +1,13 @@
 !!!
-%html
+%html{:lang => "en"}
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:name => "viewport", :content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title BearriverApplication
     = csrf_meta_tags
     = csp_meta_tag
-    %link{:href => "//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css", :rel => "stylesheet"}/
-    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
-    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    -# %link{:href => "//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css", :rel => "stylesheet"}/
+    = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
+    = stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload"
   %body
     = render "layouts/header"
     = render "layouts/notifications"

@@ -1,0 +1,109 @@
+// app/assets/stylesheets/_custom.scss or app/javascript/stylesheets/_custom.scss
+
+// Define your custom colors
+$um_blue: #00274c;
+$um_maize: #ffcb05;
+$puma_black: #111b23;
+$law_quad_stone: #655a52;
+$the_rock_gray: #6a6d68;
+$bone: #E4DCD3;
+$angell_hall_ash: #7a6e66;
+$dark_grey: #333;
+$grey: #555;
+$tappan_red: #b51e0a;
+$hill_brown: #7a121c;
+$archway_ivy: #7e732f;
+$burton_tower_beige: #797852;
+$umma_tan: #766536;
+$observatory_white: #6d675d;
+$pea_soup: #886b01;
+$greyb: #6a6a6a;
+$greyc: #6f767a;
+$ross_school_orange: #ac5f00;
+$lsa_orange: #ac5600;
+$wave_field_green: #797500;
+$arboretum_blue: #006ab8;
+$canham_pool_blue: #4568ae;
+$deep_blue: #002a5b;
+$semi_deep_blue: #027494;
+$blue: #0257aa;
+$heather_blue: #465d85;
+$rich_heather_blue: #40658f;
+$taubman_teal: #007474;
+$rackham_roof_green: #48736a;
+$ann_arbor_amethyst: #702490;
+$matthaei_violet: #575294;
+$south_forrest_green: #18453b;
+$huron_river_green: #0c5832;
+$spring_term_green: #00743c;
+
+$font-family-base: 'Lato';
+// $font-size-base: 16px;
+
+$base-spacing: 1.5em !default;
+$action-color: $um_blue;
+
+$header-background: $um_blue;
+$header-link-color: $bone;
+
+$footer-background: lighten($action-color, 10%);
+$footer-color: $bone;
+$footer-link-color: transparentize($footer-color, 0.2);
+$footer-disclaimer-color: transparentize($footer-color, 0.6);
+
+// Breakpoints;
+$break-sm: 600px;
+$break-md: 900px;
+$break-lg: 1200px;
+$break-xl: 1800px;
+
+$medium-screen: 40em !default;
+$large-screen: 53.75em !default;
+
+$alert: $tappan_red;
+$alert-success: $spring_term_green;
+$alert-danger: $tappan_red;
+$alert-warning: $lsa_orange;
+$alert-info: $heather_blue;
+
+$primary-background-color: #FCFCFC;
+$secondary-background-color: #237CBE;
+$primary-text-color: #444;
+$secondary-text-color: #777;
+$primary-link-color: #2E6AA0;
+$secondary-link-color: #FFF;
+$errors-background-color: #FFC;
+$errors-text-color: #DC3D3D;
+$subdued-color: darken($primary-background-color, 20%);
+$flash-notice-color: #DBFFDD;
+$flash-alert-color:  #FFE1DE;
+$accent-color: #FAFBFF;
+$fieldset-color: lighten($secondary-background-color, 50%);
+
+// Import Bootstrap's functions and variables
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+// Override Bootstrap's default variables
+$theme-colors: (
+  "um-blue": $um_blue,
+  "bone": $bone,
+   // Add more custom colors or override existing ones here
+);
+
+// Optionally, override other Bootstrap variables here
+// Extend the $spacers map
+$spacers: map-merge(
+  (
+    "6": 4rem,
+    "7": 5rem,
+    // more custom spacers as needed
+  ),
+  $spacers
+);
+
+// Import the rest of Bootstrap now that variables are overridden
+@import "bootstrap/scss/bootstrap";
+
+// Import Bootstrap icons if needed
+@import 'bootstrap-icons/font/bootstrap-icons';

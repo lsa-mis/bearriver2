@@ -27,6 +27,14 @@ class User < ApplicationRecord
   has_many :payments, dependent: :destroy
   has_many :applications, dependent: :destroy
 
+  def self.ransackable_associations(auth_object = nil)
+    ["applications", "payments"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["admin", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "updated_at"]
+  end
+
   def total_paid
     payments.current_conference_payments.pluck(:total_amount).map{ |v| v.to_f }.sum / 100
   end

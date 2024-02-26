@@ -14,6 +14,7 @@ gem "jbuilder"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 gem "redis", ">= 4.0.1"
+gem 'sassc-rails'
 gem "skylight"
 gem "sprockets-rails"
 gem "stimulus-rails"

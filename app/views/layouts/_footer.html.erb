@@ -1,0 +1,34 @@
+<footer class="footer mx-5 mt-auto py-3 bg-white">
+  <div class="d-flex flex-lg-row justify-content-between flex-column">
+    <div class="center text-center">
+      <p class="d-none d-md-block">
+        <%= image_tag 'english_logo.png', alt: 'LSA Technology Logo', class: "img-fluid" %>
+      </p>
+      <p class="text-center footer-bold d-md-none">
+        Bear River Writers' Conference
+      </p><!-- Left column content for small viewports -->
+    </div>
+    <div>
+      <p class="text-center mb-0 small">
+        <span>435 S. State Street Room 3187 Ann Arbor, MI 48109-1003</span> |
+        <%= mail_to "bearriver-questions@umich.edu", "bearriver-questions@umich.edu" %>
+      </p>
+    </div>
+    <div>
+      <p class="d-none d-md-block text-center footer-text">
+        ©<%= Time.now.year %>
+        <a href="https://regents.umich.edu/" class="footer-text footer-link">|The Regents of the University of Michigan</a>
+      </p>
+      <p class="d-md-none text-center mb-0 footer-text">
+        <a href="https://regents.umich.edu/" class="footer-text footer-link" >The Regents of the University of Michigan</a>
+        <br>©<%= Time.now.year %>
+      </p>
+
+      <p class="text-center footer-text">
+        <%= link_to admin_root_path do %>
+          <i class="bi bi-gear-fill"></i> Admin
+        <% end %>
+      </p><!-- Right column content -->
+    </div>
+  </div>
+</footer>
