@@ -2,7 +2,7 @@
 
 %h1 Bear River Conference Application
 %h6.pl-3.text-muted
-  = "Time Now #{Time.now.to_s(:special_date)}"
+  = "Time Now #{Time.now.to_formatted_s(:special_date)}"
 
 - if current_application_settings.application_open_directions.present?
   = raw(current_application_settings.application_open_directions)
@@ -17,10 +17,10 @@
     hours
   .card-body
     Starting:
-    = current_application_settings.opendate.to_s(:special_date)
+    = current_application_settings.opendate.to_formatted_s(:special_date)
     %br
     Ending:
-    = (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_s(:special_date)
+    = (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date)
 
   .card-footer
 

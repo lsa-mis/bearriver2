@@ -1,4 +1,5 @@
 class StaticPagesController < ApplicationController
+
   def index
     redirect_to conference_closed_url unless current_application_open?
   end
@@ -29,4 +30,5 @@ class StaticPagesController < ApplicationController
 
   def special_scholarship
   end 
+
 end
