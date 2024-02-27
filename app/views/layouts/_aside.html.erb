@@ -1,0 +1,17 @@
+<% if user_signed_in? && user_has_application?(current_user) %>
+  <% if ["special_offer_application", "registration_offered", "registration_accepted"].include? Application.active_conference_applications.find_by(user_id: current_user).offer_status %>
+    <aside id="sidebar-layout">
+      <div class="container">
+        <h4 class="text-success">Your Details</h4>
+        <div class="list-group">
+          <% if user_has_payments?(current_user) %>
+            <%= link_to "Payments/Receipts", all_payments_path, class: 'list-group-item list-group-item-action' %>
+          <% end %>
+          <%= link_to 'Application', application_path(Application.active_conference_applications.find_by(user_id: current_user)), class: 'list-group-item list-group-item-action' %>
+          <%= link_to 'Manage Login', edit_user_registration_path, class: 'list-group-item list-group-item-action' %>
+        </div>
+      </div>
+    </aside>
+    <%= content_for :side %>
+  <% end %>
+<% end %>

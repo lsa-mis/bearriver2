@@ -8,7 +8,6 @@ gem "bootsnap", require: false
 gem 'country_select', '~> 4.0'
 gem "cssbundling-rails"
 gem 'devise'
-gem "haml-rails", "~> 2.0"
 gem "jsbundling-rails"
 gem "jbuilder"
 gem "pg", "~> 1.1"
