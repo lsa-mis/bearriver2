@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Opendate:</b>
+  <%= @application_setting.opendate %><br>
+  "All times are in <%= Time.zone.name %>)"
+</p>
+<p>
+  <b>Application buffer:</b>
+  <%= @application_setting.application_buffer %>
+</p>
+<p>
+  <b>Contest year:</b>
+  <%= @application_setting.contest_year %>
+</p>
+
+<%= link_to 'Edit', edit_application_setting_path(@application_setting) %> |
+<%= link_to 'Back', application_settings_path %>

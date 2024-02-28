@@ -1,0 +1,112 @@
+<% provide(:title, 'Payment Receipts') %>
+
+<h2>Your Payment Receipts</h2>
+<% if user_has_payments?(current_user) %>
+  <p class="m-2">
+    <%= raw(current_application_settings.payments_directions) %>
+  </p>
+  <p>
+    Pay by Credit Card (Visa, Mastercard, Discover, AMEX)
+    <small class="text-muted">
+      Upon submission of this form you will be redirected to
+      our credit card processing page. Payments are securely processed via QuikPAY,
+      the preferred gateway service provider of the University of Michigan.
+      QuikPAY is a registered trademark of Nelnet Business Solutions, Inc. No
+      credit card information is stored on our servers.
+    </small>
+  </p>
+  <p>
+    <% if current_application_settings.subscription_cost > 0 && current_application_settings.allow_payments %>
+      <%= link_to "Subscribe to Michigan Quarterly Review", subscription_path, class: "btn btn-info" %>
+    <% end %>
+  </p>
+
+  <hr class="w-75">
+
+  <div class="card border-success mb-2" style="width: 18rem;">
+    <h6 class="card-header bg-success text-white">
+      Account Summary
+    </h6>
+    <div class="card-body">
+      <% if payments_open? %>
+        <div class="h6" style="font-family: Lucida Console;">
+          <%= "#{'total_cost'.humanize.ljust(24, '.')} #{number_to_currency(@total_cost).rjust(12,'.')}" %>
+        </div>
+      <% end %>
+      <div class="h6" style="font-family: Lucida Console;">
+        <%= "#{'amount_paid'.humanize.ljust(20, '.')} #{number_to_currency(@ttl_paid).rjust(12,'.')}" %>
+      </div>
+      <hr>
+      <% if payments_open? %>
+        <div class="h6" style="font-family: Lucida Console;">
+          <div class="text-danger">
+            <%= "#{'balance_due'.humanize.ljust(22, '.')} #{number_to_currency(@balance_due).rjust(12,'.')}" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="card-footer">
+      <% if payments_open? && @balance_due > 0 %>
+        <%= form_with url: make_payment_path, local: true do |f| %>
+          <div class="row">
+            <div class="form-group align-items-around ml-4">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <%= f.number_field :amount, value: "#{@balance_due.to_i}", within: 1..2000, required: true %>
+                <%= f.submit "Pay Now", class: 'btn btn-sm btn-success ml-2' %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <hr class="w-75">
+  <h6>Your transactions:</h6>
+  <div class="card-deck">
+    <% @users_current_payments.each do |payment| %>
+      <div class="col-auto mb-3">
+        <div class="card transaction-receipt <%= 'border-danger' unless payment.transaction_status == "1" %>">
+          <h6 class="card-header">
+            Transaction ID: <%= payment.transaction_id %>
+          </h6>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Payment Method: <%= payment.account_type %>
+            </li>
+            <li class="list-group-item <%= 'text-danger' unless payment.transaction_status == "1" %>">
+              Message:<br>
+              <%= payment.result_message %>
+            </li>
+            <li class="list-group-item">
+              Amount: <%= number_to_currency(payment.total_amount.to_f / 100) %>
+            </li>
+            <li class="list-group-item">
+              Date: <%= Time.parse(payment.transaction_date).strftime("%b %e, %Y at %l:%M %p") %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="h6 text-muted">
+    You will receive an email confirmation from 'MerchantCreditCard&#64;umich.edu' for each transaction.
+  </div>
+
+<% else %>
+  <p>
+    You have not made any payments. If this is incorrect please contact
+  </p>
+<% end %>
+
+<div class="mt-4">
+  The Bear River Staff,
+  <p>
+    Feel free to reach out with any questions to<br>
+    <%= mail_to "bearriver-questions@umich.edu" %>
+  </p>
+</div>

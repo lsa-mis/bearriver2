@@ -1,0 +1,16 @@
+<h2>Michigan Quarterly Review Subscription</h2>
+<p>
+  <%= raw(current_application_settings.subscription_directions) %>
+</p>
+
+<%= form_for @application do |f| %>
+  <div class="h6">
+    <%= f.check_box :subscription %>
+    <%= f.label 'Check to add this subscription' %>
+  </div>
+  <div class="actions">
+    <%= f.submit 'Update', class: 'btn btn-success', name: "update_subscription", value: "update" %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', all_payments_path, class: "btn btn-sm btn-secondary" %>

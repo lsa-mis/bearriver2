@@ -1,0 +1,74 @@
+<h1>Listing applications</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Gender</th>
+      <th>Birth year</th>
+      <th>Street</th>
+      <th>Street2</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Zip</th>
+      <th>Country</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>Email confirmation</th>
+      <th>Workshop selection1</th>
+      <th>Workshop selection2</th>
+      <th>Workshop selection3</th>
+      <th>Lodging selection</th>
+      <th>Partner registration selection</th>
+      <th>Partner first name</th>
+      <th>Partner last name</th>
+      <th>How did you hear</th>
+      <th>Accessibility requirements</th>
+      <th>Special lodging request</th>
+      <th>Food restrictions</th>
+      <th>User</th>
+      <th>Show</th>
+      <th>Edit</th>
+      <th>Destroy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @applications.each do |application| %>
+      <tr>
+        <td><%= application.first_name %></td>
+        <td><%= application.last_name %></td>
+        <td><%= application.gender %></td>
+        <td><%= application.birth_year %></td>
+        <td><%= application.street %></td>
+        <td><%= application.street2 %></td>
+        <td><%= application.city %></td>
+        <td><%= application.state %></td>
+        <td><%= application.zip %></td>
+        <td><%= application.country %></td>
+        <td><%= application.phone %></td>
+        <td><%= application.email %></td>
+        <td><%= application.email_confirmation %></td>
+        <td><%= application.workshop_selection1 %></td>
+        <td><%= application.workshop_selection2 %></td>
+        <td><%= application.workshop_selection3 %></td>
+        <td><%= application.lodging_selection %></td>
+        <td><%= application.partner_registration_id %></td>
+        <td><%= application.partner_first_name %></td>
+        <td><%= application.partner_last_name %></td>
+        <td><%= application.how_did_you_hear %></td>
+        <td><%= application.accessibility_requirements %></td>
+        <td><%= application.special_lodging_request %></td>
+        <td><%= application.food_restrictions %></td>
+        <td><%= application.user %></td>
+        <td><%= link_to 'Show', application %></td>
+        <td><%= link_to 'Edit', edit_application_path(application) %></td>
+        <td><%= link_to 'Destroy', application, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Application', new_application_path %>

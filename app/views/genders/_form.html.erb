@@ -1,0 +1,24 @@
+<%= form_for @gender do |f| %>
+  <% if @gender.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@gender.errors.count, "error") %> prohibited this gender from being saved:</h2>
+      <ul>
+        <% @gender.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %>
+    <%= f.text_field :description %>
+  </div>
+  <div class="actions">
+    <%= f.submit 'Save' %>
+  </div>
+<% end %>

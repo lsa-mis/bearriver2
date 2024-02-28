@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   # Send email to applicants who a balance due
   post '/send_balance_due', to: 'applications#send_balance_due', as: 'send_balance_due'
 
-  if Rails.env.development?
+  if Rails.env.development? || Rails.env.staging?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 end
