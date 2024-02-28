@@ -30,17 +30,19 @@ group :development do
   gem "web-console"
 end
 
-
 group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "capybara"
   gem "webdrivers"
-  gem "faker"
   gem 'pry-rails'
   gem "pry-byebug"
 end
 
 group :development, :staging do
   gem "letter_opener_web"
+end
+
+group :development, :staging, :test do
+  gem "faker"
 end
