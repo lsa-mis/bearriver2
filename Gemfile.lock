@@ -419,7 +419,6 @@ DEPENDENCIES
   rspec-rails
   sassc-rails
   skylight
-  sprockets-rails
   stimulus-rails
   turbo-rails
   tzinfo-data
