@@ -38,6 +38,5 @@ module Bearriver2
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-    config.skylight.environments << url: <%= ENV["RAILS_ENV"] %>
   end
 end
