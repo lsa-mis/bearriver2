@@ -1,17 +1,15 @@
 body {
-  background-color: $primary-background-color;
-  color: $primary-text-color;
   margin-bottom: 110px;
 }
 
 .footer {
   flex-shrink: 0;
-  border-top: 1px solid #00274C;
+  border-top: 1px solid $um_blue;
 }
 
 .footer-text-bold {
   font-weight: 700;
-  color: #00274C;
+  color: $um_blue;
 }
 .footer-text {
   color: #212529;
@@ -76,6 +74,37 @@ aside#sidebar-layout {
   padding-bottom: 5px;
   
   a {
-    color: $primary-text-color;
+    // color: $primary-text-color;
   }
 }
+
+/* FORMS */
+
+form label.required:after {
+  color: red;
+  content: " *";
+}
+
+#error_explanation {
+  background-color: $warning;
+  border: solid $rigorous_red 1px;
+  border-radius: 4px;
+  padding: 20px;
+  li {
+    color: $rigorous_red;
+    font-size: 1rem;
+    padding-bottom: 2px;
+  }
+}
+
+.field_with_errors {
+  display: inline;
+  label {
+    color: $rigorous_red;
+    max-width: 160px;
+  }
+  input, textarea, select {
+    background: $warning;
+  }
+}
+

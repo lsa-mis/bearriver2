@@ -198,13 +198,13 @@
   </div>
 
   <p class="pl-3">if you are bringing a partner please enter their name:</p>
-  <div class="form-row">
-    <div class="form-group col-4 offset-1">
-      <%= f.label :partner_first_name %>
+  <div class="row">
+    <div class="col-4 offset-1">
+      <%= f.label :partner_first_name, class: 'form-label' %>
       <%= f.text_field :partner_first_name, class: 'form-control', required: true %>
     </div>
-    <div class="form-group col-4">
-      <%= f.label :partner_last_name %>
+    <div class="col-4">
+      <%= f.label :partner_last_name, class: 'form-label' %>
       <%= f.text_field :partner_last_name, class: 'form-control', required: true %>
     </div>
   </div>
@@ -230,10 +230,12 @@
       <%= f.text_area :food_restrictions, class: 'form-control', cols: 80 %>
     </div>
   </div>
-  <div class="form-row">
-    <div class="form-group">
-      <%= f.label :how_did_you_hear, "How did you hear about the Bear River Writers' Conference?" %>
-      <%= f.select :how_did_you_hear, Application::HOW_DID_YOU_HEAR, prompt: "Pick one" %>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <%= f.label :how_did_you_hear, "How did you hear about the Bear River Writers' Conference?", class: 'form-label' %>
+        <%= f.select :how_did_you_hear, Application::HOW_DID_YOU_HEAR, prompt: "Pick one", class: 'form-select' %>
+      </div>
     </div>
   </div>
 
@@ -246,7 +248,7 @@
   </div>
 <% end %>
 
-<script>
+<%# <script>
   $(document).ready(function() {
     // workshop selection prevent selecting same item twice
 
@@ -283,4 +285,4 @@
       }
     });
   });
-</script>
+</script> %>
