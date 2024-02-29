@@ -5,7 +5,7 @@ ruby "3.3.0"
 
 gem 'activeadmin'
 gem "bootsnap", require: false
-gem 'country_select', '~> 4.0'
+gem 'country_select', '~> 8.0'
 gem "cssbundling-rails"
 gem 'devise'
 gem "jsbundling-rails"

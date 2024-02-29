@@ -93,8 +93,10 @@
     </div>
   </div>
   <div class="form-group row">
-    <%= f.label :gender, class: 'col-sm-4 col-form-label required' %>
-    <%= f.collection_select(:gender, Gender.all, :name, :name, prompt: "Pick one") %>
+    <%= f.label :gender, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-6">
+      <%= f.collection_select(:gender, Gender.all, :name, :name, prompt: "Pick one", class: 'form-select') %>
+    </div>
   </div>
   <div class="form-group row">
     <%= f.label :birth_year, 'Year of Birth', class: 'col-sm-3 col-form-label required' %>
@@ -138,7 +140,7 @@
   <div class="form-group row">
     <%= f.label :country, class: 'col-sm-3 col-form-label required' %>
     <div class="col-sm-9">
-      <%= f.country_select :country, priority_countries: ["US"], include_blank: "-- Please Select --", class: 'form-control' %>
+      <%= f.country_select :country, priority_countries: ["US"], include_blank: "-- Please Select --", class: 'form-select' %>
     </div>
   </div>
   <div class="form-group row">
@@ -151,16 +153,22 @@
   <h5>Workshop Selection:</h5>
   <hr>
   <div class="form-group row">
-    <%= f.label :workshop_selection1, "First Choice", class: 'col-sm-4 col-form-label required' %>
-    <%= f.collection_select(:workshop_selection1, get_workshops, :instructor, :instructor, prompt: "Pick one") %>
+    <%= f.label :workshop_selection1, "First Choice", class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-6">
+      <%= f.collection_select(:workshop_selection1, get_workshops, :instructor, :instructor, prompt: "Pick one", class: 'form-select') %>
+    </div>
   </div>
   <div class="form-group row">
-    <%= f.label :workshop_selection2, "Second Choice", class: 'col-sm-4 col-form-label required' %>
-    <%= f.collection_select(:workshop_selection2, get_workshops, :instructor, :instructor, prompt: "Pick one") %>
+    <%= f.label :workshop_selection2, "Second Choice", class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-6">
+      <%= f.collection_select(:workshop_selection2, get_workshops, :instructor, :instructor, prompt: "Pick one", class: 'form-select') %>
+    </div>
   </div>
   <div class="form-group row">
-    <%= f.label :workshop_selection3, "Third Choice", class: 'col-sm-4 col-form-label required' %>
-    <%= f.collection_select(:workshop_selection3, get_workshops, :instructor, :instructor, prompt: "Pick one") %>
+    <%= f.label :workshop_selection3, "Third Choice", class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-6">
+      <%= f.collection_select(:workshop_selection3, get_workshops, :instructor, :instructor, prompt: "Pick one", class: 'form-select') %>
+    </div>
   </div>
 
   <h5>Lodging Selection:</h5>
