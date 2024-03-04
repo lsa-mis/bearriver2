@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'bearriver-questions@umich.edu'
+  default from: 'bearriver-questions@bearriver-staging.lsa.umich.edu'
   layout 'mailer'
 end

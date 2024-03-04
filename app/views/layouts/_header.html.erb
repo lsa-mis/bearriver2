@@ -22,15 +22,15 @@
       <p class="navbar-text d-flex justify-content-end pe-3"> <!-- Added flex utilities for alignment -->
         <% if user_signed_in? %>
           
-          <%= link_to "Logged in as #{current_user.email}", edit_user_registration_path, class: 'btn btn-sm btn-outline-info' %>
-          <%= link_to "Logout", destroy_user_session_path, method: :delete, class: 'btn btn-sm btn-outline-warning' %>
+          <%= button_to "Logged in as #{current_user.email}", edit_user_registration_path, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-info' %>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-warning' %>
         <% else %>
           <% if current_application_open? %>
-            <%= link_to "Sign up", new_user_registration_path, class: 'navbar-link' %>
+            <%= button_to "Sign up", new_user_registration_path, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-info' %>
             |
-            <%= link_to "Login", new_user_session_path, class: 'navbar-link' %>
+            <%= button_to "Login", new_user_registration_path, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-info' %>
           <% else %>
-            <%= link_to "Login", new_user_session_path, class: 'navbar-link' %>
+            <%= button_to "Login", new_user_registration_path, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-info' %>
           <% end %>
         <% end %>
       </p>
