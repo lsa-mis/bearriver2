@@ -71,7 +71,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "bearriver2_production"
 
-  host = 'http://localhost:3000'
+  host = 'https://bearriver-staging.lsa.umich.edu/'
 # on staging use host = 'http://STAGING SERVER NAME'
   config.action_mailer.default_url_options = { host: host }
 
