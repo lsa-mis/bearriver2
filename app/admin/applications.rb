@@ -131,7 +131,8 @@ ActiveAdmin.register Application do
       f.input :city
       f.input :state
       f.input :zip
-      li "Country: #{f.object.country}"
+      li "Country: #{f.object.country}" unless f.object.new_record?
+      f.input :country unless f.object.persisted?
       f.input :phone
       f.input :email
       f.input :workshop_selection1, :label => "Workshop First Choice", :as => :select, :collection => Workshop.all.map { |w| ["#{w.instructor}", w.instructor] }
