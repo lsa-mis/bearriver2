@@ -1,15 +1,4 @@
-<%= form_for @gender do |f| %>
-  <% if @gender.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@gender.errors.count, "error") %> prohibited this gender from being saved:</h2>
-      <ul>
-        <% @gender.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_for @gender, data: { turbo_frame: dom_id(@gender) } do |f| %>
   <div class="field">
     <%= f.label :name %>
     <%= f.text_field :name %>

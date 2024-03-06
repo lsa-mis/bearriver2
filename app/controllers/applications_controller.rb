@@ -47,6 +47,9 @@ class ApplicationsController < ApplicationController
         format.html { redirect_to @application, notice: 'Here are your Application Details.' }
         format.json { render :show, status: :created, location: @application }
       else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(@application, partial: "applications/form", locals: { application: @application })
+        end
         format.html { render :new }
         format.json { render json: @application.errors, status: :unprocessable_entity }
       end
@@ -66,6 +69,9 @@ class ApplicationsController < ApplicationController
           format.json { render :show, status: :ok, location: @application }
         end
       else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(@application, partial: "applications/form", locals: { application: @application })
+        end
         format.html { render :edit }
         format.json { render json: @application.errors, status: :unprocessable_entity }
       end

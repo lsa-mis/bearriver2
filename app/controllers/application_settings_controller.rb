@@ -32,6 +32,9 @@ class ApplicationSettingsController < ApplicationController
         format.html { redirect_to @application_setting, notice: 'Application setting was successfully created.' }
         format.json { render :show, status: :created, location: @application_setting }
       else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(@application_setting, partial: "application_settings/form", locals: { application_setting: @application_setting })
+        end
         format.html { render :new }
         format.json { render json: @application_setting.errors, status: :unprocessable_entity }
       end
@@ -46,6 +49,9 @@ class ApplicationSettingsController < ApplicationController
         format.html { redirect_to application_settings_path, notice: 'Application setting was successfully updated.' }
         format.json { render :show, status: :ok, location: application_settings_path }
       else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(@application_setting, partial: "application_settings/form", locals: { application_setting: @application_setting })
+        end
         format.html { render :edit }
         format.json { render json: @application_setting.errors, status: :unprocessable_entity }
       end
