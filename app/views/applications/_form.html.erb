@@ -93,7 +93,7 @@
         <%= f.text_field :last_name, class: 'form-control' %>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row align-items-center">
       <%= f.label :gender, class: 'col-sm-3 col-form-label required' %>
       <div class="col-sm-6">
         <%= f.collection_select(:gender, Gender.all, :name, :name, prompt: "Pick one", class: 'form-select') %>
@@ -126,10 +126,10 @@
         <%= f.text_field :city, class: 'form-control' %>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row align-items-center">
       <%= f.label :state, class: 'col-sm-3 col-form-label required' %>
-      <div class="col-sm-9">
-        <%= f.select :state, us_states, {}, include_blank: "-- Please Select --", class: 'form-control' %>
+      <div class="col-sm-4">
+        <%= f.select :state, us_states, {}, include_blank: "Pick one", class: 'form-select' %>
       </div>
     </div>
     <div class="form-group row">
@@ -138,10 +138,10 @@
         <%= f.text_field :zip, class: 'form-control' %>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row align-items-center">
       <%= f.label :country, class: 'col-sm-3 col-form-label required' %>
       <div class="col-sm-9">
-        <%= f.country_select :country, priority_countries: ["US"], include_blank: "-- Please Select --", class: 'form-select' %>
+        <%= f.country_select :country, priority_countries: ["US"], selected: "US", class: 'form-select' %>
       </div>
     </div>
     <div class="form-group row">
@@ -231,12 +231,11 @@
         <%= f.text_area :food_restrictions, class: 'form-control', cols: 80 %>
       </div>
     </div>
-    <div class="row">
-      <div class="col">
-        <div class="form-group">
-          <%= f.label :how_did_you_hear, "How did you hear about the Bear River Writers' Conference?", class: 'form-label' %>
-          <%= f.select :how_did_you_hear, Application::HOW_DID_YOU_HEAR, prompt: "Pick one", class: 'form-select' %>
-        </div>
+
+    <div class="form-group row align-items-center">
+      <%= f.label :how_did_you_hear, "How did you hear about the Bear River Writers' Conference?", class: 'col-sm-3 col-form-label' %>
+      <div class="col-sm-6">
+        <%= f.select :how_did_you_hear, Application::HOW_DID_YOU_HEAR, prompt: "Pick one", class: 'form-select' %>
       </div>
     </div>
 
