@@ -116,7 +116,7 @@ ActiveAdmin.register Application do
     f.semantic_errors
     f.inputs do
       f.input :user
-      li "Conf Year #{f.object.conf_year}" unless f.object.new_record?
+      li "Conf Year: #{f.object.conf_year}" unless f.object.new_record?
       f.input :conf_year, input_html: {value: ApplicationSetting.get_current_app_year} unless f.object.persisted?
       f.input :lottery_position, input_html: { disabled: true }
       f.input :offer_status, :label => "Offer status", :as => :select, :collection => offer_status
@@ -129,9 +129,9 @@ ActiveAdmin.register Application do
       f.input :street
       f.input :street2
       f.input :city
-      f.input :state, :label => "State", :as => :select, :collection => us_states
+      f.input :state
       f.input :zip
-      f.input :country, include_blank: true
+      li "Country: #{f.object.country}"
       f.input :phone
       f.input :email
       f.input :workshop_selection1, :label => "Workshop First Choice", :as => :select, :collection => Workshop.all.map { |w| ["#{w.instructor}", w.instructor] }
