@@ -132,7 +132,13 @@
     If you are not prepared to submit your application at this time, please
     use the option below to cancel your registration.
   </div>
-  <%= link_to 'Delete', application_path(@application), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger' %>
+  <%= link_to 'Delete',
+            application_path(@application),
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: 'Are you sure?'
+            },
+            class: 'btn btn-sm btn-danger' %>
 
   <hr>
   <h6>Confirm Registration</h6>
