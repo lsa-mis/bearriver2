@@ -5,16 +5,17 @@
   <p class="m-2">
     <%= raw(current_application_settings.payments_directions) %>
   </p>
-  <p>
-    Pay by Credit Card (Visa, Mastercard, Discover, AMEX)
-    <small class="text-muted">
-      Upon submission of this form you will be redirected to
-      our credit card processing page. Payments are securely processed via QuikPAY,
-      the preferred gateway service provider of the University of Michigan.
-      QuikPAY is a registered trademark of Nelnet Business Solutions, Inc. No
-      credit card information is stored on our servers.
-    </small>
-  </p>
+
+   <h3> Pay by Credit Card (Visa, Mastercard, Discover, AMEX)</h3>
+      <p>
+        <small class="text-muted">
+          Upon submission of this form you will be redirected to
+          our credit card processing page. Payments are securely processed via QuikPAY,
+          the preferred gateway service provider of the University of Michigan.
+          QuikPAY is a registered trademark of Nelnet Business Solutions, Inc. No
+          credit card information is stored on our servers.
+        </small>
+      </p>
   <p>
     <% if current_application_settings.subscription_cost > 0 && current_application_settings.allow_payments %>
       <%= link_to "Subscribe to Michigan Quarterly Review", subscription_path, class: "btn btn-info" %>
