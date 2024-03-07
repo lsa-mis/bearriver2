@@ -183,7 +183,7 @@
       <div id="partner-registration" class="form-group">
         <%= f.collection_radio_buttons(:partner_registration_id, get_partner_registrations, :id, :display_name) do |b| %>
           <div class="form-check">
-            <%= b.radio_button(class: "form-check-input ml-3", data: { registration_target: "partnerRegistration", action: "registration#togglePartnerNameFields", description: b.object.description }) %>
+            <%= b.radio_button(class: "form-check-input ml-3", data: { registration_target: "partnerRegistration", action: "registration#updatePartnerFieldsVisibility", description: b.object.description }) %>
             <%= b.label(class: "form-check-label ml-5") %>
           </div>
         <% end %>
