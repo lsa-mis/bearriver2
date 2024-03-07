@@ -18,7 +18,11 @@
         <% if !user_has_payments?(current_user) %>
           <p>
             To accept your offer  
-            <%= button_to "Pay the Application Fee", make_payment_path(amount: current_application_settings.registration_fee), class: 'btn btn-success' %>
+            <%= button_to "Pay the Application Fee",
+              make_payment_path(amount: current_application_settings.registration_fee),
+              method: :post,
+              data: { turbo: false },
+              class: 'btn btn-success' %>
           </p>
         <% else %>
           <p>

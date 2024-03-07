@@ -47,7 +47,7 @@
     </div>
     <div class="card-footer">
       <% if payments_open? && @balance_due > 0 %>
-        <%= form_with url: make_payment_path, local: true do |f| %>
+        <%= form_with url: make_payment_path, local: true, data: { turbo: false } do |f| %>
           <div class="row">
             <div class="form-group align-items-around ml-4">
               <div class="input-group">
