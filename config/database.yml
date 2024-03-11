@@ -81,7 +81,4 @@ staging:
   url: <%= ENV["DATABASE_URL"] %>
 
 production:
-  <<: *default
-  database: bearriver2_production
-  username: bearriver2
-  password: <%= ENV["BEARRIVER2_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
