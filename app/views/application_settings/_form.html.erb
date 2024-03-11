@@ -1,0 +1,19 @@
+<%= form_for @application_setting, data: { turbo_frame: dom_id(@application_setting) } do |f| %>
+  <div class="fieldset">
+    <div class="form-group">
+      <%= f.label :opendate, "Date and Time contest should open (in #{Time.zone.name})", class: 'required' %><br>
+      <%= f.datetime_select :opendate %>
+    </div>
+    <div class="form-group">
+      <%= f.label :application_buffer, "Stop allowing public application submissions after", class: 'required' %>
+      <%= f.number_field :application_buffer, class: 'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :contest_year, class: 'required' %>
+      <%= f.number_field :contest_year, placeholder: "YYYY", class: 'form-control' %>
+    </div>
+    <div class="actions">
+      <%= f.submit 'Save' %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,41 @@
+<% provide(:title, 'Payment Receipt') %>
+
+<h2>Your Payment Information</h2>
+<h4>
+  <%= @current_payment.result_message %>
+</h4>
+
+<h6>
+  Your payment of the Bearriver Application fee (
+  <span class="font-weight-bold">Confirmation Number:</span>
+  <%= @current_payment.transaction_id %>
+  ) has been recorded into your account.
+</h6>
+
+<div class="card" style="width: 18rem;">
+  <h4 class="card-header">
+    Payment details:
+  </h4>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <span class="font-weight-bold">Date:</span>
+      <%= Time.parse(@current_payment.transaction_date).strftime("%B %e, %Y at %l:%M %p") %>
+    </li>
+    <li class="list-group-item">
+      <span class="font-weight-bold">Amount:</span>
+      <%= format_total_payment(@current_payment) %>
+    </li>
+    <li class="list-group-item">
+      <span class="font-weight-bold">Payment Method:</span>
+      <%= @current_payment.account_type %>
+    </li>
+  </ul>
+</div>
+
+<p class="text-muted">
+  You will also receive an email confirmation from 'MerchantCreditCard&#64;umich.edu'
+</p>
+<h6>
+  If you have any questions please contact
+  <%= mail_to "bearriver-questions@umich.edu" %>
+</h6>

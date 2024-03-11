@@ -1,0 +1,21 @@
+<% provide(:title, 'Congratulations on your Offer') %>
+
+<h3>
+  Congratulations on being selected to attend the
+  <br>
+  <%= "#{current_application_settings.contest_year} Bear River Conference!" %>
+</h3>
+<p>
+  <%= link_to "Login", new_user_session_path, class: 'btn btn-sm btn-success' %>
+</p>
+
+<%= raw(current_application_settings.registration_acceptance_directions) %>
+
+<div class="mt-4">
+  The Bear River Staff,
+</p>
+<p>
+  Feel free to reach out with any questions to
+  <br>
+  <%= mail_to "bearriver-questions@umich.edu" %>
+</p>

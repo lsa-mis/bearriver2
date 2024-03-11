@@ -1,0 +1,241 @@
+<hr>
+<h5>Lodging Options:</h5>
+<!-- NOTE: Prices below include a required $100 deposit. -->
+<hr class="w-75">
+<h5>
+  Plan A:
+  <small class="text-muted">Includes tuition, lodging and all meals. Lodging options and pricing for Plan A are listed below.</small>
+</h5>
+<ul>
+  <% @lodgings.each do |lodge| %>
+    <% if lodge.plan == 'A' %>
+      <li class="font-weight-bold">
+        <%= "#{lodge.description} ( #{number_to_currency(lodge.cost.to_f)} )" %>
+        <% if lodge.description.include?("Semi-Private") %>
+          <div class="text-muted ml-2">Queen Bed/Shared Bath with 1-3 others</div>
+        <% end %>
+        <% if lodge.description.include?("Bunk") %>
+          <div class="text-muted ml-2">Single bunk bed in a 4-bunk bedroom shared with 1-3 others/shared bath with 1-3 others</div>
+        <% end %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+<h5>
+  Plan B:
+  <small class="text-muted">Includes tuition and all meals, but not lodging for those who live in the Petoskey area. In addition, there are many hotels and motels available within twenty minutes of the conference for those who prefer greater privacy.</small>
+</h5>
+<ul>
+  <% @lodgings.each do |lodge| %>
+    <% if lodge.plan == 'B' %>
+      <li class="font-weight-bold">
+        <%= "#{lodge.description} ( #{number_to_currency(lodge.cost.to_f)} )" %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+<hr class="w-75">
+<h5>
+  Attending with a spouse/partner:
+  <small class="text-muted">
+    It is possible to include a spouse/partner when registering for any of the options in Plan A or B for an
+    <mark>additional fee:</mark>
+  </small>
+</h5>
+<ul>
+  <% @partner_registrations.each do |pr| %>
+    <% if pr.cost > 0.0 %>
+      <li class="font-weight-bold">
+        <%= "#{pr.description} ( #{number_to_currency(pr.cost.to_f)} )" %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+<p>
+  Please do not register your spouse/partner separately unless they also wish
+  to attend the workshops. If your spouse/partner does want to attend the
+  workshops they will need to register separately. We also highly recommend
+  the "Private Room, Private Bath" option if you intend to bring your
+  spouse/partner.
+</p>
+
+<hr class="w-75">
+<h5>
+  Register early to secure your workshop choice:
+  <small class="text-muted">Workshops will be assigned on a first come first serve basis. In the unlikely event of a workshop cancellation, your entire payment will be refunded upon request if you do not wish to enroll in an alternate workshop.</small>
+</h5>
+
+<%= form_for @application, data: { turbo_frame: dom_id(@application) } do |f| %>
+  <br>
+  <h5>Registrant Details:</h5>
+  <hr>
+  <div class="form-group row">
+    <%= f.label :first_name, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.text_field :first_name, autofocus: true, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :last_name, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.text_field :last_name, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row align-items-center">
+    <%= f.label :gender, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-6">
+      <%= f.collection_select(:gender, Gender.all, :name, :name, prompt: "Pick one", class: 'form-select') %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :birth_year, 'Year of Birth', class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.number_field :birth_year, class: 'form-control' %>
+    </div>
+  </div>
+
+  <h5>Mailing Address:</h5>
+  <hr>
+  <div class="form-group row">
+    <%= f.label :street, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.text_field :street, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :street2, class: 'col-sm-3 col-form-label' %>
+    <div class="col-sm-9">
+      <%= f.text_field :street2, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :city, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.text_field :city, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row align-items-center">
+    <%= f.label :state, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-4">
+      <%= f.select :state, us_states, {}, include_blank: "Pick one", class: 'form-select' %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :zip, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.text_field :zip, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row align-items-center">
+    <%= f.label :country, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.country_select :country, priority_countries: ["US"], selected: "US", class: 'form-select' %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :phone, class: 'col-sm-3 col-form-label required' %>
+    <div class="col-sm-9">
+      <%= f.text_field :phone, class: 'form-control' %>
+    </div>
+  </div>
+
+  <h5>Workshop Selection:</h5>
+  <hr>
+  <div data-controller="workshop-selection">
+    <div class="form-group row">
+      <%= f.label :workshop_selection1, "First Choice", class: 'col-sm-3 col-form-label required' %>
+      <div class="col-sm-6">
+        <%= f.collection_select(:workshop_selection1, get_workshops, :instructor, :instructor, {prompt: "Pick one"}, {class: 'form-select', data: { workshop_selection_target: "select", action: "change->workshop-selection#change" }}) %>
+      </div>
+    </div>
+    <div class="form-group row">
+      <%= f.label :workshop_selection2, "Second Choice", class: 'col-sm-3 col-form-label required' %>
+      <div class="col-sm-6">
+        <%= f.collection_select(:workshop_selection2, get_workshops, :instructor, :instructor, {prompt: "Pick one"}, {class: 'form-select', data: { workshop_selection_target: "select", action: "change->workshop-selection#change" }}) %>
+      </div>
+    </div>
+    <div class="form-group row">
+      <%= f.label :workshop_selection3, "Third Choice", class: 'col-sm-3 col-form-label required' %>
+      <div class="col-sm-6">
+        <%= f.collection_select(:workshop_selection3, get_workshops, :instructor, :instructor, {prompt: "Pick one"}, {class: 'form-select', data: { workshop_selection_target: "select", action: "change->workshop-selection#change" }}) %>
+      </div>
+    </div>
+  </div>
+
+    <h5>Lodging Selection:</h5>
+    <hr>
+    <h6>
+      <%= f.label 'Please select a room type:', class: 'required' %>
+    </h6>
+    <div class="form-group">
+      <%= f.collection_radio_buttons(:lodging_selection, get_lodgings, :description, :display_name) do |b| %>
+        <div class="form-check">
+          <%= b.radio_button(class: "form-check-input ml-3") %>
+          <%= b.label(class: "form-check-label ml-5") %>
+        </div>
+      <% end %>
+    </div>
+
+    <h6>
+      <%= f.label 'Please indicate whether your registration includes a spouse/partner:', class: 'required' %>
+    </h6>
+    <div data-controller="registration">
+      <div id="partner-registration" class="form-group">
+        <%= f.collection_radio_buttons(:partner_registration_id, get_partner_registrations, :id, :display_name) do |b| %>
+          <div class="form-check">
+            <%= b.radio_button(class: "form-check-input ml-3", data: { registration_target: "partnerRegistration", action: "registration#updatePartnerFieldsVisibility", description: b.object.description }) %>
+            <%= b.label(class: "form-check-label ml-5") %>
+          </div>
+        <% end %>
+      </div>
+
+      <p class="pl-3">If you are bringing a partner please enter their name:</p>
+      <div class="row">
+        <div class="col-4 offset-1">
+          <%= f.label :partner_first_name, class: 'form-label' %>
+          <%= f.text_field :partner_first_name, class: 'form-control', required: true, data: { registration_target: "partnerFirstName" } %>
+        </div>
+        <div class="col-4">
+          <%= f.label :partner_last_name, class: 'form-label' %>
+          <%= f.text_field :partner_last_name, class: 'form-control', required: true, data: { registration_target: "partnerLastName" } %>
+        </div>
+      </div>
+    </div>
+
+  <h5>Additional Information:</h5>
+  <hr>
+
+  <div class="form-group row">
+    <%= f.label :accessibility_requirements, class: 'col-sm-3 col-form-label' %>
+    <div class="col-sm-9">
+      <%= f.text_area :accessibility_requirements, class: 'form-control', cols: 80 %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :special_lodging_request, class: 'col-sm-3 col-form-label' %>
+    <div class="col-sm-9">
+      <%= f.text_area :special_lodging_request, class: 'form-control', cols: 80 %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :food_restrictions, class: 'col-sm-3 col-form-label' %>
+    <div class="col-sm-9">
+      <%= f.text_area :food_restrictions, class: 'form-control', cols: 80 %>
+    </div>
+  </div>
+
+  <div class="form-group row align-items-center">
+    <%= f.label :how_did_you_hear, "How did you hear about the Bear River Writers' Conference?", class: 'col-sm-3 col-form-label' %>
+    <div class="col-sm-6">
+      <%= f.select :how_did_you_hear, Application::HOW_DID_YOU_HEAR, prompt: "Pick one", class: 'form-select' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= f.label "Required items are marked with an asterisk", class: 'text-muted required' %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit 'Submit Application', class: 'btn btn-success' %>
+  </div>
+<% end %>

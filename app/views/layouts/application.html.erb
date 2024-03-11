@@ -1,16 +1,27 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Bearriver2</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-  </head>
-
-  <body>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BearriverApplication</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+</head>
+<body>
+  <%= render "layouts/header" %>
+  <%= render "layouts/notifications" %>
+  <%= render 'layouts/aside' %>
+  
+  <div class="container">
     <%= yield %>
-  </body>
+
+    <% if Rails.env.development? %>
+      <%= debug(params) %>
+      <%= debug @user %>
+    <% end %>
+  </div>
+
+  <%= render "layouts/footer" %>
+</body>
 </html>
