@@ -19,9 +19,9 @@
           <%= link_to "Terms of Use", terms_of_service_path, class: 'nav-link' %>
         </li>
       </ul>
-      <p class="navbar-text d-flex justify-content-end pe-3"> <!-- Added flex utilities for alignment -->
+      <ul class="navbar-nav pe-7">
+        <li class="nav-item">
         <% if user_signed_in? %>
-          
           <%= button_to "Logged in as #{current_user.email}", edit_user_registration_path, method: :get, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-info' %>
           <%= button_to "Logout", destroy_user_session_path, method: :delete, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-warning' %>
         <% else %>
@@ -33,7 +33,8 @@
             <%= button_to "Login", new_user_session_path, method: :get, form: { class: 'd-inline' }, class: 'btn btn-sm btn-outline-info' %>
           <% end %>
         <% end %>
-      </p>
+        </li>
+      </ul>
     </div>
   </nav>
 </header>
