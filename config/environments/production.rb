@@ -82,7 +82,7 @@ Rails.application.configure do
   # with stale or incorrect emails being sent out due to caching.
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_options = {from: 'bearriver-questions@bearriver.lsa.umich.edu'}
+  config.action_mailer.default_options = {from: 'bearriver-questions@umich.edu'}
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   host = 'https://bearriver.lsa.umich.edu/'
