@@ -4,9 +4,9 @@
   <% if current_application_settings.opendate > Time.now %>
     Application for the <%= current_application_settings.contest_year %> conference will be open:
     <p class="m-3">
-      <%= current_application_settings.opendate.to_s(:special_date) %>
+      <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
       until
-      <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_s(:special_date) %>
+      <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date) %>
     </p>
     Please return to the
     <%= link_to "Application Page", root_url %>
