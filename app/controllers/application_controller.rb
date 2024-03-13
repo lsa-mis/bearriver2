@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
       start_time = current_application_settings.opendate
       end_time = start_time + current_application_settings.application_open_period.hours
       range = start_time..end_time
-      range.cover?(Time.zone.now)
+      range.cover?(Time.current)
     else
       false
     end
