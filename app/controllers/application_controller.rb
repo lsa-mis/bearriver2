@@ -7,12 +7,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_application_settings
 
-  # def current_application_open?
-  #   if current_application_settings
-  #     range = current_application_settings.opendate..(current_application_settings.opendate + current_application_settings.application_open_period.hours)
-  #     range.include?(Time.now)
-  #   end
-  # end
   def current_application_open?
     if current_application_settings
       start_time = current_application_settings.opendate

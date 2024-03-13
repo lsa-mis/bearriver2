@@ -25,7 +25,7 @@ module Bearriver2
     
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_record.default_timezone = :local
-    config.active_record.time_zone_aware_attributes = false
+    config.active_record.time_zone_aware_attributes = true
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

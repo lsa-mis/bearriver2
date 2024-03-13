@@ -69,20 +69,20 @@ class ApplicationSettingsController < ApplicationController
   end
 
   def run_lottery
-    if (current_application_settings.opendate + current_application_settings.application_open_period.hours) < Time.now
+    if (current_application_settings.opendate + current_application_settings.application_open_period.hours) < Time.current
       if current_application_settings.lottery_result.nil?
         active_applications_ids = Application.entries_included_in_lottery.pluck(:id)
         3.times { active_applications_ids.shuffle! }
-        current_application_settings.update(lottery_result: active_applications_ids, lottery_run_date: Time.now)
+        current_application_settings.update(lottery_result: active_applications_ids, lottery_run_date: Time.current)
 
         current_application_settings.lottery_result.each_with_index do |item, idx|
           app = Application.find(item)
 
           if idx < current_application_settings.lottery_buffer
-            app.update(lottery_position: idx, offer_status: "registration_offered", offer_status_date: Time.now, result_email_sent: true)
+            app.update(lottery_position: idx, offer_status: "registration_offered", offer_status_date: Time.current, result_email_sent: true)
             LotteryMailer.with(application: app).won_lottery_email.deliver_now
           else 
-            app.update(lottery_position: idx, offer_status: "not_offered", offer_status_date: Time.now, result_email_sent: true)
+            app.update(lottery_position: idx, offer_status: "not_offered", offer_status_date: Time.current, result_email_sent: true)
             LotteryMailer.with(application: app).lost_lottery_email.deliver_now
           end
         end
@@ -97,7 +97,7 @@ class ApplicationSettingsController < ApplicationController
   def send_pre_lottery_selected_emails
     pre_offers = Application.active_conference_applications.where(offer_status: "special_offer_application", result_email_sent: false)
     pre_offers.each do |pre_offer_app|
-      pre_offer_app.update(offer_status: "registration_offered", offer_status_date: Time.now, result_email_sent: true)
+      pre_offer_app.update(offer_status: "registration_offered", offer_status_date: Time.current, result_email_sent: true)
       LotteryMailer.with(application: pre_offer_app).pre_lottery_offer_email.deliver_now
     end
   end
@@ -105,7 +105,7 @@ class ApplicationSettingsController < ApplicationController
 
   def send_offer
     @application = Application.find(params[:id])
-    @application.update(offer_status: "registration_offered", offer_status_date: Time.now, result_email_sent: true)
+    @application.update(offer_status: "registration_offered", offer_status_date: Time.current, result_email_sent: true)
     LotteryMailer.with(application: @application).waitlisted_offer_email.deliver_now
     redirect_to admin_application_path(@application)
   end

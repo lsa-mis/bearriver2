@@ -4,7 +4,7 @@ ActiveAdmin.register_page "Dashboard" do
   
   content title: proc { I18n.t("active_admin.dashboard") } do
 
-    if (current_application_settings.opendate + current_application_settings.application_open_period.hours) < Time.now
+    if (current_application_settings.opendate + current_application_settings.application_open_period.hours) < Time.current
       if current_application_settings.lottery_result.nil?
         div do
           span do
