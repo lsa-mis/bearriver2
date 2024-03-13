@@ -1,45 +1,42 @@
 <% provide(:title, 'Conference Information') %>
-
-<div class="container pt-4">
-  <% if current_application_settings.opendate > Time.current %>
-    Application for the <%= current_application_settings.contest_year %> conference will be open:
-    <p class="m-3">
-      <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
-      until
-      <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date) %>
-    </p>
-    Please return to the
-    <%= link_to "Application Page", root_url %>
-    after that date and time.
-
-  <% else %>
-    <% if user_signed_in? && user_has_application?(current_user) %>
-      <% if ["registration_offered", "registration_accepted"].include? Application.active_conference_applications.find_by(user_id: current_user).offer_status %>
-        <% if !user_has_payments?(current_user) %>
-          <p>
-            To accept your offer  
-            <%= button_to "Pay the Application Fee",
-              make_payment_path(amount: current_application_settings.registration_fee),
-              method: :post,
-              data: { turbo: false },
-              class: 'btn btn-success' %>
-          </p>
-        <% else %>
-          <p>
-            You may use the links in the 'Your Details' box to the right to view or manage your payments.
-          </p>
-        <% end %>
+<% if current_application_settings.opendate > Time.current %>
+  Application for the <%= current_application_settings.contest_year %> conference will be open:
+  <p class="m-3">
+    <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
+    until
+    <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date) %>
+  </p>
+  Please return to the
+  <%= link_to "Application Page", root_url %>
+  after that date and time.
+<% else %>
+  <% if user_signed_in? && user_has_application?(current_user) %>
+    <% if ["registration_offered", "registration_accepted"].include? Application.active_conference_applications.find_by(user_id: current_user).offer_status %>
+      <% if !user_has_payments?(current_user) %>
+        <p>
+          To accept your offer  
+          <%= button_to "Pay the Application Fee",
+            make_payment_path(amount: current_application_settings.registration_fee),
+            method: :post,
+            data: { turbo: false },
+            class: 'btn btn-success' %>
+        </p>
       <% else %>
-        <% if current_application_settings.application_closed_directions.present? %>
-          <%= raw(current_application_settings.application_closed_directions) %>
-        <% end %>
+        <p>
+          You may use the links in the 'Your Details' box to the right to view or manage your payments.
+        </p>
       <% end %>
-    <% elsif user_signed_in? && user_has_special_payment?(current_user) %>
-      <%= raw(current_application_settings.special_scholarship_acceptance_directions) %>
-      <%= link_to 'Create an Application', new_application_path, class: 'btn btn-sm btn-success' %>
     <% else %>
       <% if current_application_settings.application_closed_directions.present? %>
         <%= raw(current_application_settings.application_closed_directions) %>
       <% end %>
     <% end %>
+  <% elsif user_signed_in? && user_has_special_payment?(current_user) %>
+    <%= raw(current_application_settings.special_scholarship_acceptance_directions) %>
+    <%= link_to 'Create an Application', new_application_path, class: 'btn btn-sm btn-success' %>
+  <% else %>
+    <% if current_application_settings.application_closed_directions.present? %>
+      <%= raw(current_application_settings.application_closed_directions) %>
+    <% end %>
   <% end %>
+<% end %>

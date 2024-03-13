@@ -11,16 +11,13 @@
 <body>
   <%= render "layouts/header" %>
   <%= render "layouts/notifications" %>
-  <%= render 'layouts/aside' %>
   
-  <div class="container">
-    <%= yield %>
-
-    <% if Rails.env.development? %>
-      <%= debug(params) %>
-      <%= debug @user %>
-    <% end %>
-  </div>
+  <main role="main" id="content">
+    <div class="container">
+      <%= render 'layouts/aside' %>
+      <%= yield %>
+    </div>
+  </main>
 
   <%= render "layouts/footer" %>
 </body>
