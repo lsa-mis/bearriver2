@@ -104,12 +104,12 @@ PartnerRegistration.create!([
 
 ApplicationSetting.create!([
   {
-    opendate: Time.now,
+    opendate:Time.current ,
     application_buffer: 50,
     registration_fee: 25,
     lottery_buffer: 50,
     application_open_period: 48,
-    contest_year: Time.now.year,
+    contest_year: Time.current.year,
     subscription_cost: 25,
     time_zone: "EST",
     active_application: true,
@@ -173,7 +173,7 @@ how_did_you_hear_type = ["Word of Mouth", "Magazine Advertisement", "Online Adve
     special_lodging_request: Faker::Lorem.sentence,
     food_restrictions: Faker::Lorem.sentence,
     user_id: user.id,
-    conf_year: Time.now.year,
+    conf_year: Time.current.year,
     partner_registration_id: Faker::Number.within(range: 1..4)
   )
 end
@@ -196,7 +196,7 @@ end
     timestamp: date_to_use.utc.to_i,
     transaction_hash: nil,
     user_id: user.id,
-    conf_year: Time.now.year
+    conf_year: Time.current.year
   )
   Application.find_by(user_id: user.id).update!(offer_status: "registration_accepted", offer_status_date: date_to_use)
 end

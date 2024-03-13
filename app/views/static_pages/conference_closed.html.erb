@@ -1,7 +1,7 @@
 <% provide(:title, 'Conference Information') %>
 
 <div class="container pt-4">
-  <% if current_application_settings.opendate > Time.now %>
+  <% if current_application_settings.opendate > Time.current %>
     Application for the <%= current_application_settings.contest_year %> conference will be open:
     <p class="m-3">
       <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
