@@ -33,6 +33,12 @@
         <div class="h6" style="font-family: Lucida Console;">
           <%= "#{'total_cost'.humanize.ljust(24, '.')} #{number_to_currency(@total_cost).rjust(12,'.')}" %>
         </div>
+        <% if @has_subscription %>
+          <div class="h6" style="font-family: Lucida Console;">
+            <%= "#{'MQR subscription'.humanize.ljust(18, '.')} #{number_to_currency(@cost_subscription).rjust(14,'.')}" %>
+          </div>
+        <% end %>
+        <hr class="w-50 mx-auto" >
       <% end %>
       <div class="h6" style="font-family: Lucida Console;">
         <%= "#{'amount_paid'.humanize.ljust(20, '.')} #{number_to_currency(@ttl_paid).rjust(12,'.')}" %>
@@ -55,7 +61,8 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">$</span>
                 </div>
-                <%= f.number_field :amount, value: "#{@balance_due.to_i}", within: 1..2000, required: true %>
+                <%= f.number_field :amount, value: "#{@balance_due.to_i}", 
+                    within: 1..2000, required: true, class: 'form-control' %>
                 <%= f.submit "Pay Now", class: 'btn btn-sm btn-success ml-2' %>
               </div>
             </div>

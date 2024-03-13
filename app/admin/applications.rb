@@ -25,6 +25,7 @@ ActiveAdmin.register Application do
   filter :workshop_selection3, label: "workshop_selection3", as: :select, collection: -> { Workshop.all.map { |mapp| [mapp.instructor, mapp.instructor]}.sort }
   filter :lodging_selection, as: :select, collection: -> { Lodging.all.map { |lapp| [lapp.description, lapp.description]}.sort }
   filter :partner_registration_id, as: :select, collection: -> { PartnerRegistration.all.map { |papp| [papp.description, papp.id]}.sort }
+  filter :subscription, as: :select
   filter :conf_year, as: :select
 
   index do
