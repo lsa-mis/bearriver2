@@ -2,13 +2,17 @@
 <div class="text-center pt-4">
   <% if current_application_settings.opendate > Time.current %>
       <h4>
-        Application for the <%= current_application_settings.contest_year %> conference will be open:
+        Thank you for your interest in Bear River.
       </h4>
+      <h5>
+        The Bear River Writers' <%= current_application_settings.contest_year %> conference application period will be open:
+      </h5>
       <h5 class="text-muted">
         <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
         until
         <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date) %>
       </h5>
+      <h5>Applicants will be chosen by a random lottery system and notified via email.</h5>
       <h5 class="pt-4">Please return to the
         <%= link_to "Application Page", root_url %>
         after that date and time.
