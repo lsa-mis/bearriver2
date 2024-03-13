@@ -1,42 +1,51 @@
 <% provide(:title, 'Conference Information') %>
-<% if current_application_settings.opendate > Time.current %>
-  Application for the <%= current_application_settings.contest_year %> conference will be open:
-  <p class="m-3">
-    <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
-    until
-    <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date) %>
-  </p>
-  Please return to the
-  <%= link_to "Application Page", root_url %>
-  after that date and time.
-<% else %>
-  <% if user_signed_in? && user_has_application?(current_user) %>
-    <% if ["registration_offered", "registration_accepted"].include? Application.active_conference_applications.find_by(user_id: current_user).offer_status %>
-      <% if !user_has_payments?(current_user) %>
-        <p>
-          To accept your offer  
-          <%= button_to "Pay the Application Fee",
-            make_payment_path(amount: current_application_settings.registration_fee),
-            method: :post,
-            data: { turbo: false },
-            class: 'btn btn-success' %>
-        </p>
+<div class="text-center pt-4">
+  <% if current_application_settings.opendate > Time.current %>
+      <h4>
+        Thank you for your interest in Bear River.
+      </h4>
+      <h5>
+        The Bear River Writers' <%= current_application_settings.contest_year %> conference application period will be open:
+      </h5>
+      <h5 class="text-muted">
+        <%= current_application_settings.opendate.to_formatted_s(:special_date) %>
+        until
+        <%= (current_application_settings.opendate + current_application_settings.application_open_period.hours).to_formatted_s(:special_date) %>
+      </h5>
+      <h5>Applicants will be chosen by a random lottery system and notified via email.</h5>
+      <h5 class="pt-4">Please return to the
+        <%= link_to "Application Page", root_url %>
+        after that date and time.
+      </h5>
+  <% else %>
+    <% if user_signed_in? && user_has_application?(current_user) %>
+      <% if ["registration_offered", "registration_accepted"].include? Application.active_conference_applications.find_by(user_id: current_user).offer_status %>
+        <% if !user_has_payments?(current_user) %>
+          <h5>
+            To accept your offer  
+            <%= button_to "Pay the Application Fee",
+              make_payment_path(amount: current_application_settings.registration_fee),
+              method: :post,
+              data: { turbo: false },
+              class: 'btn btn-success' %>
+          </h5>
+        <% else %>
+          <h5>
+            You may use the links in the 'Your Details' box to the right to view or manage your payments.
+          </h5>
+        <% end %>
       <% else %>
-        <p>
-          You may use the links in the 'Your Details' box to the right to view or manage your payments.
-        </p>
+        <% if current_application_settings.application_closed_directions.present? %>
+          <%= raw(current_application_settings.application_closed_directions) %>
+        <% end %>
       <% end %>
+    <% elsif user_signed_in? && user_has_special_payment?(current_user) %>
+      <%= raw(current_application_settings.special_scholarship_acceptance_directions) %>
+      <%= link_to 'Create an Application', new_application_path, class: 'btn btn-sm btn-success' %>
     <% else %>
       <% if current_application_settings.application_closed_directions.present? %>
         <%= raw(current_application_settings.application_closed_directions) %>
       <% end %>
     <% end %>
-  <% elsif user_signed_in? && user_has_special_payment?(current_user) %>
-    <%= raw(current_application_settings.special_scholarship_acceptance_directions) %>
-    <%= link_to 'Create an Application', new_application_path, class: 'btn btn-sm btn-success' %>
-  <% else %>
-    <% if current_application_settings.application_closed_directions.present? %>
-      <%= raw(current_application_settings.application_closed_directions) %>
-    <% end %>
   <% end %>
-<% end %>
+</div>
