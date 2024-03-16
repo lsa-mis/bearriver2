@@ -93,7 +93,7 @@ Rails.application.configure do
     :authentication => :plain,
     :user_name      => 'apikey',
     :password       => ENV['SENDGRID_API_KEY'],
-    :domain         => 'umich.edu',
+    :domain         => 'bearriver.lsa.umich.edu',
     :enable_starttls_auto => true
   }
 
