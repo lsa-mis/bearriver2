@@ -65,7 +65,7 @@
   <small class="text-muted">Workshops will be assigned on a first come first serve basis. In the unlikely event of a workshop cancellation, your entire payment will be refunded upon request if you do not wish to enroll in an alternate workshop.</small>
 </h5>
 
-<%= form_for @application, data: { turbo_frame: dom_id(@application) } do |f| %>
+<%= form_for @application, data: { turbo_frame: dom_id(@application), action: "submit->registration#validateForm" } do |f| %>
   <br>
   <h5>Registrant Details:</h5>
   <hr>
