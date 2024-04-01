@@ -31,4 +31,12 @@ export default class extends Controller {
       field.closest('.row').style.display = displayValue;
     });
   }
+
+  validateForm(event) {
+    let isAnyRadioButtonSelected = this.partnerRegistrationTargets.some(radio => radio.checked);
+    if (!isAnyRadioButtonSelected) {
+      event.preventDefault(); // Prevent form submission
+      alert("Please select at least one registration option.");
+    }
+  }
 }

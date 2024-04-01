@@ -60,6 +60,7 @@ class Application < ApplicationRecord
   validates :workshop_selection2, presence: true
   validates :workshop_selection3, presence: true
   validates :lodging_selection, presence: true
+  validates :partner_registration_id, presence: true
 
   def self.ransackable_associations(auth_object = nil)
     ["partner_registration", "user"]
