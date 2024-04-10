@@ -43,6 +43,7 @@ ActiveAdmin.register Application do
     end
     column :first_name
     column :last_name
+    column :lottery_position
     column :workshop_selection1
     column :workshop_selection2
     column :workshop_selection3
