@@ -40,7 +40,7 @@ class Payment < ApplicationRecord
 
   def manual_payment_decimal
     if self.transaction_type == "ManuallyEntered"
-      if self.total_amount !~ /^\s*[+-]?((\d+_?)*\d+(\.(\d+_?)*\d+)?|\.(\d+_?)*\d+)(\s*|([eE][+-]?(\d+_?)*\d+)\s*)$/
+      if self.total_amount !~ /^\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?\s*$/
         errors.add(:total_amount, "must be decimal")
       elsif self.total_amount.to_f < 0
         errors.add(:total_amount, "must be positive")
