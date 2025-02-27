@@ -1,0 +1,38 @@
+# CODEOWNERS file for bearriver2
+# Each line is a file pattern followed by one or more owners.
+# Order is important; the last matching pattern takes precedence.
+
+# Default owners for everything in the repo
+* @rsmoke
+
+# GitHub specific files and workflows
+/.github/ @rsmoke
+
+# Application code
+/app/ @rsmoke
+/app/admin/ @rsmoke
+/app/models/ @rsmoke
+/app/controllers/ @rsmoke
+/app/helpers/ @rsmoke
+/app/views/ @rsmoke
+/app/assets/ @rsmoke
+/app/javascript/ @rsmoke
+/app/mailers/ @rsmoke
+/app/validators/ @rsmoke
+
+# Database related files
+/db/ @rsmoke
+
+# Configuration files
+/config/ @rsmoke
+
+# Test files
+/spec/ @rsmoke
+
+# Documentation
+*.md @rsmoke
+/LICENSE @rsmoke
+
+# Dependency management
+/Gemfile @rsmoke
+/Gemfile.lock @rsmoke
