@@ -2,11 +2,14 @@
   require 'time'
 
   class PaymentsController < ApplicationController
-    skip_before_action :verify_authenticity_token, only: [:payment_receipt, :delete_manual_payment]
+    protect_from_forgery with: :exception
+    skip_before_action :verify_authenticity_token, only: [:payment_receipt]
+    before_action :verify_payment_callback, only: [:payment_receipt]
     before_action :authenticate_user!, except: [:delete_manual_payment]
     before_action :current_user, only: %i[payment_receipt make_payment payment_show]
     before_action :current_application, only: %i[payment_receipt payment_show]
     before_action :authenticate_admin_user!, only: [:delete_manual_payment]
+    prepend_before_action :verify_authenticity_token, only: [:delete_manual_payment]
 
     def index
       redirect_to root_url
@@ -64,6 +67,13 @@
     end
 
     private
+      def verify_payment_callback
+        unless params['hash'].present? && params['timestamp'].present? && params['transactionId'].present?
+          head :forbidden
+          return
+        end
+      end
+
       def generate_hash(current_user, amount=100)
         user_account = current_user.email.partition('@').first + '-' + current_user.id.to_s
         amount_to_be_payed = amount.to_i
