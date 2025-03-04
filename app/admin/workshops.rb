@@ -5,7 +5,7 @@ ActiveAdmin.register Workshop do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :instructor, :last_name, :first_name
+  permit_params :instructor, :last_name, :first_name, :active
   #
   # or
   #
@@ -16,11 +16,12 @@ ActiveAdmin.register Workshop do
   # end
 
   filter :last_name, as: :select
-
+  filter :active
   index do
     selectable_column
     actions
     id_column
+    column :active
     column :instructor
     column :last_name
     column :first_name
