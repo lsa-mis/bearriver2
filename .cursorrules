@@ -1,0 +1,69 @@
+{
+  "expertise": {
+    "frameworks": ["Ruby on Rails", "MySQL", "PostgreSQL", "sqlite3", "Hotwire", "Tailwind CSS", "Yarn"],
+    "components": ["Turbo", "Stimulus"]
+  },
+  "codeStyle": {
+    "general": [
+      "Write concise, idiomatic Ruby code",
+      "Follow Rails conventions and best practices",
+      "Use object-oriented and functional programming patterns",
+      "Prefer iteration and modularization over duplication"
+    ],
+    "naming": {
+      "files": "snake_case",
+      "methods": "snake_case",
+      "variables": "snake_case",
+      "classes": "CamelCase",
+      "modules": "CamelCase"
+    }
+  },
+  "conventions": {
+    "ruby": {
+      "version": "3.x",
+      "styleGuide": "https://rubystyle.guide/",
+      "preferences": [
+        "Use expressive syntax (unless, ||=, &.)",
+        "Prefer single quotes unless interpolation needed",
+        "documentation": "https://www.ruby-lang.org/en/documentation/"
+      ]
+    },
+    "rails": {
+      "structure": "MVC with concerns and helpers",
+      "routing": "RESTful",
+      "activeRecord": "Use effectively for database operations",
+      "documentation": "https://guides.rubyonrails.org/"
+    },
+    "javascript": {
+      "preferred": "Hotwire",
+      "documentation": "https://hotwired.dev/",
+      "preferences": [
+        "Use Hotwire (Turbo + Stimulus) instead of complex JavaScript libraries/frameworks",
+        "Implement JavaScript functionality through Stimulus controllers when possible",
+        "Use Turbo Drive, Frames and Streams for page updates without full reloads"
+      ]
+    },
+    "tailwind": {
+      "css": "Use Tailwind CSS for styling",
+      "documentation": "https://tailwindcss.com/docs"
+    },
+    "yarn": {
+      "css": "Use Tailwind CSS for styling",
+      "documentation": "https://classic.yarnpkg.com/lang/en/docs/"
+    }
+  },
+  "testing": {
+    "framework": "RSpec",
+    "approach": "TDD/BDD",
+    "tools": ["FactoryBot", "Jest"],
+    "preferences": [
+      "Use standard RSpec syntax exclusively",
+      "Avoid shoulda matchers in favor of explicit RSpec expectations",
+      "Write clear, descriptive test cases that follow RSpec best practices"
+    ]
+  },
+  "preferences": {
+    "architecture": "domain modeling first",
+    "learning": "visual with analogies"
+  }
+}
