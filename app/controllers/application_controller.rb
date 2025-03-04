@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
   helper_method :payments_open?
 
   def get_workshops
-    @workshops_available = Workshop.all.order_by_lastname
+    @workshops_available = Workshop.active.order_by_lastname
   end
 
   helper_method :get_workshops
