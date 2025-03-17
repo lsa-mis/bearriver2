@@ -139,6 +139,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.6.0)
+    docile (1.4.1)
     drb (2.2.1)
     erubi (1.13.1)
     factory_bot (6.5.1)
@@ -353,6 +354,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.1)
+    simplecov_json_formatter (0.1.4)
     skylight (6.0.4)
       activesupport (>= 5.2.0)
     sprockets (4.2.1)
@@ -427,6 +434,7 @@ DEPENDENCIES
   redis (>= 4.0.1)
   rspec-rails
   sassc-rails
+  simplecov
   skylight
   stimulus-rails
   turbo-rails
