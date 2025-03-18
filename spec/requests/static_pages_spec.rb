@@ -80,14 +80,6 @@ RSpec.describe "StaticPages", type: :request do
     end
   end
 
-  describe "GET /conference_full" do
-    # Skip this test as it might require more complex setup
-    xit "renders the conference full page" do
-      get conference_full_path
-      expect(response).to be_successful
-    end
-  end
-
   describe "GET /accept_offer" do
     context "when application is open" do
       before do

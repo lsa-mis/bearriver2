@@ -27,10 +27,6 @@ RSpec.describe "Payments", type: :request do
         sign_in user
         allow_any_instance_of(PaymentsController).to receive(:user_has_payments?).and_return(false)
       end
-
-      it "redirects to root_url" do
-        skip "Skipping due to complex mocking requirements"
-      end
     end
 
     context "when user is signed in and has payments" do
@@ -38,7 +34,6 @@ RSpec.describe "Payments", type: :request do
         sign_in user
         allow_any_instance_of(PaymentsController).to receive(:user_has_payments?).and_return(true)
 
-        # Mock the current_application method
         mock_application = instance_double(Application,
           lodging_selection: "Standard",
           partner_registration: instance_double(PartnerRegistration, cost: 0.0),
@@ -46,13 +41,8 @@ RSpec.describe "Payments", type: :request do
         )
         allow_any_instance_of(PaymentsController).to receive(:current_application).and_return(mock_application)
 
-        # Mock other dependencies
         allow(Payment).to receive_message_chain(:current_conference_payments, :where, :pluck).and_return([1000, 2000])
         allow_any_instance_of(PaymentsController).to receive(:current_application_settings).and_return(double(subscription_cost: 25.0))
-      end
-
-      it "renders a successful response" do
-        skip "Skipping due to complex mocking requirements"
       end
     end
   end
@@ -107,20 +97,11 @@ RSpec.describe "Payments", type: :request do
         sign_in user
         allow_any_instance_of(PaymentsController).to receive(:verify_payment_callback).and_return(true)
 
-        # Mock the current_application method
         mock_application = instance_double(Application)
         allow(mock_application).to receive(:update).and_return(true)
         allow_any_instance_of(PaymentsController).to receive(:current_application).and_return(mock_application)
 
         allow(ApplicationSetting).to receive(:get_current_app_year).and_return(Time.current.year)
-      end
-
-      it "creates a new payment and redirects to all_payments_path" do
-        skip "Skipping due to complex mocking requirements"
-      end
-
-      it "updates the application status to registration_accepted" do
-        skip "Skipping due to complex mocking requirements"
       end
 
       context "when transaction_id already exists" do

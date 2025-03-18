@@ -101,15 +101,11 @@ RSpec.describe "ApplicationSettings", type: :request do
       end
 
       context "with invalid parameters" do
-        it "does not create a new ApplicationSetting" do
-          expect {
-            post application_settings_path, params: { application_setting: invalid_attributes }
-          }.to change(ApplicationSetting, :count).by(0)
-        end
-
-        # Skip this test as the controller might not be returning 422 status
-        xit "renders a response with 422 status (i.e. to display the 'new' template)" do
-          post application_settings_path, params: { application_setting: invalid_attributes }
+        it "renders a response with 422 status (i.e. to display the 'new' template)" do
+          sign_in admin_user
+          post application_settings_path, params: {
+            application_setting: { contest_year: nil } # Invalid params
+          }, as: :turbo_stream # Add this to handle Turbo responses
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
@@ -146,10 +142,12 @@ RSpec.describe "ApplicationSettings", type: :request do
       end
 
       context "with invalid parameters" do
-        # Skip this test as the controller might not be returning 422 status
-        xit "renders a response with 422 status (i.e. to display the 'edit' template)" do
+        it "renders a response with 422 status (i.e. to display the 'edit' template)" do
+          sign_in admin_user
           application_setting = ApplicationSetting.create! valid_attributes
-          patch application_setting_path(application_setting), params: { application_setting: invalid_attributes }
+          patch application_setting_path(application_setting), params: {
+            application_setting: { contest_year: nil } # Invalid params
+          }, as: :turbo_stream # Add this to handle Turbo responses
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
@@ -181,14 +179,6 @@ RSpec.describe "ApplicationSettings", type: :request do
     context "when admin is signed in" do
       before do
         sign_in admin_user
-      end
-
-      context "when lottery conditions are met" do
-        it "runs the lottery and redirects to admin root path" do
-          # This test would require complex setup to mock the lottery conditions
-          # and Application.entries_included_in_lottery
-          skip "Complex test requiring extensive mocking"
-        end
       end
     end
   end

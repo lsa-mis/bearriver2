@@ -239,40 +239,9 @@ RSpec.describe Application, type: :model do
       allow(ApplicationSetting).to receive(:get_current_app_settings).and_return(mock_app_setting)
     end
 
-    describe '.active_conference_applications' do
-      it 'returns applications for the current conference year' do
-        # Skip this test since it's difficult to test without mocking the entire database
-        skip "Skipping due to complex database interactions"
-      end
-    end
-
-    describe '.entries_included_in_lottery' do
-      it 'returns active applications with no offer status' do
-        # Skip this test since it's difficult to test without mocking the entire database
-        skip "Skipping due to complex database interactions"
-      end
-    end
-
-    describe '.application_accepted' do
-      it 'returns active applications with registration_accepted status' do
-        # Skip this test since it's difficult to test without mocking the entire database
-        skip "Skipping due to complex database interactions"
-      end
-    end
-
-    describe '.application_offered' do
-      it 'returns active applications with registration_offered or special_offer_application status' do
-        # Skip this test since it's difficult to test without mocking the entire database
-        skip "Skipping due to complex database interactions"
-      end
-    end
-
-    describe '.subscription_selected' do
-      it 'returns active applications with subscription selected' do
-        # Skip this test since it's difficult to test without mocking the entire database
-        skip "Skipping due to complex database interactions"
-      end
-    end
+    # Removing .active_conference_applications, .entries_included_in_lottery,
+    # .application_accepted, .application_offered, and .subscription_selected tests
+    # since they were all skipped
   end
 
   describe 'class methods' do
