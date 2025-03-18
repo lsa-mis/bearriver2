@@ -1,48 +1,49 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "rails", "~> 7.1.3"
-ruby "3.3.4"
+gem 'rails', '~> 7.2.2'
+ruby '3.3.4'
 
 gem 'activeadmin'
-gem "bootsnap", require: false
+gem 'bootsnap', require: false
 gem 'country_select', '~> 8.0'
-gem "cssbundling-rails"
+gem 'cssbundling-rails'
 gem 'devise'
-gem "jsbundling-rails"
-gem "jbuilder"
-gem "pg", "~> 1.1"
-gem "puma", ">= 5.0"
-gem "redis", ">= 4.0.1"
+gem 'jbuilder'
+gem 'jsbundling-rails'
+gem 'pg', '~> 1.1'
+gem 'puma', '>= 5.0'
+gem 'redis', '>= 4.0.1'
 gem 'sassc-rails'
-gem "skylight"
-gem "stimulus-rails"
-gem "turbo-rails"
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem 'skylight'
+gem 'stimulus-rails'
+gem 'turbo-rails'
+gem 'tzinfo-data', platforms: %i[windows jruby]
 
 group :development, :test do
-  gem "debug", platforms: %i[ mri windows ]
+  gem 'debug', platforms: %i[mri windows]
 end
 
 group :development do
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem "web-console"
+  gem 'web-console'
 end
 
 group :development, :test do
-  gem "rspec-rails"
-  gem "factory_bot_rails"
-  gem "capybara"
-  gem "webdrivers"
+  gem 'capybara'
+  gem 'factory_bot_rails'
+  gem 'pry-byebug'
   gem 'pry-rails'
-  gem "pry-byebug"
+  gem 'rspec-rails'
+  gem 'simplecov'
+  gem 'webdrivers'
 end
 
 group :development, :staging do
-  gem "letter_opener_web"
+  gem 'letter_opener_web'
 end
 
 group :development, :staging, :test do
-  gem "faker"
+  gem 'faker'
 end
