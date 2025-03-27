@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-  </head>
-  <body>
-    <h4>
-      Congratulations <%= @application.first_name %> <%= @application.last_name %>! 
-    </h4>
-    <p>
-      <%= @lottery_won_mail_body %>
-    </p>
-    <p>
-      <%= link_to "Accept Offer", accept_offer_url %>
-    </p>
-    <p>
-      We look forward to you joining us at Bear River!
-    </p>
-  </body>
-</html>
-
+<p>
+  Congratulations <%= @application.first_name %> <%= @application.last_name %>!
+</p>
+<p>
+  <%= @lottery_won_mail_body %>
+</p>
+<p>
+  <%= link_to "Accept Offer", accept_offer_url %>
+</p>
+<p>We look forward to you joining us at Bear River!</p>
