@@ -74,7 +74,11 @@ Rails.application.configure do
   host = 'https://bearriver-staging.lsa.umich.edu/'
 # on staging use host = 'http://STAGING SERVER NAME'
   config.action_mailer.default_url_options = { host: host }
-
+  config.mailer_sender = Rails.application.credentials.dig(:devise, :mailer_sender)
+  config.action_mailer.default_options = {
+    from: config.mailer_sender,
+    reply_to: 'bearriver-questions@umich.edu'
+  }
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = true
 
