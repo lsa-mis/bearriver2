@@ -38,6 +38,11 @@ Rails.application.configure do
   config.active_storage.service = :test
 
   config.action_mailer.perform_caching = false
+  config.mailer_sender = Rails.application.credentials.dig(:devise, :mailer_sender)
+  config.action_mailer.default_options = {
+    from: config.mailer_sender,
+    reply_to: 'bearriver-questions@umich.edu'
+  }
 
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the
