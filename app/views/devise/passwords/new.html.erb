@@ -8,6 +8,19 @@
     <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
   </div>
 
+  <div class="mt-2">
+    <p class="mb-2">To ensure you receive the password reset email:</p>
+    <ul class="list-disc ml-4 space-y-2">
+      <li><strong>Add to Contacts</strong>: Save these addresses to your contacts list:
+        <ul class="list-disc ml-4 mt-1">
+          <li><span class="font-mono">bearriver-questions@umich.edu</span></li>
+          <li><span class="font-mono">no-reply@bearriver.lsa.umich.edu</span></li>
+        </ul>
+      </li>
+      <li><strong>Check Other Folders</strong>: If the email doesn't appear in your inbox, check spam, promotions, or other folders. If found, mark it as "Not Spam" or "Looks Safe"</li>
+    </ul>
+  </div>
+
   <div class="actions">
     <%= f.submit "Send me reset password instructions" %>
   </div>
