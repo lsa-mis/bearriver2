@@ -1,7 +1,7 @@
 ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
 
-  
+
   content title: proc { I18n.t("active_admin.dashboard") } do
 
     if (current_application_settings.opendate + current_application_settings.application_open_period.hours) < Time.current
@@ -27,9 +27,9 @@ ActiveAdmin.register_page "Dashboard" do
         panel "Recent Payments" do
           table_for Payment.current_conference_payments.sort.reverse.first(10) do
             # column("Name") { |a| link_to(a.user.current_conf_application.name, admin_payment_path(a)) if a.user.current_conf_application.present? }
-            column("Name") { |a| link_to(a.user.current_conf_application.name, admin_payment_path(a)) if a.user.current_conf_application.present? } 
+            column("Name") { |a| link_to(a.user.current_conf_application.name, admin_payment_path(a)) if a.user.current_conf_application.present? }
             column("eMail") { |a| link_to(a.user.email, admin_payment_path(a)) }
-            column("Type") { |a| link_to(a.account_type, admin_payment_path(a)) } 
+            column("Type") { |a| link_to(a.account_type, admin_payment_path(a)) }
             column("Amount") { |a| number_to_currency a.total_amount.to_f / 100 }
           end
         end
@@ -50,7 +50,7 @@ ActiveAdmin.register_page "Dashboard" do
           table_for Application.application_accepted.sort.reverse do
             column("Applicant") { |u| link_to(u.display_name, admin_application_path(u.id)) }
             column("Offer Date") { |od| od.offer_status_date }
-            column("Balance Due") { |a| number_to_currency a.balance_due }  
+            column("Balance Due") { |a| number_to_currency a.balance_due }
           end
         end
       end
@@ -67,6 +67,37 @@ ActiveAdmin.register_page "Dashboard" do
     div do
       span do
         link_to 'Admin Documentation', 'https://docs.google.com/document/d/1_FS9pUxsBbl7o8tDFY9-15XcwpqBMzsZFhGoJQLMwVg/edit?usp=sharing', target: '_blank', class: 'btn'
+      end
+    end
+    div do
+      h2 do
+        'These are the items to check when setting up a new conference:'
+      end
+      ul do
+        li do
+          span do
+            link_to 'Create new conference instance', 'https://bearriver.lsa.umich.edu/admin/application_settings'
+          end
+          span do
+            link_to 'See details', 'https://docs.google.com/document/d/1_FS9pUxsBbl7o8tDFY9-15XcwpqBMzsZFhGoJQLMwVg/edit?tab=t.0#heading=h.3eb37iahpogi',
+            target: '_blank'
+          end
+        end
+        li do
+          span do
+            link_to 'Check the pricing for lodging costs', 'https://bearriver.lsa.umich.edu/admin/lodgings'
+          end
+        end
+        li do
+          span do
+            link_to 'Check the pricing for the partner registration costs', 'https://bearriver.lsa.umich.edu/admin/partner_registrations'
+          end
+        end
+        li do
+          span do
+            link_to 'Check the workshops being offered', 'https://bearriver.lsa.umich.edu/admin/workshops'
+          end
+        end
       end
     end
   end # content
