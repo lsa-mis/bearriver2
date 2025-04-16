@@ -7,7 +7,8 @@
   <%= csp_meta_tag %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-</head>
+  <%= Sentry.get_trace_propagation_meta.html_safe %>
+  </head>
 <body>
   <%= render "layouts/header" %>
   <%= render "layouts/notifications" %>
