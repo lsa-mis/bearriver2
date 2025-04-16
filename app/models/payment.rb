@@ -23,8 +23,10 @@
 class Payment < ApplicationRecord
   validates :transaction_id, presence: true, uniqueness: true
   validates :total_amount, presence: true
+  validates :transaction_date, presence: true
   belongs_to :user
   validate :manual_payment_decimal
+  validate :valid_transaction_date
   before_save :check_manual_amount
 
   def self.ransackable_associations(auth_object = nil)
@@ -45,6 +47,16 @@ class Payment < ApplicationRecord
       elsif self.total_amount.to_f < 0
         errors.add(:total_amount, "must be positive")
       end
+    end
+  end
+
+  def valid_transaction_date
+    return if transaction_date.blank?
+
+    begin
+      Date.parse(transaction_date)
+    rescue ArgumentError
+      errors.add(:transaction_date, "must be a valid date")
     end
   end
 
