@@ -81,7 +81,10 @@ ActiveAdmin.register ApplicationSetting do
   form do |f|
     f.semantic_errors
     f.inputs "ApplicationSetting" do
-      f.input :active_application
+      f.input :active_application, input_html: {
+        class: 'active-application-toggle',
+        onclick: "return confirm('#{t('admin.application_settings.active_application.confirm_message')}')"
+      }
       f.input :contest_year, label: "Conference Year"
       f.input :opendate
       f.input :time_zone
@@ -109,4 +112,6 @@ ActiveAdmin.register ApplicationSetting do
     end
     f.actions
   end
+
+
 end
