@@ -73,24 +73,97 @@ RSpec.describe ApplicationSetting, type: :model do
       expect(application_setting).not_to be_valid
       expect(application_setting.errors[:application_open_period]).to include("must be an integer")
     end
+
+    describe 'active_application behavior' do
+      it 'allows creating multiple inactive application settings' do
+        create(:application_setting, active_application: false, contest_year: 2023)
+        second_setting = build(:application_setting, active_application: false, contest_year: 2024)
+        expect(second_setting).to be_valid
+      end
+
+      it 'allows updating an existing active setting' do
+        setting = create(:application_setting, active_application: true, contest_year: 2023)
+        setting.contest_year = 2024
+        expect(setting).to be_valid
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    describe 'deactivate_other_settings' do
+      it 'deactivates other settings when one is activated' do
+        # Create two inactive settings
+        setting1 = create(:application_setting, active_application: false, contest_year: 2023)
+        setting2 = create(:application_setting, active_application: false, contest_year: 2024)
+
+        # Activate the first setting
+        setting1.update!(active_application: true)
+
+        # Verify the first setting is active
+        expect(setting1.reload.active_application?).to be true
+
+        # Activate the second setting - this should deactivate the first
+        setting2.update!(active_application: true)
+
+        # Verify the first setting is now inactive and second is active
+        expect(setting1.reload.active_application?).to be false
+        expect(setting2.reload.active_application?).to be true
+      end
+
+      it 'deactivates other settings when creating a new active setting' do
+        # Create an existing active setting
+        existing_setting = create(:application_setting, active_application: true, contest_year: 2023)
+
+        # Create a new active setting
+        new_setting = create(:application_setting, active_application: true, contest_year: 2024)
+
+        # Verify the existing setting is now inactive and new setting is active
+        expect(existing_setting.reload.active_application?).to be false
+        expect(new_setting.reload.active_application?).to be true
+      end
+
+      it 'does not deactivate other settings when setting is deactivated' do
+        # Create one active setting
+        setting1 = create(:application_setting, active_application: true, contest_year: 2023)
+
+        # Create one inactive setting
+        setting2 = create(:application_setting, active_application: false, contest_year: 2024)
+
+        # Deactivate the first setting
+        setting1.update!(active_application: false)
+
+        # Verify the second setting remains inactive
+        expect(setting2.reload.active_application?).to be false
+      end
+    end
   end
 
   describe 'scopes' do
     describe '.get_current_app_settings' do
       it 'returns the active application setting' do
-        # We need to stub the max method since it's not a standard ActiveRecord method
-        active_relation = double("ActiveRelation")
-        allow(ApplicationSetting).to receive(:where).with("active_application = ?", true).and_return(active_relation)
+        # Create an active setting
+        active_setting = create(:application_setting, active_application: true, contest_year: 2023)
 
-        # Create a test setting
-        setting = create(:application_setting, active_application: true)
-        allow(active_relation).to receive(:max).and_return(setting)
+        # Create an inactive setting
+        create(:application_setting, active_application: false, contest_year: 2024)
 
         # Test the scope
         result = ApplicationSetting.get_current_app_settings
 
         # Verify the result
-        expect(result).to eq(setting)
+        expect(result).to eq(active_setting)
+      end
+
+      it 'returns nil when no active setting exists' do
+        # Create only inactive settings
+        create(:application_setting, active_application: false, contest_year: 2023)
+        create(:application_setting, active_application: false, contest_year: 2024)
+
+        # Test the scope
+        result = ApplicationSetting.get_current_app_settings
+
+        # Verify the result
+        expect(result).to be_nil
       end
     end
 
@@ -99,14 +172,22 @@ RSpec.describe ApplicationSetting, type: :model do
         # Create a test setting
         setting = create(:application_setting, contest_year: 2023, active_application: true)
 
-        # Stub the get_current_app_settings method
-        allow(ApplicationSetting).to receive(:get_current_app_settings).and_return(setting)
-
         # Test the scope
         result = ApplicationSetting.get_current_app_year
 
         # Verify the result
         expect(result).to eq(2023)
+      end
+
+      it 'returns nil when no active setting exists' do
+        # Create only inactive settings
+        create(:application_setting, active_application: false, contest_year: 2023)
+
+        # Test the scope
+        result = ApplicationSetting.get_current_app_year
+
+        # Verify the result
+        expect(result).to be_nil
       end
     end
   end

@@ -81,7 +81,7 @@ class ApplicationSettingsController < ApplicationController
           if idx < current_application_settings.lottery_buffer
             app.update(lottery_position: idx, offer_status: "registration_offered", offer_status_date: Time.current, result_email_sent: true)
             LotteryMailer.with(application: app).won_lottery_email.deliver_now
-          else 
+          else
             app.update(lottery_position: idx, offer_status: "not_offered", offer_status_date: Time.current, result_email_sent: true)
             LotteryMailer.with(application: app).lost_lottery_email.deliver_now
           end
@@ -91,7 +91,7 @@ class ApplicationSettingsController < ApplicationController
       else
         redirect_to admin_root_path, alert: 'The lottery has already been run'
       end
-    end 
+    end
   end
 
   def send_pre_lottery_selected_emails
@@ -111,7 +111,7 @@ class ApplicationSettingsController < ApplicationController
   end
 
   def duplicate_conference_settings
-    appsetnew = ApplicationSetting.last.dup.tap { |newappset| newappset.contest_year = newappset.contest_year+1; newappset.active_application = false; newappset.lottery_result = nil; newappset.lottery_run_date = nil }
+    appsetnew = ApplicationSetting.last.dup.tap { |newappset| newappset.contest_year = newappset.contest_year+1; newappset.active_application = false; newappset.lottery_result = nil; newappset.lottery_run_date = nil; newappset.allow_payments = false }
     appsetnew.save!
     redirect_to admin_application_settings_path
   end
