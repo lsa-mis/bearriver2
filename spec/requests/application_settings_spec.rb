@@ -101,11 +101,20 @@ RSpec.describe "ApplicationSettings", type: :request do
       end
 
       context "with invalid parameters" do
-        it "renders a response with 422 status (i.e. to display the 'new' template)" do
+        it "renders a turbo stream response with 200 status to display the form with errors" do
           sign_in admin_user
           post application_settings_path, params: {
             application_setting: { contest_year: nil } # Invalid params
-          }, as: :turbo_stream # Add this to handle Turbo responses
+          }, as: :turbo_stream
+          expect(response).to have_http_status(:ok)
+          expect(response.content_type).to include('text/vnd.turbo-stream.html')
+        end
+
+        it "renders a JSON response with 422 status when requested" do
+          sign_in admin_user
+          post application_settings_path, params: {
+            application_setting: { contest_year: nil } # Invalid params
+          }, as: :json
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
@@ -142,12 +151,22 @@ RSpec.describe "ApplicationSettings", type: :request do
       end
 
       context "with invalid parameters" do
-        it "renders a response with 422 status (i.e. to display the 'edit' template)" do
+        it "renders a turbo stream response with 200 status to display the form with errors" do
           sign_in admin_user
           application_setting = ApplicationSetting.create! valid_attributes
           patch application_setting_path(application_setting), params: {
             application_setting: { contest_year: nil } # Invalid params
-          }, as: :turbo_stream # Add this to handle Turbo responses
+          }, as: :turbo_stream
+          expect(response).to have_http_status(:ok)
+          expect(response.content_type).to include('text/vnd.turbo-stream.html')
+        end
+
+        it "renders a JSON response with 422 status when requested" do
+          sign_in admin_user
+          application_setting = ApplicationSetting.create! valid_attributes
+          patch application_setting_path(application_setting), params: {
+            application_setting: { contest_year: nil } # Invalid params
+          }, as: :json
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
