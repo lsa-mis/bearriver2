@@ -41,7 +41,28 @@ class ApplicationSetting < ApplicationRecord
   validates :lottery_buffer, presence: true, numericality: true
   validates :application_open_period, presence: true, numericality: { only_integer: true }
 
-  scope :get_current_app_settings, -> { where("active_application = ?", true).max }
-  scope :get_current_app_year, -> { get_current_app_settings.contest_year }
+  # Deactivate other settings before saving when this one is being activated
+  before_save :deactivate_other_settings, if: :activating_application?
 
+  scope :active, -> { where(active_application: true) }
+
+  def self.get_current_app_settings
+    active.first
+  end
+
+  def self.get_current_app_year
+    get_current_app_settings&.contest_year
+  end
+
+  private
+
+  def activating_application?
+    active_application? && (active_application_changed? || new_record?)
+  end
+
+  def deactivate_other_settings
+    ApplicationSetting.where(active_application: true)
+                     .where.not(id: id)
+                     .update_all(active_application: false)
+  end
 end
