@@ -4,7 +4,7 @@ FactoryBot.define do
     transaction_type { "Credit" }
     transaction_status { "settled" }
     total_amount { "10000" } # $100.00 in cents
-    transaction_date { Time.current.strftime("%m/%d/%Y") }
+    transaction_date { Time.current.strftime("%Y%m%d%H%M") }
     account_type { "registration" }
     result_code { "0" }
     result_message { "Approved" }
