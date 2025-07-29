@@ -26,9 +26,7 @@ ActiveAdmin.register_page "Dashboard" do
       column do
         panel "Recent Payments" do
           table_for Payment.current_conference_payments.sort.reverse.first(10) do
-            # column("Name") { |a| link_to(a.user.current_conf_application.name, admin_payment_path(a)) if a.user.current_conf_application.present? }
-            column("Name") { |a| link_to(a.user.current_conf_application.name, admin_payment_path(a)) if a.user.current_conf_application.present? }
-            column("eMail") { |a| link_to(a.user.email, admin_payment_path(a)) }
+            column("Name") { |a| link_to(a.user.current_conf_application.display_name, admin_application_path(a.user.current_conf_application)) if a.user.current_conf_application.present? }
             column("Type") { |a| link_to(a.account_type, admin_payment_path(a)) }
             column("Amount") { |a| number_to_currency a.total_amount.to_f / 100 }
           end
