@@ -345,13 +345,8 @@ RSpec.describe "ApplicationSettings", type: :request do
       end
 
       it "updates offer status for pre-offer applications" do
-                        # The lottery runs with empty applications, so send_pre_lottery_selected_emails should still be called
-        puts "Current app setting contest_year: #{ApplicationSetting.get_current_app_settings.contest_year}"
-        puts "Pre-offer app1 conf_year: #{pre_offer_app1.reload.conf_year}"
-        puts "Pre-offer app2 conf_year: #{pre_offer_app2.reload.conf_year}"
-        puts "Pre-offer apps before lottery: #{Application.active_conference_applications.where(offer_status: 'special_offer_application', result_email_sent: false).count}"
+        # The lottery runs with empty applications, so send_pre_lottery_selected_emails should still be called
         post run_lotto_path
-        puts "Pre-offer apps after lottery: #{Application.active_conference_applications.where(offer_status: 'special_offer_application', result_email_sent: false).count}"
 
         expect(pre_offer_app1.reload.offer_status).to eq("registration_offered")
         expect(pre_offer_app2.reload.offer_status).to eq("registration_offered")
