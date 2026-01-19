@@ -11,8 +11,7 @@
 
 <div class="card text-center">
   <div class="card-header">
-    The window for applying to attend the Bear River Conference will be open for
-    <%= current_application_settings.application_open_period %> hours
+    The window for applying to attend the Bear River Conference will be open:
   </div>
   <div class="card-body">
     Starting:
@@ -39,7 +38,7 @@
     <% else %>
       <h6>
         You are required to have an account to apply for the conference.<br>
-        <%= link_to "Login", new_user_session_path, class: 'btn btn-sm btn-info' %> or <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-sm btn-primary' %>
+        <%= link_to "Login", new_user_session_path, class: 'mt-2 btn btn-sm btn-info' %> or <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-sm btn-primary' %>
       </h6>
     <% end %>
   </div>
