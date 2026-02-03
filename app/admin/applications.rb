@@ -71,7 +71,6 @@ ActiveAdmin.register Application do
 
   show do
 
-    users_current_payments = Payment.where(user_id: application.user_id, conf_year: application.conf_year) # Payment.current_conference_payments.where(user_id: application.user_id)
     ttl_paid = Payment.where(user_id: application.user_id, conf_year: application.conf_year, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
     cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
     cost_partner = application.partner_registration.cost.to_f
@@ -176,7 +175,6 @@ ActiveAdmin.register Application do
     column :lottery_position
     column :offer_status
     column "Balance Due" do |application|
-      users_current_payments = Payment.current_conference_payments.where(user_id: application.user_id)
       ttl_paid = Payment.current_conference_payments.where(user_id: application.user_id, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
       cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
       cost_partner = application.partner_registration.cost.to_f
