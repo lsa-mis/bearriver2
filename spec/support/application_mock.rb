@@ -1,5 +1,8 @@
 RSpec.configure do |config|
   config.before(:each, type: :request) do
+    # Skip mock when testing admin applications index (needs real ActiveRecord chain)
+    next if RSpec.current_example.metadata[:no_application_mock]
+
     # Create a mock for Application.active_conference_applications
     mock_active_applications = double("ActiveApplications")
 
