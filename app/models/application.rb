@@ -87,7 +87,7 @@ class Application < ApplicationRecord
   end
 
   def lodging_cost
-    Lodging.find_by(description: self.lodging_selection).cost.to_f 
+    Lodging.find_by(description: self.lodging_selection).cost.to_f
   end
 
   def partner_registration_cost
@@ -100,6 +100,18 @@ class Application < ApplicationRecord
 
   def balance_due
     total_cost - total_user_has_paid
+  end
+
+  # Balance due in dollars using preloaded data (avoids N+1). Payments total is in cents.
+  # Returns a rounded float suitable for number_to_currency.
+  def balance_due_with_batch(payments_totals:, lodgings_by_desc:)
+    key = [user_id.to_i, conf_year.to_i]
+    ttl_paid_cents = (payments_totals[key] || 0).to_f
+    ttl_paid_dollars = ttl_paid_cents / 100
+    cost_lodging = (lodgings_by_desc[lodging_selection]&.cost || 0).to_f
+    cost_partner = (partner_registration&.cost || 0).to_f
+    total_cost = cost_lodging + cost_partner
+    (total_cost - ttl_paid_dollars).round(2)
   end
 
   def first_workshop_instructor

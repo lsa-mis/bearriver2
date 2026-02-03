@@ -42,10 +42,12 @@ ActiveAdmin.register Application do
     private
 
     def load_index_batch_data
-      @payments_total_by_user_and_year = Payment
+      raw = Payment
         .where(transaction_status: '1')
         .group(:user_id, :conf_year)
         .sum(Arel.sql("total_amount::numeric"))
+      # Normalize keys to [Integer, Integer] so lookup matches regardless of DB return type
+      @payments_total_by_user_and_year = raw.transform_keys { |k| [k[0].to_i, k[1].to_i] }
       @lodgings_by_description = Lodging.all.index_by(&:description)
     end
   end
@@ -57,12 +59,7 @@ ActiveAdmin.register Application do
     column "Balance Due" do |application|
       payments_totals = @payments_total_by_user_and_year || {}
       lodgings_by_desc = @lodgings_by_description || {}
-      ttl_paid = (payments_totals[[application.user_id, application.conf_year]] || 0).to_f / 100
-      cost_lodging = (lodgings_by_desc[application.lodging_selection]&.cost || 0).to_f
-      cost_partner = application.partner_registration&.cost.to_f
-      total_cost = cost_lodging + cost_partner
-      balance_due = total_cost - ttl_paid
-      number_to_currency(balance_due)
+      number_to_currency(application.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc))
     end
     column :first_name
     column :last_name

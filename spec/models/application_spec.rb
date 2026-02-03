@@ -191,6 +191,40 @@ RSpec.describe Application, type: :model do
       end
     end
 
+    describe '#balance_due_with_batch' do
+      it 'returns balance as total cost minus paid (payments in cents), rounded to 2 decimals' do
+        app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Standard')
+        allow(app).to receive(:partner_registration).and_return(double('PartnerRegistration', cost: 50.0))
+        payments_totals = { [100, 2026] => 10_000 }  # $100 in cents
+        lodgings_by_desc = { 'Standard' => double('Lodging', cost: 100.0) }
+        expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(50.0)
+      end
+
+      it 'uses 0 for paid when key is missing in payments_totals' do
+        app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Standard')
+        allow(app).to receive(:partner_registration).and_return(double('PartnerRegistration', cost: 50.0))
+        payments_totals = {}
+        lodgings_by_desc = { 'Standard' => double('Lodging', cost: 100.0) }
+        expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(150.0)
+      end
+
+      it 'returns negative balance when paid exceeds total cost (overpayment)' do
+        app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Standard')
+        allow(app).to receive(:partner_registration).and_return(double('PartnerRegistration', cost: 50.0))
+        payments_totals = { [100, 2026] => 20_000 }  # $200 in cents
+        lodgings_by_desc = { 'Standard' => double('Lodging', cost: 100.0) }
+        expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(-50.0)
+      end
+
+      it 'uses 0 for missing lodging or partner and rounds to 2 decimals' do
+        app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Unknown')
+        allow(app).to receive(:partner_registration).and_return(nil)
+        payments_totals = { [100, 2026] => 0 }
+        lodgings_by_desc = {}
+        expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(0.0)
+      end
+    end
+
     describe '#first_workshop_instructor' do
       it 'returns the instructor of the first workshop' do
         workshop = double("Workshop", instructor: "John Smith")
