@@ -28,18 +28,34 @@ ActiveAdmin.register Application do
   filter :subscription, as: :select
   filter :conf_year, as: :select
 
+  controller do
+    before_action :load_index_batch_data, only: [:index]
+
+    def scoped_collection
+      end_of_association_chain.includes(:partner_registration)
+    end
+
+    private
+
+    def load_index_batch_data
+      raw = Payment
+        .where(transaction_status: '1')
+        .group(:user_id, :conf_year)
+        .sum(Arel.sql("total_amount::numeric"))
+      # Normalize keys to [Integer, Integer] so lookup matches regardless of DB return type
+      @payments_total_by_user_and_year = raw.transform_keys { |k| [k[0].to_i, k[1].to_i] }
+      @lodgings_by_description = Lodging.all.index_by(&:description)
+    end
+  end
+
   index do
     selectable_column
     actions
     column :offer_status
     column "Balance Due" do |application|
-      users_current_payments = Payment.where(user_id: application.user_id, conf_year: application.conf_year)
-      ttl_paid = Payment.where(user_id: application.user_id, conf_year: application.conf_year, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
-      cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
-      cost_partner = application.partner_registration.cost.to_f
-      total_cost = cost_lodging + cost_partner
-      balance_due = total_cost - ttl_paid
-      number_to_currency(balance_due)
+      payments_totals = controller.instance_variable_get(:@payments_total_by_user_and_year) || {}
+      lodgings_by_desc = controller.instance_variable_get(:@lodgings_by_description) || {}
+      number_to_currency(application.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc))
     end
     column :first_name
     column :last_name
@@ -49,16 +65,18 @@ ActiveAdmin.register Application do
     column :workshop_selection3
     column :lodging_selection
     column "partner_registration_id" do |application|
-      application.partner_registration.display_name
+      application.partner_registration&.display_name
     end
     column :birth_year
   end
 
   show do
 
-    users_current_payments = Payment.where(user_id: application.user_id, conf_year: application.conf_year) # Payment.current_conference_payments.where(user_id: application.user_id)
     ttl_paid = Payment.where(user_id: application.user_id, conf_year: application.conf_year, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
     cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
+    if application.partner_registration.nil?
+      raise "Partner registration is missing for this application (id=#{application.id}); cannot compute balance. Fix data and retry."
+    end
     cost_partner = application.partner_registration.cost.to_f
     total_cost = cost_lodging + cost_partner
     balance_due = total_cost - ttl_paid
@@ -66,14 +84,14 @@ ActiveAdmin.register Application do
       table_for application.user.payments.where(conf_year: application.conf_year) do #application.user.payments.current_conference_payments
         column(:id) { |aid| link_to(aid.id, admin_payment_path(aid.id)) }
         column(:account_type) { |atype| atype.account_type.titleize }
-        column(:transaction_type) 
+        column(:transaction_type)
         column(:transaction_date) {|td| Date.parse(td.transaction_date) }
         column(:total_amount) { |ta|  number_to_currency(ta.total_amount.to_f / 100) }
       end
       text_node link_to("[Add Manual Payment]", new_admin_payment_path(:user_id => application))
     end
 
-    
+
     attributes_table do
       row :user
       row :conf_year
@@ -100,7 +118,7 @@ ActiveAdmin.register Application do
       row :workshop_selection3
       row :lodging_selection
       row "partner_registration_id" do |app|
-        app.partner_registration.display_name
+        app.partner_registration&.display_name
       end
       row :partner_first_name
       row :partner_last_name
@@ -161,7 +179,9 @@ ActiveAdmin.register Application do
     column :lottery_position
     column :offer_status
     column "Balance Due" do |application|
-      users_current_payments = Payment.current_conference_payments.where(user_id: application.user_id)
+      if application.partner_registration.nil?
+        raise "Application #{application.id}: partner_registration is missing; cannot compute balance for CSV export."
+      end
       ttl_paid = Payment.current_conference_payments.where(user_id: application.user_id, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
       cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
       cost_partner = application.partner_registration.cost.to_f
@@ -178,7 +198,7 @@ ActiveAdmin.register Application do
     column :workshop_selection3
     column :lodging_selection
     column "partner_registration_id" do |app|
-      app.partner_registration.display_name
+      app.partner_registration&.display_name
     end
     column :birth_year
     column :street

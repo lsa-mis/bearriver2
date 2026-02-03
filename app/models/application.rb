@@ -87,7 +87,7 @@ class Application < ApplicationRecord
   end
 
   def lodging_cost
-    Lodging.find_by(description: self.lodging_selection).cost.to_f 
+    Lodging.find_by(description: self.lodging_selection).cost.to_f
   end
 
   def partner_registration_cost
@@ -100,6 +100,22 @@ class Application < ApplicationRecord
 
   def balance_due
     total_cost - total_user_has_paid
+  end
+
+  # Balance due in dollars using preloaded data (avoids N+1). Payments total is in cents.
+  # Returns a rounded float suitable for number_to_currency.
+  # Raises if partner_registration or lodging is missing (data integrity: do not treat missing as $0).
+  def balance_due_with_batch(payments_totals:, lodgings_by_desc:)
+    raise "Application #{id}: partner_registration is missing; cannot compute balance." if partner_registration.nil?
+    lodging = lodgings_by_desc[lodging_selection]
+    raise "Application #{id}: lodging not found for selection '#{lodging_selection}'; cannot compute balance." if lodging.nil?
+    key = [user_id.to_i, conf_year.to_i]
+    ttl_paid_cents = (payments_totals[key] || 0).to_f
+    ttl_paid_dollars = ttl_paid_cents / 100
+    cost_lodging = lodging.cost.to_f
+    cost_partner = partner_registration.cost.to_f
+    total_cost = cost_lodging + cost_partner
+    (total_cost - ttl_paid_dollars).round(2)
   end
 
   def first_workshop_instructor

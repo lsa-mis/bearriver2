@@ -45,10 +45,14 @@ ActiveAdmin.register_page "Dashboard" do
       end
       column do
         panel "#{ApplicationSetting.get_current_app_year} Applicants who accepted their offer (#{Application.application_accepted.count})" do
-          table_for Application.application_accepted.sort.reverse do
+          applications = Application.application_accepted.includes(:partner_registration).sort.reverse
+          raw_payments = Payment.where(transaction_status: '1').group(:user_id, :conf_year).sum(Arel.sql("total_amount::numeric"))
+          payments_totals = raw_payments.transform_keys { |k| [k[0].to_i, k[1].to_i] }
+          lodgings_by_desc = Lodging.all.index_by(&:description)
+          table_for applications do
             column("Applicant") { |u| link_to(u.display_name, admin_application_path(u.id)) }
             column("Offer Date") { |od| od.offer_status_date }
-            column("Balance Due") { |a| number_to_currency a.balance_due }
+            column("Balance Due") { |a| number_to_currency(a.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)) }
           end
         end
       end
