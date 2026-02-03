@@ -29,18 +29,24 @@ ActiveAdmin.register Application do
   filter :conf_year, as: :select
 
   controller do
+    before_action :load_index_batch_data, only: [:index]
+
     def scoped_collection
       end_of_association_chain.includes(:partner_registration)
     end
 
     def index
-      # Batch-load data to avoid N+1 in index columns
+      super
+    end
+
+    private
+
+    def load_index_batch_data
       @payments_total_by_user_and_year = Payment
         .where(transaction_status: '1')
         .group(:user_id, :conf_year)
         .sum(Arel.sql("total_amount::numeric"))
       @lodgings_by_description = Lodging.all.index_by(&:description)
-      super
     end
   end
 
@@ -49,8 +55,10 @@ ActiveAdmin.register Application do
     actions
     column :offer_status
     column "Balance Due" do |application|
-      ttl_paid = (@payments_total_by_user_and_year[[application.user_id, application.conf_year]] || 0).to_f / 100
-      cost_lodging = (@lodgings_by_description[application.lodging_selection]&.cost || 0).to_f
+      payments_totals = @payments_total_by_user_and_year || {}
+      lodgings_by_desc = @lodgings_by_description || {}
+      ttl_paid = (payments_totals[[application.user_id, application.conf_year]] || 0).to_f / 100
+      cost_lodging = (lodgings_by_desc[application.lodging_selection]&.cost || 0).to_f
       cost_partner = application.partner_registration&.cost.to_f
       total_cost = cost_lodging + cost_partner
       balance_due = total_cost - ttl_paid
