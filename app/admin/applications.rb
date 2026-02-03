@@ -35,10 +35,6 @@ ActiveAdmin.register Application do
       end_of_association_chain.includes(:partner_registration)
     end
 
-    def index
-      super
-    end
-
     private
 
     def load_index_batch_data
