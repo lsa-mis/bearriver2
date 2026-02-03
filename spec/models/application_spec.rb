@@ -216,12 +216,13 @@ RSpec.describe Application, type: :model do
         expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(-50.0)
       end
 
-      it 'uses 0 for missing lodging or partner and rounds to 2 decimals' do
+      it 'raises when partner_registration is missing (do not treat as $0)' do
         app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Unknown')
         allow(app).to receive(:partner_registration).and_return(nil)
         payments_totals = { [100, 2026] => 0 }
         lodgings_by_desc = {}
-        expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(0.0)
+        expect { app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc) }
+          .to raise_error(/partner_registration is missing/)
       end
     end
 

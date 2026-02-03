@@ -78,6 +78,9 @@ ActiveAdmin.register Application do
 
     ttl_paid = Payment.where(user_id: application.user_id, conf_year: application.conf_year, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
     cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
+    if application.partner_registration.nil?
+      raise "Partner registration is missing for this application (id=#{application.id}); cannot compute balance. Fix data and retry."
+    end
     cost_partner = application.partner_registration.cost.to_f
     total_cost = cost_lodging + cost_partner
     balance_due = total_cost - ttl_paid
@@ -119,7 +122,7 @@ ActiveAdmin.register Application do
       row :workshop_selection3
       row :lodging_selection
       row "partner_registration_id" do |app|
-        app.partner_registration.display_name
+        app.partner_registration&.display_name
       end
       row :partner_first_name
       row :partner_last_name
@@ -180,6 +183,9 @@ ActiveAdmin.register Application do
     column :lottery_position
     column :offer_status
     column "Balance Due" do |application|
+      if application.partner_registration.nil?
+        raise "Application #{application.id}: partner_registration is missing; cannot compute balance for CSV export."
+      end
       ttl_paid = Payment.current_conference_payments.where(user_id: application.user_id, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
       cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
       cost_partner = application.partner_registration.cost.to_f
@@ -196,7 +202,7 @@ ActiveAdmin.register Application do
     column :workshop_selection3
     column :lodging_selection
     column "partner_registration_id" do |app|
-      app.partner_registration.display_name
+      app.partner_registration&.display_name
     end
     column :birth_year
     column :street
