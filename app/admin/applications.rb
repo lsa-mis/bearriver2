@@ -57,8 +57,8 @@ ActiveAdmin.register Application do
     actions
     column :offer_status
     column "Balance Due" do |application|
-      payments_totals = @payments_total_by_user_and_year || {}
-      lodgings_by_desc = @lodgings_by_description || {}
+      payments_totals = controller.instance_variable_get(:@payments_total_by_user_and_year) || {}
+      lodgings_by_desc = controller.instance_variable_get(:@lodgings_by_description) || {}
       number_to_currency(application.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc))
     end
     column :first_name
