@@ -85,7 +85,7 @@ Rails.application.configure do
   # Set the default sender email (used by ActionMailer)
   config.action_mailer.default_options = {
     from: Rails.application.credentials.dig(:devise, :mailer_sender),
-    reply_to: 'bearriver-questions@umich.edu'
+    reply_to: "bearriver-questions@umich.edu"
   }
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
