@@ -83,23 +83,26 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = true
   # Set the default sender email (used by ActionMailer)
-  config.mailer_sender = Rails.application.credentials.dig(:devise, :mailer_sender)
   config.action_mailer.default_options = {
-    from: config.mailer_sender,
-    reply_to: 'bearriver-questions@umich.edu'
+    from: Rails.application.credentials.dig(:devise, :mailer_sender),
+    reply_to: "bearriver-questions@umich.edu"
   }
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
-  host = 'https://bearriver.lsa.umich.edu/'
-  config.action_mailer.default_url_options = { host: host }
-  ActionMailer::Base.smtp_settings = {
-    :address        => 'smtp.sendgrid.net',
-    :port           => '587',
-    :authentication => :plain,
-    :user_name      => 'apikey',
-    :password       => ENV['SENDGRID_API_KEY'],
-    :domain         => 'bearriver.lsa.umich.edu',
-    :enable_starttls_auto => true
+
+  config.action_mailer.default_url_options = {
+    host: "bearriver.lsa.umich.edu",
+    protocol: "https"
+  }
+
+  config.action_mailer.smtp_settings = {
+    address: "smtp.sendgrid.net",
+    port: 587,
+    authentication: :plain,
+    user_name: "apikey",
+    password: ENV.fetch("SENDGRID_API_KEY"),
+    domain: "bearriver.lsa.umich.edu",
+    enable_starttls_auto: true
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
