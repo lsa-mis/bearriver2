@@ -18,13 +18,13 @@ ActiveAdmin.register Application do
   end
 
   filter :user_email, as: :select,
-    collection: -> { User.joins(:payments).distinct.order(:email).pluck(:email) },
+    collection: -> { User.joins(:applications).distinct.order(:email).pluck(:email) },
     label: "User Email"
   filter :last_name, as: :select,
-    collection: -> { Application.joins(user: :payments).distinct.order(:last_name).pluck(:last_name) },
+    collection: -> { Application.distinct.order(:last_name).pluck(:last_name) },
     label: "Last Name"
   filter :first_name, as: :select,
-    collection: -> { Application.joins(user: :payments).distinct.order(:first_name).pluck(:first_name) },
+    collection: -> { Application.distinct.order(:first_name).pluck(:first_name) },
     label: "First Name"
   filter :offer_status, as: :select
   filter :result_email_sent, as: :select
