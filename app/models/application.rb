@@ -67,7 +67,12 @@ class Application < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["accessibility_requirements", "birth_year", "city", "conf_year", "country", "created_at", "email", "email_confirmation", "first_name", "food_restrictions", "gender", "how_did_you_hear", "id", "id_value", "last_name", "lodging_selection", "lottery_position", "offer_status", "offer_status_date", "partner_first_name", "partner_last_name", "partner_registration_id", "partner_registration_selection", "phone", "result_email_sent", "special_lodging_request", "state", "street", "street2", "subscription", "updated_at", "user_id", "workshop_selection1", "workshop_selection2", "workshop_selection3", "zip"]
+    ["accessibility_requirements", "applications_conf_year", "birth_year", "city", "conf_year", "country", "created_at", "email", "email_confirmation", "first_name", "food_restrictions", "gender", "how_did_you_hear", "id", "id_value", "last_name", "lodging_selection", "lottery_position", "offer_status", "offer_status_date", "partner_first_name", "partner_last_name", "partner_registration_id", "partner_registration_selection", "phone", "result_email_sent", "special_lodging_request", "state", "street", "street2", "subscription", "updated_at", "user_id", "workshop_selection1", "workshop_selection2", "workshop_selection3", "zip"]
+  end
+
+  # Disambiguate conf_year when joining associated tables in Ransack searches.
+  ransacker :applications_conf_year do |parent|
+    parent.table[:conf_year]
   end
 
   HOW_DID_YOU_HEAR = ["---", "Word of Mouth", "Magazine Advertisement", "Online Advertisement", "Newspaper Advertisement", "Other"]

@@ -1,5 +1,5 @@
 ActiveAdmin.register Application do
-  menu parent: "User Mangement", priority: 1
+  menu parent: "User Management", priority: 1
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
@@ -34,7 +34,7 @@ ActiveAdmin.register Application do
   filter :lodging_selection, as: :select, collection: -> { Lodging.all.map { |lapp| [lapp.description, lapp.description]}.sort }
   filter :partner_registration_id, as: :select, collection: -> { PartnerRegistration.all.map { |papp| [papp.description, papp.id]}.sort }
   filter :subscription, as: :select
-  filter :conf_year, as: :select
+  filter :applications_conf_year, as: :select, label: "Conf Year"
 
   controller do
     before_action :load_index_batch_data, only: [:index]
