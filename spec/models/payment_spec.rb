@@ -79,7 +79,7 @@ RSpec.describe Payment, type: :model do
       it 'returns the correct attributes' do
         expected_attributes = [
           "account_type", "conf_year", "created_at", "id", "id_value",
-          "payer_identity", "result_code", "result_message", "timestamp",
+          "payer_identity", "payments_conf_year", "result_code", "result_message", "timestamp",
           "total_amount", "transaction_date", "transaction_hash",
           "transaction_id", "transaction_status", "transaction_type",
           "updated_at", "user_account", "user_id"

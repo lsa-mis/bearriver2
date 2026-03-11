@@ -10,10 +10,21 @@ ActiveAdmin.register Payment do
   scope :current_conference_payments
   scope :all
 
-  filter :user_id, as: :select,
-    collection: -> { Application.all.order(:last_name).map { |app| [app.display_name, app.user_id] } },
-    label: "Name"
-  filter :conf_year, as: :select
+  # filter :user_id, as: :select,
+  #   collection: -> { Application.all.order(:last_name).map { |app| [app.display_name, app.user_id] } },
+  #   label: "Name"
+  filter :payer_identity, as: :select,
+    collection: -> { Payment.order(:payer_identity).distinct.pluck(:payer_identity) },
+    label: "User Email"
+  filter :user_applications_last_name, as: :select,
+    collection: -> { Application.joins(user: :payments).distinct.order(:last_name).pluck(:last_name) },
+    label: "Last Name"
+  filter :user_applications_first_name, as: :select,
+    collection: -> { Application.joins(user: :payments).distinct.order(:first_name).pluck(:first_name) },
+    label: "First Name"
+  filter :payments_conf_year, as: :select,
+    collection: -> { Payment.order(:conf_year).distinct.pluck(:conf_year) },
+    label: "Payment Conf Year"
 
   index do
     selectable_column
