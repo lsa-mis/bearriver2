@@ -18,6 +18,15 @@ ActiveAdmin.register Application do
   end
 
   filter :user_id, label: "User", as: :select, collection: -> { Application.all.map { |app| [app.display_name, app.user_id]}.uniq.sort}
+  filter :user_email, as: :select,
+    collection: -> { User.order(:email).pluck(:email) },
+    label: "User Email"
+  filter :last_name, as: :select,
+    collection: -> { Application.order(:last_name).distinct.pluck(:last_name) },
+    label: "Last Name"
+  filter :first_name, as: :select,
+    collection: -> { Application.order(:first_name).distinct.pluck(:first_name) },
+    label: "First Name"
   filter :offer_status, as: :select
   filter :result_email_sent, as: :select
   filter :workshop_selection1, label: "workshop_selection1", as: :select, collection: -> { Workshop.all.map { |mapp| [mapp.instructor, mapp.instructor]}.sort }
