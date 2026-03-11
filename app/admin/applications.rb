@@ -17,7 +17,6 @@ ActiveAdmin.register Application do
     button_to "Send Offer", send_offer_path(application) if application.offer_status == "not_offered"
   end
 
-  filter :user_id, label: "User", as: :select, collection: -> { Application.all.map { |app| [app.display_name, app.user_id]}.uniq.sort}
   filter :user_email, as: :select,
     collection: -> { User.order(:email).pluck(:email) },
     label: "User Email"
