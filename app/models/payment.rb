@@ -44,7 +44,7 @@ class Payment < ApplicationRecord
   end
 
 
-  scope :current_conference_payments, -> { where('conf_year = ? ', ApplicationSetting.get_current_app_year) }
+  scope :current_conference_payments, -> { where(arel_table[:conf_year].eq(ApplicationSetting.get_current_app_year)) }
 
   def manual_payment_decimal
     if self.transaction_type == "ManuallyEntered"
