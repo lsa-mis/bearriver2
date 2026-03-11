@@ -298,7 +298,7 @@ RSpec.describe Application, type: :model do
     describe '.ransackable_attributes' do
       it 'returns the correct attributes' do
         expected_attributes = [
-          "accessibility_requirements", "birth_year", "city", "conf_year", "country",
+          "accessibility_requirements", "applications_conf_year", "birth_year", "city", "conf_year", "country",
           "created_at", "email", "email_confirmation", "first_name", "food_restrictions",
           "gender", "how_did_you_hear", "id", "id_value", "last_name", "lodging_selection",
           "lottery_position", "offer_status", "offer_status_date", "partner_first_name",
