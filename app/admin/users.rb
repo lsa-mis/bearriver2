@@ -1,5 +1,5 @@
 ActiveAdmin.register User do
-  menu parent: "User Mangement", priority: 3
+  menu parent: "User Management", priority: 3
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
