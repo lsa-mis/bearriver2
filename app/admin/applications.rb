@@ -17,7 +17,15 @@ ActiveAdmin.register Application do
     button_to "Send Offer", send_offer_path(application) if application.offer_status == "not_offered"
   end
 
-  filter :user_id, label: "User", as: :select, collection: -> { Application.all.map { |app| [app.display_name, app.user_id]}.uniq.sort}
+  filter :user_email, as: :select,
+    collection: -> { User.joins(:payments).distinct.order(:email).pluck(:email) },
+    label: "User Email"
+  filter :last_name, as: :select,
+    collection: -> { Application.joins(user: :payments).distinct.order(:last_name).pluck(:last_name) },
+    label: "Last Name"
+  filter :first_name, as: :select,
+    collection: -> { Application.joins(user: :payments).distinct.order(:first_name).pluck(:first_name) },
+    label: "First Name"
   filter :offer_status, as: :select
   filter :result_email_sent, as: :select
   filter :workshop_selection1, label: "workshop_selection1", as: :select, collection: -> { Workshop.all.map { |mapp| [mapp.instructor, mapp.instructor]}.sort }
@@ -81,14 +89,14 @@ ActiveAdmin.register Application do
     total_cost = cost_lodging + cost_partner
     balance_due = total_cost - ttl_paid
     panel "Payment Activity -- [Balance Due: #{number_to_currency(balance_due)} Total Cost: #{number_to_currency(total_cost)}]" do
-      table_for application.user.payments.where(conf_year: application.conf_year) do #application.user.payments.current_conference_payments
+      table_for application.user.payments.where(conf_year: application.conf_year) do
         column(:id) { |aid| link_to(aid.id, admin_payment_path(aid.id)) }
         column(:account_type) { |atype| atype.account_type.titleize }
         column(:transaction_type)
         column(:transaction_date) {|td| Date.parse(td.transaction_date) }
         column(:total_amount) { |ta|  number_to_currency(ta.total_amount.to_f / 100) }
       end
-      text_node link_to("[Add Manual Payment]", new_admin_payment_path(:user_id => application))
+      text_node link_to("[Add Manual Payment]", new_admin_payment_path(user_id: application.user_id))
     end
 
 

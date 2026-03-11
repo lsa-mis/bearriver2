@@ -34,7 +34,13 @@ class Payment < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["account_type", "conf_year", "created_at", "id", "id_value", "payer_identity", "result_code", "result_message", "timestamp", "total_amount", "transaction_date", "transaction_hash", "transaction_id", "transaction_status", "transaction_type", "updated_at", "user_account", "user_id"]
+    ["account_type", "conf_year", "created_at", "id", "id_value", "payer_identity", "payments_conf_year", "result_code", "result_message", "timestamp", "total_amount", "transaction_date", "transaction_hash", "transaction_id", "transaction_status", "transaction_type", "updated_at", "user_account", "user_id"]
+  end
+
+  # Disambiguate conf_year when joining associated tables in Ransack searches.
+  # This forces the filter to reference the payments table explicitly.
+  ransacker :payments_conf_year do |parent|
+    parent.table[:conf_year]
   end
 
 
