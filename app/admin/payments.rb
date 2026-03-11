@@ -10,9 +10,6 @@ ActiveAdmin.register Payment do
   scope :current_conference_payments
   scope :all
 
-  # filter :user_id, as: :select,
-  #   collection: -> { Application.all.order(:last_name).map { |app| [app.display_name, app.user_id] } },
-  #   label: "Name"
   filter :payer_identity, as: :select,
     collection: -> { Payment.order(:payer_identity).distinct.pluck(:payer_identity) },
     label: "User Email"
