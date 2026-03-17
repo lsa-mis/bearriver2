@@ -86,6 +86,17 @@ RSpec.describe PaymentsController, type: :controller do
             expect(payment.payer_identity).to eq(user.email)
             expect(payment.conf_year).to eq(ApplicationSetting.get_current_app_year)
           end
+
+          it 'creates a payment even when account_type is missing from gateway params' do
+            expect {
+              post :payment_receipt, params: valid_params.except(:transactionAcountType)
+            }.to change(Payment, :count).by(1)
+
+            payment = Payment.last
+            expect(payment.account_type).to be_nil
+            expect(payment.transaction_type).to eq('Credit')
+            expect(payment.transaction_id).to eq('test_transaction_123')
+          end
         end
 
         context 'when transaction_id already exists' do
