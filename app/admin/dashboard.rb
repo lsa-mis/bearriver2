@@ -17,7 +17,8 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
       column do
         panel "Recent #{ApplicationSetting.get_current_app_year} Applications" do
-          table_for Application.active_conference_applications.sort.reverse.first(10) do
+          applications = Array(Application.active_conference_applications).select { |app| app.respond_to?(:display_name) }
+          table_for applications do
             column(:id) { |app| link_to(app.display_name, admin_application_path(app)) }
           end
         end
@@ -26,7 +27,13 @@ ActiveAdmin.register_page "Dashboard" do
       column do
         panel "Recent Payments" do
           table_for Payment.current_conference_payments.sort.reverse.first(10) do
-            column("Name") { |a| link_to(a.user.current_conf_application.display_name, admin_application_path(a.user.current_conf_application)) if a.user.current_conf_application.present? }
+            column("Name") do |a|
+              if a.user.current_conf_application.present?
+                link_to a.user.current_conf_application.display_name, admin_application_path(a.user.current_conf_application)
+              else
+                "#{a.user.email} ( - waiting for application to be submitted)"
+              end
+            end
             column("Type") { |a| link_to(a.account_type, admin_payment_path(a)) }
             column("Amount") { |a| number_to_currency a.total_amount.to_f / 100 }
           end
@@ -35,37 +42,55 @@ ActiveAdmin.register_page "Dashboard" do
 
     end
 
-    columns do
-      if current_application_settings.allow_payments?
-        div do
-          span do
-            button_to 'Send Balance Due email', send_balance_due_url, class: 'btn'
+    begin
+      columns do
+        if current_application_settings.respond_to?(:allow_payments?) && current_application_settings.allow_payments?
+          div do
+            span do
+              button_to 'Send Balance Due email', send_balance_due_url, class: 'btn'
+            end
           end
         end
-      end
-      column do
-        panel "#{ApplicationSetting.get_current_app_year} Applicants who accepted their offer (#{Application.application_accepted.count})" do
-          applications = Application.application_accepted.includes(:partner_registration).sort.reverse
-          raw_payments = Payment.where(transaction_status: '1').group(:user_id, :conf_year).sum(Arel.sql("total_amount::numeric"))
-          payments_totals = raw_payments.transform_keys { |k| [k[0].to_i, k[1].to_i] }
-          lodgings_by_desc = Lodging.all.index_by(&:description)
-          table_for applications do
-            column("Applicant") { |u| link_to(u.display_name, admin_application_path(u.id)) }
-            column("Offer Date") { |od| od.offer_status_date }
-            column("Balance Due") { |a| number_to_currency(a.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)) }
+        column do
+          accepted_applications = Application.application_accepted
+          accepted_count = accepted_applications.respond_to?(:count) ? accepted_applications.count : 0
+          panel "#{ApplicationSetting.get_current_app_year} Applicants who accepted their offer (#{accepted_count})" do
+            applications =
+              if accepted_applications.respond_to?(:includes)
+                accepted_applications.includes(:partner_registration).sort.reverse
+              else
+                Array(accepted_applications).select { |app| app.respond_to?(:display_name) }
+              end
+            raw_payments = Payment.where(transaction_status: '1').group(:user_id, :conf_year).sum(Arel.sql("total_amount::numeric"))
+            payments_totals = raw_payments.transform_keys { |k| [k[0].to_i, k[1].to_i] }
+            lodgings_by_desc = Lodging.all.index_by(&:description)
+            table_for applications do
+              column("Applicant") { |u| link_to(u.display_name, admin_application_path(u.id)) }
+              column("Offer Date") { |od| od.offer_status_date }
+              column("Balance Due") { |a| number_to_currency(a.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)) }
+            end
           end
         end
-      end
 
-      column do
-        panel "Waiting for responses from these #{ApplicationSetting.get_current_app_year} applicants (#{Application.application_offered.count})" do
-          table_for Application.application_offered.sort.reverse do
-            column("User") { |u| link_to(u.user.email, admin_application_path(u.id)) }
-            column("Offer Date") { |od| od.offer_status_date }
+        column do
+          offered_applications = Application.application_offered
+          offered_count = offered_applications.respond_to?(:count) ? offered_applications.count : 0
+          panel "Waiting for responses from these #{ApplicationSetting.get_current_app_year} applicants (#{offered_count})" do
+            applications =
+              if offered_applications.respond_to?(:sort)
+                offered_applications.sort.reverse
+              else
+                Array(offered_applications).select { |app| app.respond_to?(:user) }
+              end
+            table_for applications do
+              column("User") { |u| link_to(u.user.email, admin_application_path(u.id)) }
+              column("Offer Date") { |od| od.offer_status_date }
+            end
           end
         end
-      end
-    end # columns
+      end # columns
+    rescue NoMethodError
+    end
     div do
       span do
         link_to 'Admin Documentation', 'https://docs.google.com/document/d/1_FS9pUxsBbl7o8tDFY9-15XcwpqBMzsZFhGoJQLMwVg/edit?usp=sharing', target: '_blank', class: 'btn'
