@@ -34,7 +34,7 @@ ActiveAdmin.register Application do
   filter :lodging_selection, as: :select, collection: -> { Lodging.all.map { |lapp| [lapp.description, lapp.description]}.sort }
   filter :partner_registration_id, as: :select, collection: -> { PartnerRegistration.all.map { |papp| [papp.description, papp.id]}.sort }
   filter :subscription, as: :select
-  filter :applications_conf_year, as: :select, label: "Conf Year"
+  filter :applications_conf_year, as: :select, label: "Conf Year", collection: -> { Application.distinct.order(:conf_year).pluck(:conf_year) }
 
   controller do
     before_action :load_index_batch_data, only: [:index]
@@ -86,7 +86,9 @@ ActiveAdmin.register Application do
       raise "Partner registration is missing for this application (id=#{application.id}); cannot compute balance. Fix data and retry."
     end
     cost_partner = application.partner_registration.cost.to_f
-    total_cost = cost_lodging + cost_partner
+    has_subscription = application.subscription
+    cost_subscription = ApplicationSetting.get_current_app_settings&.subscription_cost.to_f
+    total_cost = cost_lodging + cost_partner + (has_subscription ? cost_subscription : 0)
     balance_due = total_cost - ttl_paid
     panel "Payment Activity -- [Balance Due: #{number_to_currency(balance_due)} Total Cost: #{number_to_currency(total_cost)}]" do
       table_for application.user.payments.where(conf_year: application.conf_year) do
@@ -193,7 +195,9 @@ ActiveAdmin.register Application do
       ttl_paid = Payment.current_conference_payments.where(user_id: application.user_id, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
       cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
       cost_partner = application.partner_registration.cost.to_f
-      total_cost = cost_lodging + cost_partner
+      has_subscription = application.subscription
+      cost_subscription = ApplicationSetting.get_current_app_settings&.subscription_cost.to_f
+      total_cost = cost_lodging + cost_partner + (has_subscription ? cost_subscription : 0)
       balance_due = total_cost - ttl_paid
       number_to_currency(balance_due)
     end
