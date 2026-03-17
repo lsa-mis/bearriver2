@@ -24,6 +24,7 @@ class Payment < ApplicationRecord
   validates :transaction_id, presence: true, uniqueness: true
   validates :total_amount, presence: true
   validates :transaction_date, presence: true
+  validates :account_type, presence: true, if: :manual_entry?
   belongs_to :user
   validate :manual_payment_decimal
   validate :valid_transaction_date
@@ -46,8 +47,12 @@ class Payment < ApplicationRecord
 
   scope :current_conference_payments, -> { where(arel_table[:conf_year].eq(ApplicationSetting.get_current_app_year)) }
 
+  def manual_entry?
+    transaction_type == "ManuallyEntered"
+  end
+
   def manual_payment_decimal
-    if self.transaction_type == "ManuallyEntered"
+    if manual_entry?
       if self.total_amount !~ /^\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?\s*$/
         errors.add(:total_amount, "must be decimal")
       elsif self.total_amount.to_f < 0
@@ -67,7 +72,7 @@ class Payment < ApplicationRecord
   end
 
   def check_manual_amount
-    if self.transaction_type == "ManuallyEntered"
+    if manual_entry?
       self.total_amount = (self.total_amount.to_f * 100).to_s
     end
   end

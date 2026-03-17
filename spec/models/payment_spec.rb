@@ -23,6 +23,28 @@ RSpec.describe Payment, type: :model do
       expect(payment).not_to be_valid
     end
 
+    context 'when transaction_type is ManuallyEntered and account_type is present' do
+      it 'is valid' do
+        payment = build(:payment, :manual, account_type: 'scholarship')
+        expect(payment).to be_valid
+      end
+    end
+
+    context 'when transaction_type is ManuallyEntered and account_type is missing' do
+      it 'is not valid' do
+        payment = build(:payment, :manual, account_type: nil)
+        expect(payment).not_to be_valid
+        expect(payment.errors[:account_type]).to include("can't be blank")
+      end
+    end
+
+    context 'when transaction_type is not ManuallyEntered' do
+      it 'is valid without an account_type' do
+        payment = build(:payment, transaction_type: 'Credit', account_type: nil)
+        expect(payment).to be_valid
+      end
+    end
+
     context 'when transaction_type is ManuallyEntered' do
       it 'validates that total_amount is a decimal' do
         payment = build(:payment, transaction_type: 'ManuallyEntered', total_amount: 'not_a_number')
