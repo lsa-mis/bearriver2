@@ -38,6 +38,13 @@ RSpec.describe Payment, type: :model do
       end
     end
 
+    context 'when transaction_type is not ManuallyEntered' do
+      it 'is valid without an account_type' do
+        payment = build(:payment, transaction_type: 'Credit', account_type: nil)
+        expect(payment).to be_valid
+      end
+    end
+
     context 'when transaction_type is ManuallyEntered' do
       it 'validates that total_amount is a decimal' do
         payment = build(:payment, transaction_type: 'ManuallyEntered', total_amount: 'not_a_number')
