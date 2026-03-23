@@ -168,14 +168,22 @@ RSpec.describe PaymentsController, type: :controller do
       end
 
       context 'with different amounts' do
-        it 'handles decimal amounts correctly' do
+        it 'rejects decimal amounts' do
           post :make_payment, params: { amount: '50.50' }
-          expect(response.location).to include('amountDue=5000') # 50.50.to_i * 100 = 50 * 100
+          expect(response).to redirect_to(all_payments_path)
+          expect(flash[:alert]).to eq('Please enter a valid payment amount.')
         end
 
-        it 'handles zero amount' do
+        it 'rejects zero amount' do
           post :make_payment, params: { amount: '0' }
-          expect(response.location).to include('amountDue=0')
+          expect(response).to redirect_to(all_payments_path)
+          expect(flash[:alert]).to eq('Please enter a valid payment amount.')
+        end
+
+        it 'rejects amount above current balance due' do
+          post :make_payment, params: { amount: '500' }
+          expect(response).to redirect_to(all_payments_path)
+          expect(flash[:alert]).to eq('Please enter a valid payment amount.')
         end
       end
     end
