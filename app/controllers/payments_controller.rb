@@ -57,11 +57,9 @@
       redirect_to root_url unless user_has_payments?(current_user)
       @users_current_payments = Payment.current_conference_payments.where(user_id: current_user )
       @ttl_paid = Payment.current_conference_payments.where(user_id: current_user, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
-      cost_lodging = Lodging.find_by(description: @current_application.lodging_selection).cost.to_f
-      cost_partner = @current_application.partner_registration.cost.to_f
       @has_subscription = @current_application.subscription
-      @cost_subscription = current_application_settings.subscription_cost.to_f
-      @total_cost = cost_lodging + cost_partner + (@has_subscription ?  @cost_subscription : 0)
+      @cost_subscription = @current_application.subscription_cost
+      @total_cost = @current_application.total_cost
       @balance_due = @total_cost - @ttl_paid
       @max_payment_amount = max_payment_amount_for(@balance_due)
     end
@@ -145,11 +143,13 @@
         current_application
         return 0.0 if @current_application.nil?
 
-        cost_lodging = Lodging.find_by(description: @current_application.lodging_selection)&.cost.to_f
-        cost_partner = @current_application.partner_registration&.cost.to_f
-        has_subscription = @current_application.subscription
-        cost_subscription = current_application_settings.subscription_cost.to_f
-        total_cost = cost_lodging + cost_partner + (has_subscription ? cost_subscription : 0)
+        total_cost = begin
+          @current_application.total_cost
+        rescue StandardError => e
+          Rails.logger.error("Error computing total_cost for application #{@current_application.id}: #{e.class}: #{e.message}") if defined?(Rails) && Rails.respond_to?(:logger)
+          0.0
+        end
+        total_cost = total_cost.to_f
         total_paid = Payment.current_conference_payments.where(user_id: current_user, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
         total_cost - total_paid
       end
