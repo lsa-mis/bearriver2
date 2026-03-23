@@ -99,8 +99,14 @@ class Application < ApplicationRecord
     self.partner_registration.cost.to_f
   end
 
+  def subscription_cost
+    return 0.0 unless subscription
+
+    ApplicationSetting.get_current_app_settings&.subscription_cost.to_f
+  end
+
   def total_cost
-    lodging_cost + partner_registration_cost
+    lodging_cost + partner_registration_cost + subscription_cost
   end
 
   def balance_due
@@ -119,7 +125,7 @@ class Application < ApplicationRecord
     ttl_paid_dollars = ttl_paid_cents / 100
     cost_lodging = lodging.cost.to_f
     cost_partner = partner_registration.cost.to_f
-    total_cost = cost_lodging + cost_partner
+    total_cost = cost_lodging + cost_partner + subscription_cost
     (total_cost - ttl_paid_dollars).round(2)
   end
 

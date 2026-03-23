@@ -179,7 +179,15 @@ RSpec.describe Application, type: :model do
       it 'returns the sum of lodging and partner registration costs' do
         allow(application).to receive(:lodging_cost).and_return(100.0)
         allow(application).to receive(:partner_registration_cost).and_return(50.0)
+        allow(application).to receive(:subscription_cost).and_return(0.0)
         expect(application.total_cost).to eq(150.0)
+      end
+
+      it 'includes subscription cost when subscription is selected' do
+        allow(application).to receive(:lodging_cost).and_return(100.0)
+        allow(application).to receive(:partner_registration_cost).and_return(50.0)
+        allow(application).to receive(:subscription_cost).and_return(25.0)
+        expect(application.total_cost).to eq(175.0)
       end
     end
 
@@ -211,9 +219,19 @@ RSpec.describe Application, type: :model do
       it 'returns negative balance when paid exceeds total cost (overpayment)' do
         app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Standard')
         allow(app).to receive(:partner_registration).and_return(double('PartnerRegistration', cost: 50.0))
+        allow(app).to receive(:subscription_cost).and_return(0.0)
         payments_totals = { [100, 2026] => 20_000 }  # $200 in cents
         lodgings_by_desc = { 'Standard' => double('Lodging', cost: 100.0) }
         expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(-50.0)
+      end
+
+      it 'includes subscription cost when computing balance' do
+        app = build(:application, user_id: 100, conf_year: 2026, lodging_selection: 'Standard', subscription: true)
+        allow(app).to receive(:partner_registration).and_return(double('PartnerRegistration', cost: 50.0))
+        allow(app).to receive(:subscription_cost).and_return(25.0)
+        payments_totals = { [100, 2026] => 10_000 }  # $100 in cents
+        lodgings_by_desc = { 'Standard' => double('Lodging', cost: 100.0) }
+        expect(app.balance_due_with_batch(payments_totals: payments_totals, lodgings_by_desc: lodgings_by_desc)).to eq(75.0)
       end
 
       it 'raises when partner_registration is missing (do not treat as $0)' do
