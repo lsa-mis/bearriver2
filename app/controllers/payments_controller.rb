@@ -63,6 +63,7 @@
       @cost_subscription = current_application_settings.subscription_cost.to_f
       @total_cost = cost_lodging + cost_partner + (@has_subscription ?  @cost_subscription : 0)
       @balance_due = @total_cost - @ttl_paid
+      @max_payment_amount = max_payment_amount_for(@balance_due)
     end
 
     def delete_manual_payment
@@ -130,10 +131,14 @@
         balance_due = current_balance_due
         return nil if balance_due <= 0
 
-        max_amount = [balance_due.floor, MAX_PAYMENT_AMOUNT].min
+        max_amount = max_payment_amount_for(balance_due)
         return nil if amount > max_amount
 
         amount
+      end
+
+      def max_payment_amount_for(balance_due)
+        [balance_due.floor, MAX_PAYMENT_AMOUNT].min
       end
 
       def current_balance_due
