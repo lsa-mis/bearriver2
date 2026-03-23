@@ -41,7 +41,7 @@
     end
 
     def make_payment
-      processed_url = generate_hash(@current_user, params['amount'])
+      processed_url = generate_hash(current_user, params['amount'])
       redirect_to processed_url, allow_other_host: true
     end
 

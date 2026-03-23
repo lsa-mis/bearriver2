@@ -33,16 +33,22 @@ RSpec.describe "Payments", type: :request do
       before do
         sign_in user
         allow_any_instance_of(PaymentsController).to receive(:user_has_payments?).and_return(true)
+        allow_any_instance_of(PaymentsController).to receive(:payments_open?).and_return(true)
+        allow_any_instance_of(PaymentsController).to receive(:current_application) do |controller|
+          controller.instance_variable_set(:@current_application, application)
+        end
+        create(:lodging, description: application.lodging_selection, cost: 100.0)
+        application.update!(partner_registration: create(:partner_registration, cost: 0.0), subscription: false)
+        create(:payment, :current_conference, user: user, transaction_status: '1', total_amount: '3000')
 
-        mock_application = instance_double(Application,
-          lodging_selection: "Standard",
-          partner_registration: instance_double(PartnerRegistration, cost: 0.0),
-          subscription: false
+        allow_any_instance_of(PaymentsController).to receive(:current_application_settings).and_return(
+          double(subscription_cost: 25.0, payments_directions: 'Payment instructions', allow_payments: true)
         )
-        allow_any_instance_of(PaymentsController).to receive(:current_application).and_return(mock_application)
+      end
 
-        allow(Payment).to receive_message_chain(:current_conference_payments, :where, :pluck).and_return([1000, 2000])
-        allow_any_instance_of(PaymentsController).to receive(:current_application_settings).and_return(double(subscription_cost: 25.0))
+      it "renders helper text explaining partial payments" do
+        get all_payments_path
+        expect(response.body).to include("The amount is prefilled with your full balance due, but you can enter a different amount to make a partial payment.")
       end
     end
   end
@@ -63,6 +69,22 @@ RSpec.describe "Payments", type: :request do
 
       it "redirects to the payment URL" do
         post make_payment_path, params: { amount: "100" }
+        expect(response).to redirect_to("https://payment-url.example.com")
+      end
+
+      it "supports paying the full balance amount" do
+        expect_any_instance_of(PaymentsController)
+          .to receive(:generate_hash).with(user, "200").and_return("https://payment-url.example.com")
+
+        post make_payment_path, params: { amount: "200" }
+        expect(response).to redirect_to("https://payment-url.example.com")
+      end
+
+      it "supports paying a partial balance amount" do
+        expect_any_instance_of(PaymentsController)
+          .to receive(:generate_hash).with(user, "75").and_return("https://payment-url.example.com")
+
+        post make_payment_path, params: { amount: "75" }
         expect(response).to redirect_to("https://payment-url.example.com")
       end
     end
