@@ -120,6 +120,15 @@ RSpec.describe "Payments", type: :request do
         expect(response).to redirect_to(all_payments_path)
         expect(flash[:alert]).to eq("Please enter a valid payment amount.")
       end
+
+      it "rejects amount above MAX_PAYMENT_AMOUNT even when balance due is higher" do
+        allow_any_instance_of(PaymentsController).to receive(:current_balance_due).and_return(3000.0)
+
+        post make_payment_path, params: { amount: "2001" }
+
+        expect(response).to redirect_to(all_payments_path)
+        expect(flash[:alert]).to eq("Please enter a valid payment amount.")
+      end
     end
   end
 
