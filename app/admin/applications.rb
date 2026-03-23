@@ -81,14 +81,10 @@ ActiveAdmin.register Application do
   show do
 
     ttl_paid = Payment.where(user_id: application.user_id, conf_year: application.conf_year, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
-    cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
     if application.partner_registration.nil?
       raise "Partner registration is missing for this application (id=#{application.id}); cannot compute balance. Fix data and retry."
     end
-    cost_partner = application.partner_registration.cost.to_f
-    has_subscription = application.subscription
-    cost_subscription = ApplicationSetting.get_current_app_settings&.subscription_cost.to_f
-    total_cost = cost_lodging + cost_partner + (has_subscription ? cost_subscription : 0)
+    total_cost = application.total_cost
     balance_due = total_cost - ttl_paid
     panel "Payment Activity -- [Balance Due: #{number_to_currency(balance_due)} Total Cost: #{number_to_currency(total_cost)}]" do
       table_for application.user.payments.where(conf_year: application.conf_year) do
@@ -193,11 +189,7 @@ ActiveAdmin.register Application do
         raise "Application #{application.id}: partner_registration is missing; cannot compute balance for CSV export."
       end
       ttl_paid = Payment.current_conference_payments.where(user_id: application.user_id, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
-      cost_lodging = Lodging.find_by(description: application.lodging_selection).cost.to_f
-      cost_partner = application.partner_registration.cost.to_f
-      has_subscription = application.subscription
-      cost_subscription = ApplicationSetting.get_current_app_settings&.subscription_cost.to_f
-      total_cost = cost_lodging + cost_partner + (has_subscription ? cost_subscription : 0)
+      total_cost = application.total_cost
       balance_due = total_cost - ttl_paid
       number_to_currency(balance_due)
     end

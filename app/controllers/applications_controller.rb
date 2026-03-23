@@ -16,9 +16,7 @@ class ApplicationsController < ApplicationController
   # GET /applications/1
   # GET /applications/1.json
   def show
-    cost_lodging = Lodging.find_by(description: @application.lodging_selection).cost.to_f
-    cost_partner = @application.partner_registration.cost.to_f
-    @total_cost = cost_lodging + cost_partner
+    @total_cost = @application.total_cost
   end
 
   # GET /applications/new
