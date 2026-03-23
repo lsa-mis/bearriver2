@@ -2,6 +2,8 @@
   require 'time'
 
   class PaymentsController < ApplicationController
+    MAX_PAYMENT_AMOUNT = 2000
+
     protect_from_forgery with: :exception
     skip_before_action :verify_authenticity_token, only: [:payment_receipt]
     before_action :verify_payment_callback, only: [:payment_receipt]
@@ -41,7 +43,13 @@
     end
 
     def make_payment
-      processed_url = generate_hash(current_user, params['amount'])
+      amount = validated_payment_amount(params['amount'])
+      if amount.nil?
+        redirect_to all_payments_path, alert: 'Please enter a valid payment amount.'
+        return
+      end
+
+      processed_url = generate_hash(current_user, amount)
       redirect_to processed_url, allow_other_host: true
     end
 
@@ -113,6 +121,32 @@
         # Final URL
         url_for_payment = initial_hash.map{|k,v| "#{k}=#{v}&" unless k == 'key'}.join('')
         final_url = connection_hash[url_to_use] + '?' + url_for_payment + 'hash=' + encoded_hash
+      end
+
+      def validated_payment_amount(raw_amount)
+        amount = Integer(raw_amount, exception: false)
+        return nil if amount.nil? || amount <= 0
+
+        balance_due = current_balance_due
+        return nil if balance_due <= 0
+
+        max_amount = [balance_due.floor, MAX_PAYMENT_AMOUNT].min
+        return nil if amount > max_amount
+
+        amount
+      end
+
+      def current_balance_due
+        current_application
+        return 0.0 if @current_application.nil?
+
+        cost_lodging = Lodging.find_by(description: @current_application.lodging_selection)&.cost.to_f
+        cost_partner = @current_application.partner_registration&.cost.to_f
+        has_subscription = @current_application.subscription
+        cost_subscription = current_application_settings.subscription_cost.to_f
+        total_cost = cost_lodging + cost_partner + (has_subscription ? cost_subscription : 0)
+        total_paid = Payment.current_conference_payments.where(user_id: current_user, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
+        total_cost - total_paid
       end
 
       def url_params

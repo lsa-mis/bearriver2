@@ -64,6 +64,15 @@ RSpec.describe "Payments", type: :request do
     context "when user is signed in" do
       before do
         sign_in user
+        allow_any_instance_of(PaymentsController).to receive(:current_application) do |controller|
+          controller.instance_variable_set(:@current_application, application)
+        end
+        create(:lodging, description: application.lodging_selection, cost: 300.0)
+        application.update!(partner_registration: create(:partner_registration, cost: 0.0), subscription: false)
+        allow_any_instance_of(PaymentsController).to receive(:current_application_settings).and_return(
+          double(subscription_cost: 25.0)
+        )
+        allow_any_instance_of(PaymentsController).to receive(:current_balance_due).and_return(300.0)
         allow_any_instance_of(PaymentsController).to receive(:generate_hash).and_return("https://payment-url.example.com")
       end
 
@@ -74,7 +83,7 @@ RSpec.describe "Payments", type: :request do
 
       it "supports paying the full balance amount" do
         expect_any_instance_of(PaymentsController)
-          .to receive(:generate_hash).with(user, "200").and_return("https://payment-url.example.com")
+          .to receive(:generate_hash).with(user, 200).and_return("https://payment-url.example.com")
 
         post make_payment_path, params: { amount: "200" }
         expect(response).to redirect_to("https://payment-url.example.com")
@@ -82,10 +91,34 @@ RSpec.describe "Payments", type: :request do
 
       it "supports paying a partial balance amount" do
         expect_any_instance_of(PaymentsController)
-          .to receive(:generate_hash).with(user, "75").and_return("https://payment-url.example.com")
+          .to receive(:generate_hash).with(user, 75).and_return("https://payment-url.example.com")
 
         post make_payment_path, params: { amount: "75" }
         expect(response).to redirect_to("https://payment-url.example.com")
+      end
+
+      it "rejects missing amount input" do
+        post make_payment_path, params: { amount: "" }
+        expect(response).to redirect_to(all_payments_path)
+        expect(flash[:alert]).to eq("Please enter a valid payment amount.")
+      end
+
+      it "rejects non-numeric amount input" do
+        post make_payment_path, params: { amount: "abc" }
+        expect(response).to redirect_to(all_payments_path)
+        expect(flash[:alert]).to eq("Please enter a valid payment amount.")
+      end
+
+      it "rejects non-positive amount input" do
+        post make_payment_path, params: { amount: "0" }
+        expect(response).to redirect_to(all_payments_path)
+        expect(flash[:alert]).to eq("Please enter a valid payment amount.")
+      end
+
+      it "rejects amount above balance due" do
+        post make_payment_path, params: { amount: "400" }
+        expect(response).to redirect_to(all_payments_path)
+        expect(flash[:alert]).to eq("Please enter a valid payment amount.")
       end
     end
   end
