@@ -175,18 +175,47 @@ RSpec.describe Application, type: :model do
       end
     end
 
+    describe '#subscription_cost' do
+      it 'returns 0.0 when subscription is not selected' do
+        application.subscription = false
+        allow(ApplicationSetting).to receive(:get_current_app_settings)
+
+        expect(application.subscription_cost).to eq(0.0)
+        expect(ApplicationSetting).not_to have_received(:get_current_app_settings)
+      end
+
+      it 'returns the configured subscription cost when subscription is selected' do
+        application.subscription = true
+        mock_app_setting = double('ApplicationSetting', subscription_cost: 25.0)
+        allow(ApplicationSetting).to receive(:get_current_app_settings).and_return(mock_app_setting)
+
+        expect(application.subscription_cost).to eq(25.0)
+      end
+
+      it 'returns 0.0 when settings are missing' do
+        application.subscription = true
+        allow(ApplicationSetting).to receive(:get_current_app_settings).and_return(nil)
+
+        expect(application.subscription_cost).to eq(0.0)
+      end
+    end
+
     describe '#total_cost' do
       it 'returns the sum of lodging and partner registration costs' do
+        application.subscription = false
         allow(application).to receive(:lodging_cost).and_return(100.0)
         allow(application).to receive(:partner_registration_cost).and_return(50.0)
-        allow(application).to receive(:subscription_cost).and_return(0.0)
+        allow(ApplicationSetting).to receive(:get_current_app_settings)
         expect(application.total_cost).to eq(150.0)
+        expect(ApplicationSetting).not_to have_received(:get_current_app_settings)
       end
 
       it 'includes subscription cost when subscription is selected' do
+        application.subscription = true
         allow(application).to receive(:lodging_cost).and_return(100.0)
         allow(application).to receive(:partner_registration_cost).and_return(50.0)
-        allow(application).to receive(:subscription_cost).and_return(25.0)
+        mock_app_setting = double('ApplicationSetting', subscription_cost: 25.0)
+        allow(ApplicationSetting).to receive(:get_current_app_settings).and_return(mock_app_setting)
         expect(application.total_cost).to eq(175.0)
       end
     end
