@@ -143,7 +143,13 @@
         current_application
         return 0.0 if @current_application.nil?
 
-        total_cost = @current_application.total_cost
+        total_cost = begin
+          @current_application.total_cost
+        rescue StandardError => e
+          Rails.logger.error("Error computing total_cost for application #{@current_application.id}: #{e.class}: #{e.message}") if defined?(Rails) && Rails.respond_to?(:logger)
+          0.0
+        end
+        total_cost = total_cost.to_f
         total_paid = Payment.current_conference_payments.where(user_id: current_user, transaction_status: '1').pluck(:total_amount).map(&:to_f).sum / 100
         total_cost - total_paid
       end
