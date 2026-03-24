@@ -17,6 +17,7 @@ ActiveAdmin.register_page "Dashboard" do
     special_invitees = Payment.current_conference_payments
                               .where(account_type: %w[special scholarship])
                               .includes(:user)
+                              .order(created_at: :desc, id: :desc)
                               .group_by(&:user_id)
                               .map { |_user_id, payments| payments.first }
                               .sort_by { |payment| payment.user.email.to_s.downcase }
@@ -32,9 +33,9 @@ ActiveAdmin.register_page "Dashboard" do
 
     columns do
       column do
-        current_year_applications = Array(Application.active_conference_applications).select { |app| app.respond_to?(:display_name) }
-        current_year_application_count = current_year_applications.count
-        recent_applications = current_year_applications.sort_by { |app| app.respond_to?(:created_at) ? app.created_at : Time.at(0) }.reverse.first(25)
+        current_year_applications_scope = Application.active_conference_applications
+        current_year_application_count = current_year_applications_scope.count
+        recent_applications = current_year_applications_scope.order(created_at: :desc).limit(25)
 
         panel "Latest 25 of #{current_year_application_count} Applications for the #{ApplicationSetting.get_current_app_year} conference" do
           table_for recent_applications do
