@@ -22,6 +22,8 @@ ActiveAdmin.register Payment do
   filter :payments_conf_year, as: :select,
     collection: -> { Payment.order(:conf_year).distinct.pluck(:conf_year) },
     label: "Payment Conf Year"
+  filter :account_type, as: :select,
+    collection: -> { Payment.order(:account_type).distinct.pluck(:account_type).compact }
 
   index do
     selectable_column

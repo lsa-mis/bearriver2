@@ -168,10 +168,10 @@ RSpec.describe PaymentsController, type: :controller do
       end
 
       context 'with different amounts' do
-        it 'rejects decimal amounts' do
+        it 'truncates dollar-and-cent strings to whole dollars (Nelnet uses integer dollars)' do
           post :make_payment, params: { amount: '50.50' }
-          expect(response).to redirect_to(all_payments_path)
-          expect(flash[:alert]).to eq('Please enter a valid payment amount.')
+          expect(response).to be_redirect
+          expect(response.location).to include('amountDue=5000')
         end
 
         it 'rejects zero amount' do
