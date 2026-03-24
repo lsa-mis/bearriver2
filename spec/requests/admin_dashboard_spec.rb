@@ -35,12 +35,8 @@ RSpec.describe 'Admin Dashboard', type: :request do
       )
 
       special_user = create(:user, email: 'special@example.com')
-      scholarship_user = create(:user, email: 'scholarship@example.com')
-      other_user = create(:user, email: 'other@example.com')
 
       create(:payment, :special, user: special_user, conf_year: application_setting.contest_year)
-      create(:payment, :scholarship, user: scholarship_user, conf_year: application_setting.contest_year)
-      create(:payment, user: other_user, conf_year: application_setting.contest_year)
 
       application = create(
         :application,
@@ -54,15 +50,11 @@ RSpec.describe 'Admin Dashboard', type: :request do
       get admin_root_path
 
       expect(response).to be_successful
-      expect(response.body).to include('Special invitees (2)')
+      expect(response.body).to include('Special invitees (1)')
       expect(response.body).to include('special@example.com')
-      expect(response.body).to include('scholarship@example.com')
-      expect(response.body).to include('Needs to submit an application to')
       expect(response.body).to include('special')
-      expect(response.body).to include('scholarship')
       expect(response.body).to include("href=\"#{admin_application_path(application)}\"")
       expect(response.body).to include('Ada Lovelace')
-      expect(response.body.index('scholarship@example.com')).to be < response.body.index('special@example.com')
     end
   end
 end

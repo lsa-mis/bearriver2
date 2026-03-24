@@ -1,5 +1,8 @@
 RSpec.configure do |config|
-  config.before(:each, type: :request) do
+  config.before(:each, type: :request) do |example|
+    # Tag examples with `real_application_settings: true` (or `:real_application_settings`) to use DB rows.
+    next if example.metadata[:real_application_settings]
+
     # Create a mock ApplicationSetting object
     mock_app_setting = double("ApplicationSetting",
       contest_year: Time.current.year,

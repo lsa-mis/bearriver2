@@ -123,8 +123,17 @@
       end
 
       def validated_payment_amount(raw_amount)
+        return nil if raw_amount.respond_to?(:blank?) ? raw_amount.blank? : raw_amount.nil?
+
         amount = Integer(raw_amount, exception: false)
-        return nil if amount.nil? || amount <= 0
+        if amount.nil?
+          begin
+            amount = BigDecimal(raw_amount.to_s).to_i
+          rescue ArgumentError
+            return nil
+          end
+        end
+        return nil if amount <= 0
 
         balance_due = current_balance_due
         return nil if balance_due <= 0
