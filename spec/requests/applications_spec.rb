@@ -78,17 +78,9 @@ RSpec.describe "Applications", type: :request do
         # Removing "does not create a new Application" test since it was skipped
 
         it "renders a response with 422 status (i.e. to display the 'new' template)" do
-          # Keep this test as it was not skipped
-          mock_application = instance_double(Application, save: false)
-          allow(Application).to receive(:new).and_return(mock_application)
-          allow(mock_application).to receive(:email=)
-          allow(mock_application).to receive(:user=)
-          allow(mock_application).to receive(:errors).and_return(double(empty?: false))
-
-          allow_any_instance_of(ApplicationsController).to receive(:render).and_return(nil)
-          allow_any_instance_of(ActionDispatch::Response).to receive(:status).and_return(422)
-
-          post applications_path, params: { application: { first_name: nil } }
+          post applications_path,
+               params: { application: valid_attributes.merge(first_name: nil) },
+               as: :json
           expect(response).to have_http_status(:unprocessable_content)
         end
       end
