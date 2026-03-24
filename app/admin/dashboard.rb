@@ -17,6 +17,7 @@ ActiveAdmin.register_page "Dashboard" do
     special_invitees = Payment.current_conference_payments
                               .where(account_type: %w[special scholarship])
                               .includes(:user)
+                              .order(created_at: :desc, id: :desc)
                               .group_by(&:user_id)
                               .map { |_user_id, payments| payments.first }
                               .sort_by { |payment| payment.user.email.to_s.downcase }
