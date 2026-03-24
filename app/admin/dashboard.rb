@@ -20,6 +20,15 @@ ActiveAdmin.register_page "Dashboard" do
                               .group_by(&:user_id)
                               .map { |_user_id, payments| payments.first }
                               .sort_by { |payment| payment.user.email.to_s.downcase }
+    invitee_user_ids = special_invitees.map(&:user_id).uniq
+    invitee_conf_years = special_invitees.map(&:conf_year).uniq
+    latest_applications_by_user_and_year =
+      Application.where(user_id: invitee_user_ids, conf_year: invitee_conf_years)
+                 .order(created_at: :desc)
+                 .each_with_object({}) do |application, apps_by_user_and_year|
+        key = [application.user_id, application.conf_year]
+        apps_by_user_and_year[key] ||= application
+      end
 
     columns do
       column do
@@ -42,7 +51,7 @@ ActiveAdmin.register_page "Dashboard" do
           table_for special_invitees do
             column('Email Address') { |payment| payment.user.email }
             column('Application Status') do |payment|
-              application = payment.user.applications.where(conf_year: payment.conf_year).order(:created_at).last
+              application = latest_applications_by_user_and_year[[payment.user_id, payment.conf_year]]
 
               if application.present?
                 full_name = "#{application.first_name} #{application.last_name}".squish
