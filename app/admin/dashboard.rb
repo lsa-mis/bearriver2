@@ -14,8 +14,9 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
+    # Only special payment invitees (not scholarship or other account types).
     special_invitees = Payment.current_conference_payments
-                              .where(account_type: %w[special scholarship])
+                              .where(account_type: 'special')
                               .includes(:user)
                               .order(created_at: :desc, id: :desc)
                               .group_by(&:user_id)
