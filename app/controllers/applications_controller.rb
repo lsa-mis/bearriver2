@@ -49,7 +49,7 @@ class ApplicationsController < ApplicationController
           render turbo_stream: turbo_stream.replace(@application, partial: "applications/form", locals: { application: @application })
         end
         format.html { render :new }
-        format.json { render json: @application.errors, status: :unprocessable_entity }
+        format.json { render json: @application.errors, status: :unprocessable_content }
       end
     end
   end
@@ -71,7 +71,7 @@ class ApplicationsController < ApplicationController
           render turbo_stream: turbo_stream.replace(@application, partial: "applications/form", locals: { application: @application })
         end
         format.html { render :edit }
-        format.json { render json: @application.errors, status: :unprocessable_entity }
+        format.json { render json: @application.errors, status: :unprocessable_content }
       end
     end
   end

@@ -36,7 +36,7 @@ class ApplicationSettingsController < ApplicationController
           render turbo_stream: turbo_stream.replace(@application_setting, partial: "application_settings/form", locals: { application_setting: @application_setting })
         end
         format.html { render :new }
-        format.json { render json: @application_setting.errors, status: :unprocessable_entity }
+        format.json { render json: @application_setting.errors, status: :unprocessable_content }
       end
     end
   end
@@ -53,7 +53,7 @@ class ApplicationSettingsController < ApplicationController
           render turbo_stream: turbo_stream.replace(@application_setting, partial: "application_settings/form", locals: { application_setting: @application_setting })
         end
         format.html { render :edit }
-        format.json { render json: @application_setting.errors, status: :unprocessable_entity }
+        format.json { render json: @application_setting.errors, status: :unprocessable_content }
       end
     end
   end

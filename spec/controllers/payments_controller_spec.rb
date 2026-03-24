@@ -476,7 +476,7 @@ RSpec.describe PaymentsController, type: :controller do
           timestamp: Time.current.to_i.to_s,
           hash: 'valid_hash_here'
         }
-        expect(response).not_to have_http_status(:unprocessable_entity)
+        expect(response).not_to have_http_status(:unprocessable_content)
       end
 
       it 'requires user authentication for most actions' do

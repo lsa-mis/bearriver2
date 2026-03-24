@@ -89,7 +89,7 @@ RSpec.describe "Applications", type: :request do
           allow_any_instance_of(ActionDispatch::Response).to receive(:status).and_return(422)
 
           post applications_path, params: { application: { first_name: nil } }
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end
