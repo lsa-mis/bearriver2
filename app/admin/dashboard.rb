@@ -14,12 +14,54 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
+    special_invitees = Payment.current_conference_payments
+                              .where(account_type: %w[special scholarship])
+                              .includes(:user)
+                              .order(created_at: :desc, id: :desc)
+                              .group_by(&:user_id)
+                              .map { |_user_id, payments| payments.first }
+                              .sort_by { |payment| payment.user.email.to_s.downcase }
+    invitee_user_ids = special_invitees.map(&:user_id).uniq
+    invitee_conf_years = special_invitees.map(&:conf_year).uniq
+    latest_applications_by_user_and_year =
+      Application.where(user_id: invitee_user_ids, conf_year: invitee_conf_years)
+                 .order(created_at: :desc)
+                 .each_with_object({}) do |application, apps_by_user_and_year|
+        key = [application.user_id, application.conf_year]
+        apps_by_user_and_year[key] ||= application
+      end
+
     columns do
       column do
-        panel "Recent #{ApplicationSetting.get_current_app_year} Applications" do
-          applications = Array(Application.active_conference_applications).select { |app| app.respond_to?(:display_name) }
-          table_for applications do
+        current_year_applications_scope = Application.active_conference_applications
+        current_year_application_count = current_year_applications_scope.count
+        recent_applications = current_year_applications_scope.order(created_at: :desc).limit(25)
+
+        panel "Latest 25 of #{current_year_application_count} Applications for the #{ApplicationSetting.get_current_app_year} conference" do
+          table_for recent_applications do
             column(:id) { |app| link_to(app.display_name, admin_application_path(app)) }
+          end
+          div do
+            link_to 'See all current applications', admin_applications_path(q: { applications_conf_year_eq: ApplicationSetting.get_current_app_year })
+          end
+        end
+      end
+
+      column do
+        panel "Special invitees (#{special_invitees.size})" do
+          table_for special_invitees do
+            column('Email Address') { |payment| payment.user.email }
+            column('Application Status') do |payment|
+              application = latest_applications_by_user_and_year[[payment.user_id, payment.conf_year]]
+
+              if application.present?
+                full_name = "#{application.first_name} #{application.last_name}".squish
+                link_to(full_name, admin_application_path(application))
+              else
+                "Needs to submit an application to #{ApplicationSetting.get_current_app_year}"
+              end
+            end
+            column('Account Type') { |payment| payment.account_type }
           end
         end
       end
@@ -39,7 +81,6 @@ ActiveAdmin.register_page "Dashboard" do
           end
         end
       end
-
     end
 
     begin

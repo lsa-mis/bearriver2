@@ -115,7 +115,7 @@ RSpec.describe "ApplicationSettings", type: :request do
           post application_settings_path, params: {
             application_setting: { contest_year: nil } # Invalid params
           }, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end
@@ -167,7 +167,7 @@ RSpec.describe "ApplicationSettings", type: :request do
           patch application_setting_path(application_setting), params: {
             application_setting: { contest_year: nil } # Invalid params
           }, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end
