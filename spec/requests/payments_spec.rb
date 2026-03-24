@@ -97,6 +97,14 @@ RSpec.describe "Payments", type: :request do
         expect(response).to redirect_to("https://payment-url.example.com")
       end
 
+      it "accepts whole-dollar amounts formatted like decimals (e.g. registration_fee from DB)" do
+        expect_any_instance_of(PaymentsController)
+          .to receive(:generate_hash).with(user, 50).and_return("https://payment-url.example.com")
+
+        post make_payment_path, params: { amount: "50.0" }
+        expect(response).to redirect_to("https://payment-url.example.com")
+      end
+
       it "rejects missing amount input" do
         post make_payment_path, params: { amount: "" }
         expect(response).to redirect_to(all_payments_path)
