@@ -14,12 +14,44 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
+    special_invitees = Payment.current_conference_payments
+                              .where(account_type: %w[special scholarship])
+                              .includes(:user)
+                              .group_by(&:user_id)
+                              .map { |_user_id, payments| payments.first }
+                              .sort_by { |payment| payment.user.email.to_s.downcase }
+
     columns do
       column do
-        panel "Recent #{ApplicationSetting.get_current_app_year} Applications" do
-          applications = Array(Application.active_conference_applications).select { |app| app.respond_to?(:display_name) }
-          table_for applications do
+        current_year_applications = Array(Application.active_conference_applications).select { |app| app.respond_to?(:display_name) }
+        current_year_application_count = current_year_applications.count
+        recent_applications = current_year_applications.sort_by { |app| app.respond_to?(:created_at) ? app.created_at : Time.at(0) }.reverse.first(25)
+
+        panel "Latest 25 of #{current_year_application_count} Applications for the #{ApplicationSetting.get_current_app_year} conference" do
+          table_for recent_applications do
             column(:id) { |app| link_to(app.display_name, admin_application_path(app)) }
+          end
+          div do
+            link_to 'See all current applications', admin_applications_path(q: { applications_conf_year_eq: ApplicationSetting.get_current_app_year })
+          end
+        end
+      end
+
+      column do
+        panel "Special invitees (#{special_invitees.size})" do
+          table_for special_invitees do
+            column('Email Address') { |payment| payment.user.email }
+            column('Application Status') do |payment|
+              application = payment.user.applications.where(conf_year: payment.conf_year).order(:created_at).last
+
+              if application.present?
+                full_name = "#{application.first_name} #{application.last_name}".squish
+                link_to(full_name, admin_application_path(application))
+              else
+                "Needs to submit an application to #{ApplicationSetting.get_current_app_year}"
+              end
+            end
+            column('Account Type') { |payment| payment.account_type }
           end
         end
       end
@@ -39,7 +71,6 @@ ActiveAdmin.register_page "Dashboard" do
           end
         end
       end
-
     end
 
     begin
