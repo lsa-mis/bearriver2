@@ -13,6 +13,9 @@ RSpec.configure do |config|
     allow(mock_active_applications).to receive(:last).and_return(nil)
     allow(mock_active_applications).to receive(:pluck).and_return([])
     allow(mock_active_applications).to receive(:each).and_return([])
+    allow(mock_active_applications).to receive(:count).and_return(0)
+    allow(mock_active_applications).to receive(:order).and_return(mock_active_applications)
+    allow(mock_active_applications).to receive(:limit).and_return([])
 
     # Mock the Application.active_conference_applications class method
     allow(Application).to receive(:active_conference_applications).and_return(mock_active_applications)
