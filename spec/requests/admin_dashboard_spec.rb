@@ -7,14 +7,9 @@ RSpec.describe 'Admin Dashboard', type: :request do
     before { sign_in admin_user }
 
     it 'displays user email when payment has no current application' do
-      application_setting = ApplicationSetting.create!(
+      application_setting = create(
+        :application_setting,
         contest_year: Time.current.year,
-        opendate: Time.current,
-        subscription_cost: 0,
-        application_buffer: 1,
-        registration_fee: 50,
-        lottery_buffer: 50,
-        application_open_period: 48,
         active_application: true
       )
 
@@ -33,14 +28,9 @@ RSpec.describe 'Admin Dashboard', type: :request do
     end
 
     it 'shows special invitees with application status and account type' do
-      application_setting = ApplicationSetting.create!(
+      application_setting = create(
+        :application_setting,
         contest_year: Time.current.year,
-        opendate: Time.current,
-        subscription_cost: 0,
-        application_buffer: 1,
-        registration_fee: 50,
-        lottery_buffer: 50,
-        application_open_period: 48,
         active_application: true
       )
 
