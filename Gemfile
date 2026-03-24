@@ -1,15 +1,16 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 7.2.2'
-ruby '3.3.4'
+ruby '3.4.9'
 
-gem 'activeadmin'
+gem 'activeadmin', '~> 3.5'
 gem 'bootsnap', require: false
 gem 'country_select', '~> 8.0'
 gem 'cssbundling-rails'
-gem 'devise'
+gem 'devise', '~> 5.0', '>= 5.0.3'
 gem 'jbuilder'
 gem 'jsbundling-rails'
+gem 'ostruct', '~> 0.6.3'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'redis', '>= 4.0.1'
