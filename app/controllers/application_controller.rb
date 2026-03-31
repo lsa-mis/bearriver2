@@ -1,5 +1,39 @@
 class ApplicationController < ActionController::Base
+  before_action :strip_null_bytes_from_params
+
   private
+
+  def strip_null_bytes_from_params
+    sanitize_param_object!(request.parameters) if request.parameters.present?
+  end
+
+  def sanitize_param_object!(value)
+    case value
+    when String
+      value.delete("\u0000")
+    when Array
+      value.map! { |item| sanitize_param_object!(item) }
+    when ActionController::Parameters
+      # Sanitize both keys and values.
+      value.keys.each do |key|
+        item = value.delete(key)
+        sanitized_key = key.to_s.delete("\u0000")
+        value[sanitized_key] = sanitize_param_object!(item)
+      end
+      value
+    when Hash
+      # Sanitize both keys and values, preserving Symbol keys.
+      value.keys.each do |key|
+        item = value.delete(key)
+        sanitized_key_string = key.to_s.delete("\u0000")
+        sanitized_key = key.is_a?(Symbol) ? sanitized_key_string.to_sym : sanitized_key_string
+        value[sanitized_key] = sanitize_param_object!(item)
+      end
+      value
+    else
+      value
+    end
+  end
 
   def current_application_settings
     @current_application_settings ||= ApplicationSetting.get_current_app_settings
