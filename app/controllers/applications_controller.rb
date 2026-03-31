@@ -99,6 +99,7 @@ class ApplicationsController < ApplicationController
         message_count += 1
       end
     end
+    current_application_settings&.update(balance_due_emails_last_sent_at: Time.current)
     flash[:alert] = "#{message_count} balance due messages sent."
     redirect_to admin_root_path
   end
