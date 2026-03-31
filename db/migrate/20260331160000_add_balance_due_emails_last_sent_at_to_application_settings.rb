@@ -1,0 +1,5 @@
+class AddBalanceDueEmailsLastSentAtToApplicationSettings < ActiveRecord::Migration[7.0]
+  def change
+    add_column :application_settings, :balance_due_emails_last_sent_at, :datetime
+  end
+end

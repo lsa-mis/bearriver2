@@ -91,6 +91,14 @@ ActiveAdmin.register_page "Dashboard" do
             span do
               button_to 'Send Balance Due email', send_balance_due_url, class: 'btn'
             end
+            span do
+              if current_application_settings.balance_due_emails_last_sent_at.present?
+                zone = current_application_settings.time_zone.presence || Time.zone.name
+                "Last sent: #{current_application_settings.balance_due_emails_last_sent_at.in_time_zone(zone).strftime('%B %-d, %Y at %-I:%M %p %Z')}"
+              else
+                'Last sent: never'
+              end
+            end
           end
         end
         column do

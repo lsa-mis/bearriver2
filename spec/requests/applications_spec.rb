@@ -181,7 +181,7 @@ RSpec.describe "Applications", type: :request do
     end
   end
 
-  describe "GET /send_balance_due" do
+  describe "GET /send_balance_due", :real_application_settings do
     context "when admin user is not signed in" do
       it "redirects to admin sign in page" do
         post send_balance_due_path
@@ -190,6 +190,8 @@ RSpec.describe "Applications", type: :request do
     end
 
     context "when admin user is signed in" do
+      let!(:application_setting) { create(:application_setting, active_application: true) }
+
       before do
         sign_in admin_user
         # Mock the mailer to prevent actual emails from being sent
@@ -201,6 +203,7 @@ RSpec.describe "Applications", type: :request do
         post send_balance_due_path
         expect(response).to redirect_to(admin_root_path)
         expect(flash[:alert]).to eq('1 balance due messages sent.')
+        expect(application_setting.reload.balance_due_emails_last_sent_at).to be_present
       end
     end
   end
