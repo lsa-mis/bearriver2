@@ -1,5 +1,28 @@
 class ApplicationController < ActionController::Base
+  before_action :strip_null_bytes_from_params
+
   private
+
+  def strip_null_bytes_from_params
+    sanitize_param_object!(request.request_parameters) if request.request_parameters.present?
+    sanitize_param_object!(request.query_parameters) if request.query_parameters.present?
+    sanitize_param_object!(params)
+  end
+
+  def sanitize_param_object!(value)
+    case value
+    when String
+      value.delete("\u0000")
+    when Array
+      value.map! { |item| sanitize_param_object!(item) }
+    when ActionController::Parameters
+      value.each_pair { |key, item| value[key] = sanitize_param_object!(item) }
+    when Hash
+      value.each { |key, item| value[key] = sanitize_param_object!(item) }
+    else
+      value
+    end
+  end
 
   def current_application_settings
     @current_application_settings ||= ApplicationSetting.get_current_app_settings
