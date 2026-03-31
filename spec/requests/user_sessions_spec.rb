@@ -39,5 +39,19 @@ RSpec.describe 'User sessions', type: :request do
       expect(response).to have_http_status(:see_other)
       expect(response).to redirect_to(root_path)
     end
+
+    it 'sanitizes null bytes in password before authentication' do
+      expect do
+        post user_session_path, params: {
+          user: {
+            email: user.email,
+            password: "pass\u0000word123"
+          }
+        }
+      end.not_to raise_error
+
+      expect(response).to have_http_status(:see_other)
+      expect(response).to redirect_to(root_path)
+    end
   end
 end

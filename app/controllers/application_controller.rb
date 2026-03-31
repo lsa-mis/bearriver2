@@ -4,9 +4,7 @@ class ApplicationController < ActionController::Base
   private
 
   def strip_null_bytes_from_params
-    sanitize_param_object!(request.request_parameters) if request.request_parameters.present?
-    sanitize_param_object!(request.query_parameters) if request.query_parameters.present?
-    sanitize_param_object!(params)
+    sanitize_param_object!(request.parameters) if request.parameters.present?
   end
 
   def sanitize_param_object!(value)
@@ -16,9 +14,22 @@ class ApplicationController < ActionController::Base
     when Array
       value.map! { |item| sanitize_param_object!(item) }
     when ActionController::Parameters
-      value.each_pair { |key, item| value[key] = sanitize_param_object!(item) }
+      # Sanitize both keys and values.
+      value.keys.each do |key|
+        item = value.delete(key)
+        sanitized_key = key.to_s.delete("\u0000")
+        value[sanitized_key] = sanitize_param_object!(item)
+      end
+      value
     when Hash
-      value.each { |key, item| value[key] = sanitize_param_object!(item) }
+      # Sanitize both keys and values, preserving Symbol keys.
+      value.keys.each do |key|
+        item = value.delete(key)
+        sanitized_key_string = key.to_s.delete("\u0000")
+        sanitized_key = key.is_a?(Symbol) ? sanitized_key_string.to_sym : sanitized_key_string
+        value[sanitized_key] = sanitize_param_object!(item)
+      end
+      value
     else
       value
     end
