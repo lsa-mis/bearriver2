@@ -26,12 +26,13 @@ class Payment < ApplicationRecord
   validates :transaction_date, presence: true
   validates :account_type, presence: true, if: :manual_entry?
   belongs_to :user
+  has_many :payment_gateway_callbacks, dependent: :nullify, inverse_of: :payment
   validate :manual_payment_decimal
   validate :valid_transaction_date
   before_save :check_manual_amount
 
   def self.ransackable_associations(auth_object = nil)
-    ["user"]
+    ["user", "payment_gateway_callbacks"]
   end
 
   def self.ransackable_attributes(auth_object = nil)
