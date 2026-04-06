@@ -40,6 +40,8 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem "rubocop", "~> 1.86"
+  gem "rubocop-rails"
   gem 'simplecov'
   gem 'webdrivers'
 end
