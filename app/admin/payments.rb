@@ -75,6 +75,26 @@ ActiveAdmin.register Payment do
       row :created_at
       row :updated_at
     end
+
+    panel 'Gateway callbacks' do
+      callbacks = payment.payment_gateway_callbacks.order(created_at: :desc)
+      if callbacks.any?
+        table_for callbacks do
+          column :id do |callback|
+            link_to(callback.id, admin_payment_gateway_callback_path(callback))
+          end
+          column :processing_status
+          column :transaction_id
+          column :failure_reason do |callback|
+            truncate(callback.failure_reason.to_s, length: 60)
+          end
+          column :created_at
+        end
+      else
+        para 'No gateway callback rows are linked to this payment. Callbacks are attached when a gateway receipt is successfully recorded for this row.'
+      end
+    end
+
     active_admin_comments
   end
 

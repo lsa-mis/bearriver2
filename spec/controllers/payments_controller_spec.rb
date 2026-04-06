@@ -47,7 +47,7 @@ RSpec.describe PaymentsController, type: :controller do
         transactionAcountType: 'registration',
         transactionResultCode: '0',
         transactionResultMessage: 'Approved',
-        orderNumber: 'testuser-123',
+        orderNumber: "#{user.email.partition('@').first}-#{user.id}",
         timestamp: Time.current.to_i.to_s,
         hash: 'valid_hash_here'
       }
@@ -136,9 +136,9 @@ RSpec.describe PaymentsController, type: :controller do
     end
 
     context 'when user is not authenticated' do
-      it 'redirects to sign in page' do
+      it 'processes callback without requiring user sign in' do
         post :payment_receipt, params: valid_params
-        expect(response).to redirect_to(new_user_session_path)
+        expect(response).to redirect_to(all_payments_path)
       end
     end
   end
@@ -333,7 +333,7 @@ RSpec.describe PaymentsController, type: :controller do
             transactionAcountType: 'registration',
             transactionResultCode: '0',
             transactionResultMessage: 'Approved',
-            orderNumber: 'testuser-123'
+            orderNumber: "#{user.email.partition('@').first}-#{user.id}"
           }
           expect(response).not_to have_http_status(:forbidden)
         end
@@ -351,7 +351,7 @@ RSpec.describe PaymentsController, type: :controller do
             transactionAcountType: 'registration',
             transactionResultCode: '0',
             transactionResultMessage: 'Approved',
-            orderNumber: 'testuser-123'
+            orderNumber: "#{user.email.partition('@').first}-#{user.id}"
           }
           expect(response).to have_http_status(:forbidden)
         end
@@ -369,7 +369,7 @@ RSpec.describe PaymentsController, type: :controller do
             transactionAcountType: 'registration',
             transactionResultCode: '0',
             transactionResultMessage: 'Approved',
-            orderNumber: 'testuser-123'
+            orderNumber: "#{user.email.partition('@').first}-#{user.id}"
           }
           expect(response).to have_http_status(:forbidden)
         end
@@ -387,7 +387,25 @@ RSpec.describe PaymentsController, type: :controller do
             transactionAcountType: 'registration',
             transactionResultCode: '0',
             transactionResultMessage: 'Approved',
-            orderNumber: 'testuser-123'
+            orderNumber: "#{user.email.partition('@').first}-#{user.id}"
+          }
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+
+      context 'with missing orderNumber' do
+        it 'returns forbidden status' do
+          post :payment_receipt, params: {
+            hash: 'valid_hash',
+            timestamp: '1234567890',
+            transactionId: 'test_123',
+            transactionType: 'Credit',
+            transactionStatus: '1',
+            transactionTotalAmount: '10000',
+            transactionDate: '202401011200',
+            transactionAcountType: 'registration',
+            transactionResultCode: '0',
+            transactionResultMessage: 'Approved'
           }
           expect(response).to have_http_status(:forbidden)
         end
@@ -472,7 +490,7 @@ RSpec.describe PaymentsController, type: :controller do
           transactionAcountType: 'registration',
           transactionResultCode: '0',
           transactionResultMessage: 'Approved',
-          orderNumber: 'testuser-123',
+          orderNumber: "#{user.email.partition('@').first}-#{user.id}",
           timestamp: Time.current.to_i.to_s,
           hash: 'valid_hash_here'
         }

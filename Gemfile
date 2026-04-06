@@ -17,6 +17,8 @@ gem 'redis', '>= 4.0.1'
 gem 'sassc-rails'
 gem "sentry-ruby"
 gem "sentry-rails"
+# Required when Sentry profiles_sample_rate is set (see config/initializers/sentry.rb)
+gem 'stackprof'
 gem 'skylight'
 gem 'stimulus-rails'
 gem 'turbo-rails'
@@ -40,6 +42,8 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
+  gem "rubocop", "~> 1.86"
+  gem "rubocop-rails"
   gem 'simplecov'
   gem 'webdrivers'
 end
