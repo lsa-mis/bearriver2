@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_31_160000) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_06_114103) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -171,6 +171,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_31_160000) do
     t.boolean "active", default: true
   end
 
+  create_table "payment_gateway_callbacks", force: :cascade do |t|
+    t.bigint "payment_id"
+    t.bigint "user_id"
+    t.string "transaction_id"
+    t.string "processing_status", null: false
+    t.string "event_type", default: "receipt", null: false
+    t.text "failure_reason"
+    t.jsonb "payload", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_id"], name: "index_payment_gateway_callbacks_on_payment_id"
+    t.index ["processing_status"], name: "index_payment_gateway_callbacks_on_processing_status"
+    t.index ["transaction_id"], name: "index_payment_gateway_callbacks_on_transaction_id"
+    t.index ["user_id"], name: "index_payment_gateway_callbacks_on_user_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.string "transaction_type"
     t.string "transaction_status"
@@ -222,5 +238,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_31_160000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "applications", "partner_registrations"
   add_foreign_key "applications", "users"
+  add_foreign_key "payment_gateway_callbacks", "payments"
+  add_foreign_key "payment_gateway_callbacks", "users"
   add_foreign_key "payments", "users"
 end
