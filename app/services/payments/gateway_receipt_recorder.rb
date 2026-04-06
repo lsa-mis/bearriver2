@@ -16,18 +16,23 @@ module Payments
       return callback_user if callback_user.is_a?(Result)
 
       if Payment.exists?(transaction_id: transaction_id)
-        record_callback('duplicate', callback_user)
-        return Result.new(status: :duplicate, payment: nil)
+        return duplicate_result(callback_user)
       end
 
       payment = Payment.new(payment_attributes(callback_user))
-      if payment.save
-        current_application_for(callback_user)&.update(offer_status: 'registration_accepted')
-        record_callback('recorded', callback_user, payment)
-        Result.new(status: :recorded, payment: payment)
-      else
-        record_callback('error', callback_user, nil, payment.errors.full_messages.join(', '))
-        Result.new(status: :error, payment: nil)
+      begin
+        if payment.save
+          current_application_for(callback_user)&.update(offer_status: 'registration_accepted')
+          record_callback('recorded', callback_user, payment)
+          Result.new(status: :recorded, payment: payment)
+        elsif duplicate_transaction_id_failure?(payment)
+          duplicate_result(callback_user)
+        else
+          record_callback('error', callback_user, nil, payment.errors.full_messages.join(', '))
+          Result.new(status: :error, payment: nil)
+        end
+      rescue ActiveRecord::RecordNotUnique
+        duplicate_result(callback_user)
       end
     end
 
@@ -96,6 +101,15 @@ module Payments
     def reject_callback(reason)
       record_callback('rejected', nil, nil, reason)
       Result.new(status: :forbidden, payment: nil)
+    end
+
+    def duplicate_result(callback_user)
+      record_callback('duplicate', callback_user)
+      Result.new(status: :duplicate, payment: nil)
+    end
+
+    def duplicate_transaction_id_failure?(payment)
+      payment.errors.of_kind?(:transaction_id, :taken)
     end
 
     def record_callback(status, user = nil, payment = nil, reason = nil)

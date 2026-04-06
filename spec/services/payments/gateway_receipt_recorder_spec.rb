@@ -51,6 +51,25 @@ RSpec.describe Payments::GatewayReceiptRecorder, type: :service do
       expect(callback.payment_id).to be_nil
     end
 
+    it 'returns duplicate when uniqueness validation fails (stale exists? check)' do
+      create(:payment, transaction_id: 'service_txn_123', user: user)
+      allow(Payment).to receive(:exists?).with(transaction_id: 'service_txn_123').and_return(false)
+
+      result = described_class.new(callback_params: callback_params).call
+
+      expect(result.status).to eq(:duplicate)
+      expect(PaymentGatewayCallback.order(:id).last.processing_status).to eq('duplicate')
+    end
+
+    it 'returns duplicate when insert raises RecordNotUnique (concurrent callbacks)' do
+      allow_any_instance_of(Payment).to receive(:save).and_raise(ActiveRecord::RecordNotUnique.new('duplicate key'))
+
+      result = described_class.new(callback_params: callback_params).call
+
+      expect(result.status).to eq(:duplicate)
+      expect(PaymentGatewayCallback.order(:id).last.processing_status).to eq('duplicate')
+    end
+
     it 'returns forbidden and creates rejected callback audit when user cannot be resolved' do
       invalid_params = callback_params.merge('orderNumber' => 'missing-user-999999')
 
