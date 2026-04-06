@@ -93,7 +93,7 @@ RSpec.describe Payment, type: :model do
   describe 'class methods' do
     describe '.ransackable_associations' do
       it 'returns the correct associations' do
-        expect(Payment.ransackable_associations).to match_array(["user"])
+        expect(Payment.ransackable_associations).to match_array(%w[user payment_gateway_callbacks])
       end
     end
 
