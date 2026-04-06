@@ -7,9 +7,9 @@
     protect_from_forgery with: :exception
     skip_before_action :verify_authenticity_token, only: [:payment_receipt]
     before_action :verify_payment_callback, only: [:payment_receipt]
-    before_action :authenticate_user!, except: [:delete_manual_payment]
-    before_action :current_user, only: %i[payment_receipt make_payment payment_show]
-    before_action :current_application, only: %i[payment_receipt payment_show]
+  before_action :authenticate_user!, except: [:delete_manual_payment, :payment_receipt]
+  before_action :current_user, only: %i[make_payment payment_show]
+  before_action :current_application, only: %i[payment_show]
     before_action :authenticate_admin_user!, only: [:delete_manual_payment]
     prepend_before_action :verify_authenticity_token, only: [:delete_manual_payment]
 
@@ -18,27 +18,17 @@
     end
 
     def payment_receipt
-      if Payment.pluck(:transaction_id).include?(params['transactionId'])
+    result = Payments::GatewayReceiptRecorder.new(callback_params: url_params).call
+
+    case result.status
+    when :duplicate
         redirect_to all_payments_path
-      else
-        Payment.create(
-          transaction_type: params['transactionType'],
-          transaction_status: params['transactionStatus'],
-          transaction_id: params['transactionId'],
-          total_amount: params['transactionTotalAmount'],
-          transaction_date: params['transactionDate'],
-          account_type: params['transactionAcountType'],
-          result_code: params['transactionResultCode'],
-          result_message: params['transactionResultMessage'],
-          user_account: params['orderNumber'],
-          payer_identity: @current_user.email,
-          timestamp: params['timestamp'],
-          transaction_hash: params['hash'],
-          user_id: current_user.id,
-          conf_year: ApplicationSetting.get_current_app_year
-        )
-        @current_application.update(offer_status: "registration_accepted")
+    when :recorded
         redirect_to all_payments_path, notice: "Your Payment Was Successfully Recorded"
+    when :forbidden
+      head :forbidden
+    else
+      head :unprocessable_entity
       end
     end
 
@@ -75,7 +65,7 @@
 
     private
       def verify_payment_callback
-        unless params['hash'].present? && params['timestamp'].present? && params['transactionId'].present?
+      unless params['hash'].present? && params['timestamp'].present? && params['transactionId'].present? && params['orderNumber'].present?
           head :forbidden
           return
         end
@@ -170,4 +160,5 @@
       def current_application
         @current_application = Application.active_conference_applications.find_by(user_id: current_user)
       end
+
   end

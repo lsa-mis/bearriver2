@@ -161,12 +161,11 @@ RSpec.describe "Payments", type: :request do
           "transactionAcountType" => "registration",
           "transactionResultCode" => "0",
           "transactionResultMessage" => "Approved",
-          "orderNumber" => "user-1"
+          "orderNumber" => "#{user.email.partition('@').first}-#{user.id}"
         }
       end
 
       before do
-        sign_in user
         allow_any_instance_of(PaymentsController).to receive(:verify_payment_callback).and_return(true)
 
         mock_application = instance_double(Application)
@@ -183,9 +182,32 @@ RSpec.describe "Payments", type: :request do
         end
 
         it "does not create a new payment and redirects to all_payments_path" do
-          post payment_receipt_path, params: payment_params
+          expect {
+            post payment_receipt_path, params: payment_params
+          }.to change(PaymentGatewayCallback, :count).by(1)
           expect(response).to redirect_to(all_payments_path)
+          expect(PaymentGatewayCallback.order(:id).last.processing_status).to eq('duplicate')
         end
+      end
+
+      context "when callback user cannot be resolved from orderNumber" do
+        it "returns forbidden status" do
+          payment_params["orderNumber"] = "missing-user-999999"
+          expect {
+            post payment_receipt_path, params: payment_params
+          }.to change(PaymentGatewayCallback, :count).by(1)
+          expect(response).to have_http_status(:forbidden)
+          expect(PaymentGatewayCallback.order(:id).last.processing_status).to eq('rejected')
+        end
+      end
+
+      it "creates a payment and records a callback audit row" do
+        expect {
+          post payment_receipt_path, params: payment_params
+        }.to change(Payment, :count).by(1).and change(PaymentGatewayCallback, :count).by(1)
+
+        expect(response).to redirect_to(all_payments_path)
+        expect(PaymentGatewayCallback.order(:id).last.processing_status).to eq('recorded')
       end
     end
   end
