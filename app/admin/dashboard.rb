@@ -36,7 +36,8 @@ ActiveAdmin.register_page "Dashboard" do
       column do
         current_year_applications_scope = Application.active_conference_applications
         current_year_application_count = current_year_applications_scope.count
-        recent_applications = current_year_applications_scope.order(created_at: :desc).limit(25)
+        recent_applications =
+          current_year_applications_scope.order(created_at: :desc).limit(25)
 
         panel "Latest 25 of #{current_year_application_count} Applications for the #{ApplicationSetting.get_current_app_year} conference" do
           table_for recent_applications do
@@ -69,10 +70,28 @@ ActiveAdmin.register_page "Dashboard" do
 
       column do
         panel "Recent Payments" do
-          table_for Payment.current_conference_payments.sort.reverse.first(10) do
+          recent_payments =
+            Payment.current_conference_payments
+                   .order(created_at: :desc)
+                   .limit(10)
+                   .includes(:user)
+                   .to_a
+          conf_year = ApplicationSetting.get_current_app_year
+          user_ids = recent_payments.map(&:user_id).uniq
+          current_app_by_user_id =
+            if user_ids.empty?
+              {}
+            else
+              Application.where(user_id: user_ids, conf_year: conf_year)
+                         .order(:user_id, :id)
+                         .group_by(&:user_id)
+                         .transform_values(&:last)
+            end
+          table_for recent_payments do
             column("Name") do |a|
-              if a.user.current_conf_application.present?
-                link_to a.user.current_conf_application.display_name, admin_application_path(a.user.current_conf_application)
+              app = current_app_by_user_id[a.user_id]
+              if app.present?
+                link_to app.display_name, admin_application_path(app)
               else
                 "#{a.user.email} ( - waiting for application to be submitted)"
               end
@@ -128,7 +147,7 @@ ActiveAdmin.register_page "Dashboard" do
           panel "Waiting for responses from these #{ApplicationSetting.get_current_app_year} applicants (#{offered_count})" do
             applications =
               if offered_applications.respond_to?(:sort)
-                offered_applications.sort.reverse
+                offered_applications.includes(:user).sort.reverse
               else
                 Array(offered_applications).select { |app| app.respond_to?(:user) }
               end
