@@ -90,7 +90,6 @@ ActiveAdmin.register Application do
       table_for application.user.payments.where(conf_year: application.conf_year) do
         column(:id) { |aid| link_to(aid.id, admin_payment_path(aid.id)) }
         column(:account_type) { |atype| atype.account_type.titleize }
-        # column(:transaction_type)
         column(:transaction_date) {|td| Date.parse(td.transaction_date) }
         column(:result_message)
         column(:total_amount) { |ta|  number_to_currency(ta.total_amount.to_f / 100) }
