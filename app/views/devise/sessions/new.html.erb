@@ -3,12 +3,28 @@
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <div class="field">
     <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <%= f.email_field :email,
+                      value: params.dig(resource_name, :email) || resource.email,
+                      autofocus: true,
+                      autocomplete: "email" %>
   </div>
 
-  <div class="field">
+  <div class="field" data-controller="password-visibility">
     <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
+    <div class="position-relative d-inline-block">
+      <%= f.password_field :password,
+                           autocomplete: 'current-password',
+                           class: 'form-control pe-5',
+                           data: { password_visibility_target: 'input', action: 'blur->password-visibility#trimWhitespace' } %>
+      <button type="button"
+              class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-secondary text-decoration-none px-2 py-1 me-1"
+              style="z-index: 2;"
+              data-password-visibility-target="button"
+              aria-label="Show password"
+              aria-pressed="false">
+        <span class="bi bi-eye" data-password-visibility-target="icon" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 
   <% if devise_mapping.rememberable? %>
