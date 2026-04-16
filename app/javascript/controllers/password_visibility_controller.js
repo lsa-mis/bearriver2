@@ -22,16 +22,16 @@ export default class extends Controller {
   }
 
   toggleVisibility() {
-    const isHidden = this.inputTarget.type === "password"
-    const isVisible = isHidden
+    const wasPassword = this.inputTarget.type === "password"
+    this.inputTarget.type = wasPassword ? "text" : "password"
 
-    this.inputTarget.type = isVisible ? "text" : "password"
-    this.buttonTarget.setAttribute("aria-label", isVisible ? "Hide password" : "Show password")
-    this.buttonTarget.setAttribute("aria-pressed", isVisible ? "true" : "false")
+    const isPlaintextVisible = this.inputTarget.type === "text"
+    this.buttonTarget.setAttribute("aria-label", isPlaintextVisible ? "Hide password" : "Show password")
+    this.buttonTarget.setAttribute("aria-pressed", isPlaintextVisible ? "true" : "false")
 
     if (this.hasIconTarget) {
-      this.iconTarget.classList.toggle("bi-eye", !isVisible)
-      this.iconTarget.classList.toggle("bi-eye-slash", isVisible)
+      this.iconTarget.classList.toggle("bi-eye", !isPlaintextVisible)
+      this.iconTarget.classList.toggle("bi-eye-slash", isPlaintextVisible)
     }
   }
 

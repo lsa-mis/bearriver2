@@ -5,13 +5,8 @@
   <title>BearriverApplication</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-  <% if Rails.env.development? %>
-    <%= javascript_include_tag "/assets/application.js", "data-turbo-track": "reload", type: "module", preload_links_header: false %>
-    <%= stylesheet_link_tag "/assets/application.css", "data-turbo-track": "reload", preload_links_header: false %>
-  <% else %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module", preload_links_header: false %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload", preload_links_header: false %>
-  <% end %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module", preload_links_header: false %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload", preload_links_header: false %>
   <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
 <body>
