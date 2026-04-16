@@ -7,5 +7,8 @@ import { application } from "./application"
 import RegistrationController from "./registration_controller"
 application.register("registration", RegistrationController)
 
+import PasswordVisibilityController from "./password_visibility_controller"
+application.register("password-visibility", PasswordVisibilityController)
+
 import WorkshopSelectionController from "./workshop_selection_controller"
 application.register("workshop-selection", WorkshopSelectionController)

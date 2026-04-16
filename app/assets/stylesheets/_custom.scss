@@ -19,6 +19,8 @@ $flash-alert-color:  #FFE1DE;
 @import "bootstrap/scss/variables";
 
 // Override Bootstrap's default variables
+$font-family-sans-serif: system-ui, sans-serif;
+
 $theme-colors: (
   "um-blue":    $um_blue,
   "bone":       $bone,
