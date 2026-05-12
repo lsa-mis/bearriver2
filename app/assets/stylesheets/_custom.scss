@@ -14,11 +14,14 @@ $lsa_cyan: #00AEEF;
 $flash-notice-color: #DBFFDD;
 $flash-alert-color:  #FFE1DE;
 
-// Import Bootstrap's functions and variables
+// Import Bootstrap's functions first so variable overrides use the same API as Bootstrap.
 @import "bootstrap/scss/functions";
+
+// Override Bootstrap defaults before `variables` so `!default` assignments pick these up.
+$font-family-sans-serif: system-ui, sans-serif;
+
 @import "bootstrap/scss/variables";
 
-// Override Bootstrap's default variables
 $theme-colors: (
   "um-blue":    $um_blue,
   "bone":       $bone,

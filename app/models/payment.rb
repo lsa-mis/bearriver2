@@ -65,10 +65,23 @@ class Payment < ApplicationRecord
   def valid_transaction_date
     return if transaction_date.blank?
 
+    return if valid_transaction_date_format?(transaction_date)
+
+    errors.add(:transaction_date, "must be a valid date")
+  end
+
+  def valid_transaction_date_format?(value)
+    date_string = value.to_s.strip
+    return false if date_string.blank?
+
+    Date.strptime(date_string, '%m/%d/%Y')
+    true
+  rescue ArgumentError
     begin
-      Date.parse(transaction_date)
+      Date.parse(date_string)
+      true
     rescue ArgumentError
-      errors.add(:transaction_date, "must be a valid date")
+      false
     end
   end
 
