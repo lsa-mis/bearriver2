@@ -89,25 +89,4 @@ RSpec.describe Payment, type: :model do
       end
     end
   end
-
-  describe 'class methods' do
-    describe '.ransackable_associations' do
-      it 'returns the correct associations' do
-        expect(Payment.ransackable_associations).to match_array(%w[user payment_gateway_callbacks])
-      end
-    end
-
-    describe '.ransackable_attributes' do
-      it 'returns the correct attributes' do
-        expected_attributes = [
-          "account_type", "conf_year", "created_at", "id", "id_value",
-          "payer_identity", "payments_conf_year", "result_code", "result_message", "timestamp",
-          "total_amount", "transaction_date", "transaction_hash",
-          "transaction_id", "transaction_status", "transaction_type",
-          "updated_at", "user_account", "user_id"
-        ]
-        expect(Payment.ransackable_attributes).to match_array(expected_attributes)
-      end
-    end
-  end
 end

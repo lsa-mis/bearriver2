@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Admin Dashboard', type: :request do
+RSpec.describe 'Admin Dashboard', type: :request, real_application_settings: true, no_application_mock: true do
   let(:admin_user) { create(:admin_user) }
 
   describe 'GET /admin' do

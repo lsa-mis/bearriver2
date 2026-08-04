@@ -1,6 +1,6 @@
 # Bear River Conference Application
 
-`bearriver2` is a Ruby on Rails application used to run the Bear River Writers' Conference registration flow end-to-end. It supports applicant sign-up, application submission, conference configuration, payment processing callbacks, and administrative operations through ActiveAdmin.
+`bearriver2` is a Ruby on Rails application used to run the Bear River Writers' Conference registration flow end-to-end. It supports applicant sign-up, application submission, conference configuration, payment processing callbacks, and administrative operations through a custom `/admin` MVC namespace.
 
 ## What This App Does
 
@@ -8,7 +8,7 @@
 - Stores annual conference configuration (`ApplicationSetting`) and derives current conference year behavior from the active setting.
 - Supports lodging and partner registration selections that feed cost and balance calculations.
 - Integrates with a hosted payment gateway flow and records payment receipts.
-- Provides admin management via ActiveAdmin for conference operations.
+- Provides admin management via custom `/admin` MVC for conference operations.
 - Sends transactional emails for application events and balance due messaging.
 
 ## Tech Stack
@@ -17,7 +17,7 @@
 - Rails `7.2.2`
 - PostgreSQL
 - Hotwire (`turbo-rails`, `stimulus-rails`)
-- ActiveAdmin
+- Custom Admin MVC (`/admin`)
 - Devise authentication (users + admin users)
 - RSpec + FactoryBot
 - RuboCop (Rails profile)
@@ -110,7 +110,7 @@ App will be available at [http://localhost:3000](http://localhost:3000).
 ## Authentication and Admin
 
 - User auth routes are provided by Devise (`/users/...`).
-- Admin interface is mounted with ActiveAdmin.
+- Admin interface is at `/admin` (login at `/admin/login`).
 - Seed data creates a development-only admin user:
   - Email: `admin@example.com`
   - Password: `password`

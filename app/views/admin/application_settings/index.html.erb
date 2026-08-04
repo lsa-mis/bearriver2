@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Application Settings</h1>
+  <%= button_to 'Duplicate Conference Setting', duplicate_admin_application_settings_path,
+        method: :post,
+        class: 'btn btn-primary btn-sm',
+        form: { data: { turbo_confirm: 'This will create a new conference and duplicate the most current settings?' } } %>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Active</th>
+        <th>Conference Year</th>
+        <th>Open Date</th>
+        <th>Hours Open</th>
+        <th>Reg Fee</th>
+        <th>Subscription</th>
+        <th>Lottery Buffer</th>
+        <th>Payments</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @application_settings.each do |setting| %>
+        <tr>
+          <td><%= link_to setting.id, admin_application_setting_path(setting) %></td>
+          <td><%= setting.active_application %></td>
+          <td><%= setting.contest_year %></td>
+          <td><%= l(setting.opendate, format: :long) if setting.opendate %></td>
+          <td><%= setting.application_open_period %></td>
+          <td><%= number_to_currency(setting.registration_fee) %></td>
+          <td><%= number_to_currency(setting.subscription_cost) %></td>
+          <td><%= setting.lottery_buffer %></td>
+          <td><%= setting.allow_payments %></td>
+          <td class="text-nowrap">
+            <%= link_to 'Edit', edit_admin_application_setting_path(setting), class: 'btn btn-link btn-sm' %>
+            <%= button_to 'Delete', admin_application_setting_path(setting), method: :delete, class: 'btn btn-link btn-sm text-danger', form: { data: { turbo_confirm: 'Are you sure?' } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

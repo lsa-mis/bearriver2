@@ -28,17 +28,4 @@ RSpec.describe AdminUser, type: :model do
       expect(admin_user).not_to be_valid
     end
   end
-
-  describe 'class methods' do
-    describe '.ransackable_attributes' do
-      it 'returns the correct attributes' do
-        expected_attributes = [
-          "created_at", "email", "encrypted_password", "id", "id_value",
-          "remember_created_at", "reset_password_sent_at", "reset_password_token",
-          "updated_at"
-        ]
-        expect(AdminUser.ransackable_attributes).to match_array(expected_attributes)
-      end
-    end
-  end
 end

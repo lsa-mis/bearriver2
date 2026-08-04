@@ -3,9 +3,9 @@ source 'https://rubygems.org'
 gem 'rails', '~> 7.2.2'
 ruby '3.4.9'
 
-gem 'activeadmin', '~> 3.5'
 gem 'bootsnap', require: false
 gem 'country_select', '~> 8.0'
+gem 'csv'
 gem 'cssbundling-rails'
 gem 'devise', '~> 5.0', '>= 5.0.3'
 gem 'jbuilder'
@@ -14,7 +14,7 @@ gem 'ostruct', '~> 0.6.3'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'redis', '>= 4.0.1'
-gem 'sassc-rails'
+gem 'sprockets-rails'
 gem "sentry-ruby"
 gem "sentry-rails"
 # Required when Sentry profiles_sample_rate is set (see config/initializers/sentry.rb)

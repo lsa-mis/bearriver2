@@ -80,24 +80,4 @@ RSpec.describe User, type: :model do
       end
     end
   end
-
-  describe 'class methods' do
-    describe '.ransackable_associations' do
-      it 'returns the correct associations' do
-        expect(User.ransackable_associations).to match_array(["applications", "payments"])
-      end
-    end
-
-    describe '.ransackable_attributes' do
-      it 'returns the correct attributes' do
-        expected_attributes = [
-          "admin", "created_at", "current_sign_in_at", "current_sign_in_ip",
-          "email", "encrypted_password", "id", "id_value", "last_sign_in_at",
-          "last_sign_in_ip", "remember_created_at", "reset_password_sent_at",
-          "reset_password_token", "sign_in_count", "updated_at"
-        ]
-        expect(User.ransackable_attributes).to match_array(expected_attributes)
-      end
-    end
-  end
 end

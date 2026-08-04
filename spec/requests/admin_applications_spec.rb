@@ -33,6 +33,16 @@ RSpec.describe 'Admin Applications index', type: :request, no_application_mock: 
         expect(response).to be_successful
         expect(response.body).to include('Balance Due')
       end
+
+      it 'exports CSV with expected headers' do
+        create(:lodging, description: 'Standard')
+        create(:application, lodging_selection: 'Standard')
+        get admin_applications_path(format: :csv)
+        expect(response).to be_successful
+        expect(response.content_type).to include('text/csv')
+        expect(response.body).to include('Balance Due')
+        expect(response.body).to include('First Name')
+      end
     end
   end
 end

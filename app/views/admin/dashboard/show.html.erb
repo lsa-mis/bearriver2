@@ -1,0 +1,180 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Dashboard</h1>
+  <% if @show_lottery_button %>
+    <%= button_to 'Run Lottery', run_lottery_admin_application_settings_path, method: :post, class: 'btn btn-warning' %>
+  <% end %>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-header">
+        Latest 25 of <%= @current_year_application_count %> Applications for the <%= @current_year %> conference
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mb-3">
+          <% @recent_applications.each do |app| %>
+            <li class="mb-1"><%= link_to app.display_name, admin_application_path(app) %></li>
+          <% end %>
+        </ul>
+        <%= link_to 'See all current applications', admin_applications_path(conf_year: @current_year) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-header">Special invitees (<%= @special_invitees.size %>)</div>
+      <div class="card-body table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Email Address</th>
+              <th>Application Status</th>
+              <th>Account Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @special_invitees.each do |payment| %>
+              <% application = @latest_applications_by_user_and_year[[payment.user_id, payment.conf_year]] %>
+              <tr>
+                <td><%= payment.user.email %></td>
+                <td>
+                  <% if application.present? %>
+                    <%= link_to "#{application.first_name} #{application.last_name}".squish, admin_application_path(application) %>
+                  <% else %>
+                    Needs to submit an application to <%= @current_year %>
+                  <% end %>
+                </td>
+                <td><%= payment.account_type %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-header">Recent Payments</div>
+      <div class="card-body table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @recent_payments.each do |payment| %>
+              <% app = @current_app_by_user_id[payment.user_id] %>
+              <tr>
+                <td>
+                  <% if app.present? %>
+                    <%= link_to app.display_name, admin_application_path(app) %>
+                  <% else %>
+                    <%= payment.user.email %> ( - waiting for application to be submitted)
+                  <% end %>
+                </td>
+                <td><%= link_to payment.account_type, admin_payment_path(payment) %></td>
+                <td><%= number_to_currency(payment.total_amount.to_f / 100) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @settings&.allow_payments %>
+  <div class="mb-3 d-flex align-items-center gap-3">
+    <%= button_to 'Send Balance Due email', admin_send_balance_due_path, method: :post, class: 'btn btn-primary' %>
+    <span class="text-muted">
+      <% if @settings.balance_due_emails_last_sent_at.present? %>
+        <% zone = @settings.time_zone.presence || Time.zone.name %>
+        Last sent: <%= @settings.balance_due_emails_last_sent_at.in_time_zone(zone).strftime('%B %-d, %Y at %-I:%M %p %Z') %>
+      <% else %>
+        Last sent: never
+      <% end %>
+    </span>
+  </div>
+<% end %>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <%= @current_year %> Applicants who accepted their offer (<%= @accepted_applications.size %>)
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Applicant</th>
+              <th>Offer Date</th>
+              <th>Balance Due</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @accepted_applications.each do |application| %>
+              <tr>
+                <td><%= link_to application.display_name, admin_application_path(application) %></td>
+                <td><%= application.offer_status_date %></td>
+                <td><%= number_to_currency(application.balance_due_with_batch(payments_totals: @payments_totals, lodgings_by_desc: @lodgings_by_desc)) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header">
+        Waiting for responses from these <%= @current_year %> applicants (<%= @offered_applications.size %>)
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Offer Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @offered_applications.each do |application| %>
+              <tr>
+                <td><%= link_to application.user.email, admin_application_path(application) %></td>
+                <td><%= application.offer_status_date %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-3">
+  <%= link_to 'Admin Documentation', 'https://docs.google.com/document/d/1_FS9pUxsBbl7o8tDFY9-15XcwpqBMzsZFhGoJQLMwVg/edit?usp=sharing', target: '_blank', class: 'btn btn-outline-primary' %>
+</div>
+
+<div class="card">
+  <div class="card-header">These are the items to check when setting up a new conference:</div>
+  <div class="card-body">
+    <ul class="mb-0">
+      <li>
+        <%= link_to 'Create new conference instance', admin_application_settings_path %>
+        —
+        <%= link_to 'See details', 'https://docs.google.com/document/d/1_FS9pUxsBbl7o8tDFY9-15XcwpqBMzsZFhGoJQLMwVg/edit?tab=t.0#heading=h.3eb37iahpogi', target: '_blank' %>
+      </li>
+      <li><%= link_to 'Check the pricing for lodging costs', admin_lodgings_path %></li>
+      <li><%= link_to 'Check the pricing for the partner registration costs', admin_partner_registrations_path %></li>
+      <li><%= link_to 'Check the workshops being offered', admin_workshops_path %></li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h1 class="h3 mb-0">Application #<%= @application.id %></h1>
+  <div class="d-flex gap-2">
+    <% if @application.offer_status == 'not_offered' %>
+      <%= button_to 'Send Offer', send_offer_admin_application_path(@application), method: :post, class: 'btn btn-success btn-sm' %>
+    <% end %>
+    <%= link_to 'Edit', edit_admin_application_path(@application), class: 'btn btn-primary btn-sm' %>
+    <%= link_to 'Back', admin_applications_path, class: 'btn btn-outline-secondary btn-sm' %>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    Payment Activity -- [Balance Due: <%= number_to_currency(@balance_due) %> Total Cost: <%= number_to_currency(@total_cost) %>]
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Account Type</th>
+            <th>Transaction Date</th>
+            <th>Result Message</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @payments.each do |payment| %>
+            <tr>
+              <td><%= link_to payment.id, admin_payment_path(payment) %></td>
+              <td><%= payment.account_type.to_s.titleize %></td>
+              <td><%= begin; Date.parse(payment.transaction_date); rescue; payment.transaction_date; end %></td>
+              <td><%= payment.result_message %></td>
+              <td><%= number_to_currency(payment.total_amount.to_f / 100) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <%= link_to '[Add Manual Payment]', new_admin_payment_path(user_id: @application.user_id) %>
+  </div>
+</div>
+
+<dl class="row">
+  <% [
+    [:user, @application.user&.email],
+    [:conf_year, @application.conf_year],
+    [:lottery_position, @application.lottery_position],
+    [:offer_status, @application.offer_status],
+    [:offer_status_date, @application.offer_status_date],
+    [:result_email_sent, @application.result_email_sent],
+    [:subscription, @application.subscription],
+    [:first_name, @application.first_name],
+    [:last_name, @application.last_name],
+    [:gender, @application.gender],
+    [:birth_year, @application.birth_year],
+    [:street, @application.street],
+    [:street2, @application.street2],
+    [:city, @application.city],
+    [:state, @application.state],
+    [:zip, @application.zip],
+    [:country, @application.country],
+    [:phone, @application.phone],
+    [:email, @application.email],
+    [:email_confirmation, @application.email_confirmation],
+    [:workshop_selection1, @application.workshop_selection1],
+    [:workshop_selection2, @application.workshop_selection2],
+    [:workshop_selection3, @application.workshop_selection3],
+    [:lodging_selection, @application.lodging_selection],
+    [:partner_registration, @application.partner_registration&.display_name],
+    [:partner_first_name, @application.partner_first_name],
+    [:partner_last_name, @application.partner_last_name],
+    [:how_did_you_hear, @application.how_did_you_hear],
+    [:accessibility_requirements, @application.accessibility_requirements],
+    [:special_lodging_request, @application.special_lodging_request],
+    [:food_restrictions, @application.food_restrictions]
+  ].each do |label, value| %>
+    <dt class="col-sm-3"><%= label.to_s.humanize %></dt>
+    <dd class="col-sm-9"><%= value %></dd>
+  <% end %>
+</dl>

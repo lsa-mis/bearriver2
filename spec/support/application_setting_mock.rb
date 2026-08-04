@@ -11,7 +11,10 @@ RSpec.configure do |config|
       active_application: true,
       allow_payments: true,
       application_open_period: 48,
-      subscription_cost: 25
+      subscription_cost: 25,
+      time_zone: 'Eastern Time (US & Canada)',
+      balance_due_emails_last_sent_at: nil,
+      lottery_result: nil
     )
 
     # Mock the ApplicationSetting.get_current_app_settings class method

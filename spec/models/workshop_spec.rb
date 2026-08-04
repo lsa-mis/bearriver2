@@ -44,22 +44,6 @@ RSpec.describe Workshop, type: :model do
   end
 
   describe 'class methods' do
-    describe '.ransackable_associations' do
-      it 'returns an empty array' do
-        expect(Workshop.ransackable_associations).to eq([])
-      end
-    end
-
-    describe '.ransackable_attributes' do
-      it 'returns the correct attributes' do
-        expected_attributes = [
-          "created_at", "first_name", "id", "active", "id_value",
-          "instructor", "last_name", "updated_at"
-        ]
-        expect(Workshop.ransackable_attributes).to match_array(expected_attributes)
-      end
-    end
-
     describe '.order_by_lastname' do
       it 'orders workshops by last_name in ascending order' do
         expect(Workshop).to receive(:order).with('last_name asc')

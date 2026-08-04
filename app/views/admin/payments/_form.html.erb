@@ -1,0 +1,39 @@
+<%= form_with model: [:admin, payment], class: 'card card-body' do |f| %>
+  <%= render 'admin/shared/errors', resource: payment %>
+
+  <% if params[:user_id].present? || payment.user_id.present? %>
+    <% selected_user = User.find_by(id: params[:user_id] || payment.user_id) %>
+    <p><strong>User: <%= selected_user&.email %></strong></p>
+    <%= f.hidden_field :user_id, value: selected_user&.id %>
+  <% else %>
+    <div class="mb-3">
+      <%= f.label :user_id, 'User', class: 'form-label' %>
+      <%= f.collection_select :user_id, User.order(:email), :id, :email, { include_blank: true }, class: 'form-select' %>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :conf_year, class: 'form-label' %>
+    <%= f.number_field :conf_year, value: payment.conf_year || ApplicationSetting.get_current_app_year, class: 'form-control' %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :total_amount, 'Total amount in $', class: 'form-label' %>
+    <%= f.number_field :total_amount, class: 'form-control', step: 0.01 %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :transaction_date, class: 'form-label' %>
+    <%= f.text_field :transaction_date, value: payment.transaction_date || Time.current.strftime('%m/%d/%Y'), class: 'form-control', placeholder: 'MM/DD/YYYY' %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :account_type, class: 'form-label' %>
+    <%= f.select :account_type, [['Scholarship', 'scholarship'], ['Special', 'special'], ['Other', 'other']], { include_blank: false }, class: 'form-select', required: true %>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.submit 'Create Payment', class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', admin_payments_path, class: 'btn btn-outline-secondary' %>
+  </div>
+<% end %>
