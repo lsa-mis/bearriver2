@@ -1,0 +1,19 @@
+<nav class="admin-nav px-3">
+  <% admin_nav_sections.each do |section| %>
+    <% if section[:title].present? %>
+      <div class="text-uppercase text-muted small fw-semibold mt-3 mb-2 px-2"><%= section[:title] %></div>
+    <% end %>
+    <ul class="nav flex-column mb-2">
+      <% section[:items].each do |item| %>
+        <% active = if item[:path] == admin_root_path
+                      request.path == admin_root_path
+                    else
+                      request.path.start_with?(item[:path])
+                    end %>
+        <li class="nav-item">
+          <%= link_to item[:label], item[:path], class: "nav-link py-1 px-2#{' active fw-semibold' if active}" %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</nav>

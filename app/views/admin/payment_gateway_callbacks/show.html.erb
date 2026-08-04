@@ -1,0 +1,27 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Gateway Callback #<%= @callback.id %></h1>
+  <%= link_to 'Back', admin_payment_gateway_callbacks_path, class: 'btn btn-outline-secondary btn-sm' %>
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">Transaction ID</dt>
+  <dd class="col-sm-9"><%= @callback.transaction_id %></dd>
+  <dt class="col-sm-3">Processing Status</dt>
+  <dd class="col-sm-9"><%= @callback.processing_status %></dd>
+  <dt class="col-sm-3">Event Type</dt>
+  <dd class="col-sm-9"><%= @callback.event_type %></dd>
+  <dt class="col-sm-3">User</dt>
+  <dd class="col-sm-9">
+    <%= link_to(@callback.user.email, admin_user_path(@callback.user)) if @callback.user %>
+  </dd>
+  <dt class="col-sm-3">Payment</dt>
+  <dd class="col-sm-9">
+    <%= link_to("Payment ##{@callback.payment.id}", admin_payment_path(@callback.payment)) if @callback.payment %>
+  </dd>
+  <dt class="col-sm-3">Failure Reason</dt>
+  <dd class="col-sm-9"><%= @callback.failure_reason %></dd>
+  <dt class="col-sm-3">Created</dt>
+  <dd class="col-sm-9"><%= l(@callback.created_at, format: :long) if @callback.created_at %></dd>
+  <dt class="col-sm-3">Payload</dt>
+  <dd class="col-sm-9"><pre class="bg-light p-3 border rounded"><%= JSON.pretty_generate(@callback.payload.presence || {}) %></pre></dd>
+</dl>

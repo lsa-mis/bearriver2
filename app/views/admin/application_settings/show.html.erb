@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Application Setting #<%= @application_setting.id %></h1>
+  <div>
+    <%= link_to 'Edit', edit_admin_application_setting_path(@application_setting), class: 'btn btn-primary btn-sm' %>
+    <%= link_to 'Back', admin_application_settings_path, class: 'btn btn-outline-secondary btn-sm' %>
+  </div>
+</div>
+
+<dl class="row">
+  <% [
+    [:active_application, 'Active Application'],
+    [:contest_year, 'Conference Year'],
+    [:opendate, 'Open Date'],
+    [:application_open_period, '# of Hours App is OPEN'],
+    [:time_zone, 'Time Zone'],
+    [:application_buffer, 'Application Buffer'],
+    [:lottery_buffer, 'Lottery Buffer'],
+    [:lottery_run_date, 'Lottery Run Date'],
+    [:allow_payments, 'Allow Payments'],
+    [:allow_lottery_winner_emails, 'Allow Lottery Winner Emails'],
+    [:allow_lottery_loser_emails, 'Allow Lottery Loser Emails']
+  ].each do |attr, label| %>
+    <dt class="col-sm-4"><%= label %></dt>
+    <dd class="col-sm-8">
+      <% value = @application_setting.public_send(attr) %>
+      <%= value.respond_to?(:strftime) ? l(value, format: :long) : value %>
+    </dd>
+  <% end %>
+  <dt class="col-sm-4">Registration Fee</dt>
+  <dd class="col-sm-8"><%= number_to_currency(@application_setting.registration_fee) %></dd>
+  <dt class="col-sm-4">Subscription Cost</dt>
+  <dd class="col-sm-8"><%= number_to_currency(@application_setting.subscription_cost) %></dd>
+  <% %i[
+    application_open_directions application_closed_directions registration_acceptance_directions
+    special_scholarship_acceptance_directions payments_directions subscription_directions
+    application_confirm_email_message lottery_won_email special_offer_invite_email
+    lottery_lost_email balance_due_email_message
+  ].each do |attr| %>
+    <dt class="col-sm-4"><%= attr.to_s.humanize %></dt>
+    <dd class="col-sm-8"><%= simple_format(@application_setting.public_send(attr)) %></dd>
+  <% end %>
+</dl>

@@ -64,12 +64,10 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
-
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter = :resque
-  # config.active_job.queue_name_prefix = "bearriver2_production"
+  # Solid Cache / Queue / Cable all use the primary database (same DATABASE_URL).
+  config.cache_store = :solid_cache_store
+  config.active_job.queue_adapter = :solid_queue
+  # config.active_job.queue_name_prefix = "bearriver2_staging"
 
   host = 'https://bearriver-staging.lsa.umich.edu/'
 # on staging use host = 'http://STAGING SERVER NAME'

@@ -1,7 +1,6 @@
 class ApplicationsController < ApplicationController
 
-  before_action :authenticate_user!, except: [:send_balance_due]
-  before_action :authenticate_admin_user!, only: [:send_balance_due]
+  before_action :authenticate_user!
   before_action :set_application, only: [:show, :edit, :update, :destroy]
   before_action :get_lodgings
   before_action :get_partner_registrations
@@ -86,22 +85,8 @@ class ApplicationsController < ApplicationController
     end
   end
 
-  def subscription 
+  def subscription
     @application = Application.active_conference_applications.find_by(user_id: current_user)
-  end
-
-  def send_balance_due
-    message_count = 0
-    @applications_accepted = Application.application_accepted
-    @applications_accepted.each do |application|
-      if application.balance_due > 0
-        BalanceDueMailer.with(app: application).outstanding_balance.deliver_now
-        message_count += 1
-      end
-    end
-    current_application_settings&.update(balance_due_emails_last_sent_at: Time.current)
-    flash[:alert] = "#{message_count} balance due messages sent."
-    redirect_to admin_root_path
   end
 
   private

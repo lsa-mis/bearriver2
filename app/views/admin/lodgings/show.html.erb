@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Lodging #<%= @lodging.id %></h1>
+  <div>
+    <%= link_to 'Edit', edit_admin_lodging_path(@lodging), class: 'btn btn-primary btn-sm' %>
+    <%= link_to 'Back', admin_lodgings_path, class: 'btn btn-outline-secondary btn-sm' %>
+  </div>
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">Plan</dt>
+  <dd class="col-sm-9"><%= @lodging.plan %></dd>
+  <dt class="col-sm-3">Description</dt>
+  <dd class="col-sm-9"><%= @lodging.description %></dd>
+  <dt class="col-sm-3">Cost</dt>
+  <dd class="col-sm-9"><%= number_to_currency(@lodging.cost) %></dd>
+</dl>

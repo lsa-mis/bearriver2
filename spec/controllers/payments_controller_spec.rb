@@ -268,52 +268,9 @@ RSpec.describe PaymentsController, type: :controller do
     end
   end
 
-  describe 'DELETE #delete_manual_payment' do
-    let!(:payment) { create(:payment, :manual) }
-
-    context 'when admin user is authenticated' do
-      before { sign_in admin_user }
-
-      it 'deletes the payment' do
-        expect {
-          delete :delete_manual_payment, params: { id: payment.id }
-        }.to change(Payment, :count).by(-1)
-      end
-
-      it 'redirects to admin_payments_url with success notice' do
-        delete :delete_manual_payment, params: { id: payment.id }
-        expect(response).to redirect_to(admin_payments_url)
-        expect(flash[:notice]).to eq('Payment was successfully deleted.')
-      end
-
-      it 'responds with no content for JSON format' do
-        delete :delete_manual_payment, params: { id: payment.id }, format: :json
-        expect(response).to have_http_status(:no_content)
-      end
-
-      context 'when payment does not exist' do
-        it 'raises ActiveRecord::RecordNotFound' do
-          expect {
-            delete :delete_manual_payment, params: { id: 999999 }
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-    end
-
-    context 'when regular user is authenticated' do
-      before { sign_in user }
-
-      it 'redirects to sign in page' do
-        delete :delete_manual_payment, params: { id: payment.id }
-        expect(response).to redirect_to(new_admin_user_session_path)
-      end
-    end
-
-    context 'when no user is authenticated' do
-      it 'redirects to sign in page' do
-        delete :delete_manual_payment, params: { id: payment.id }
-        expect(response).to redirect_to(new_admin_user_session_path)
-      end
+  describe 'DELETE #destroy (moved to Admin::PaymentsController)' do
+    it 'is no longer handled by PaymentsController' do
+      expect(controller).not_to respond_to(:delete_manual_payment)
     end
   end
 
@@ -500,11 +457,6 @@ RSpec.describe PaymentsController, type: :controller do
       it 'requires user authentication for most actions' do
         get :index
         expect(response).to redirect_to(new_user_session_path)
-      end
-
-      it 'requires admin authentication for delete_manual_payment' do
-        delete :delete_manual_payment, params: { id: payment.id }
-        expect(response).to redirect_to(new_admin_user_session_path)
       end
     end
   end

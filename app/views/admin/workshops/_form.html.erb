@@ -1,0 +1,23 @@
+<%= form_with model: [:admin, workshop], class: 'card card-body' do |f| %>
+  <%= render 'admin/shared/errors', resource: workshop %>
+  <div class="mb-3 form-check">
+    <%= f.check_box :active, class: 'form-check-input' %>
+    <%= f.label :active, class: 'form-check-label' %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :instructor, class: 'form-label' %>
+    <%= f.text_field :instructor, class: 'form-control' %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :last_name, class: 'form-label' %>
+    <%= f.text_field :last_name, class: 'form-control' %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :first_name, class: 'form-label' %>
+    <%= f.text_field :first_name, class: 'form-control' %>
+  </div>
+  <div class="d-flex gap-2">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', admin_workshops_path, class: 'btn btn-outline-secondary' %>
+  </div>
+<% end %>

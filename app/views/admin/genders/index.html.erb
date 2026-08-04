@@ -1,0 +1,35 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Genders</h1>
+  <%= link_to 'New Gender', new_admin_gender_path, class: 'btn btn-primary btn-sm' %>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @genders.each do |gender| %>
+        <tr>
+          <td><%= link_to gender.id, admin_gender_path(gender) %></td>
+          <td><%= gender.name %></td>
+          <td><%= gender.description %></td>
+          <td><%= l(gender.created_at, format: :long) if gender.created_at %></td>
+          <td><%= l(gender.updated_at, format: :long) if gender.updated_at %></td>
+          <td class="text-nowrap">
+            <%= link_to 'View', admin_gender_path(gender), class: 'btn btn-link btn-sm' %>
+            <%= link_to 'Edit', edit_admin_gender_path(gender), class: 'btn btn-link btn-sm' %>
+            <%= button_to 'Delete', admin_gender_path(gender), method: :delete, class: 'btn btn-link btn-sm text-danger', form: { data: { turbo_confirm: 'Are you sure?' } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

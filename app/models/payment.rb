@@ -31,21 +31,6 @@ class Payment < ApplicationRecord
   validate :valid_transaction_date
   before_save :check_manual_amount
 
-  def self.ransackable_associations(auth_object = nil)
-    ["user", "payment_gateway_callbacks"]
-  end
-
-  def self.ransackable_attributes(auth_object = nil)
-    ["account_type", "conf_year", "created_at", "id", "id_value", "payer_identity", "payments_conf_year", "result_code", "result_message", "timestamp", "total_amount", "transaction_date", "transaction_hash", "transaction_id", "transaction_status", "transaction_type", "updated_at", "user_account", "user_id"]
-  end
-
-  # Disambiguate conf_year when joining associated tables in Ransack searches.
-  # This forces the filter to reference the payments table explicitly.
-  ransacker :payments_conf_year do |parent|
-    parent.table[:conf_year]
-  end
-
-
   scope :current_conference_payments, -> { where(arel_table[:conf_year].eq(ApplicationSetting.get_current_app_year)) }
 
   def manual_entry?

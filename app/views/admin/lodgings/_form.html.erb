@@ -1,0 +1,19 @@
+<%= form_with model: [:admin, lodging], class: 'card card-body' do |f| %>
+  <%= render 'admin/shared/errors', resource: lodging %>
+  <div class="mb-3">
+    <%= f.label :plan, class: 'form-label' %>
+    <%= f.text_field :plan, class: 'form-control' %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :description, class: 'form-label' %>
+    <%= f.text_field :description, class: 'form-control' %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :cost, class: 'form-label' %>
+    <%= f.number_field :cost, class: 'form-control', step: 0.01 %>
+  </div>
+  <div class="d-flex gap-2">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', admin_lodgings_path, class: 'btn btn-outline-secondary' %>
+  </div>
+<% end %>

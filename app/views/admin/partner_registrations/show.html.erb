@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Partner Registration #<%= @partner_registration.id %></h1>
+  <div>
+    <%= link_to 'Edit', edit_admin_partner_registration_path(@partner_registration), class: 'btn btn-primary btn-sm' %>
+    <%= link_to 'Back', admin_partner_registrations_path, class: 'btn btn-outline-secondary btn-sm' %>
+  </div>
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">Description</dt>
+  <dd class="col-sm-9"><%= @partner_registration.description %></dd>
+  <dt class="col-sm-3">Cost</dt>
+  <dd class="col-sm-9"><%= number_to_currency(@partner_registration.cost) %></dd>
+  <dt class="col-sm-3">Active</dt>
+  <dd class="col-sm-9"><%= @partner_registration.active %></dd>
+</dl>

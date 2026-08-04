@@ -1,11 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 7.2.2'
-ruby '3.4.9'
+gem 'rails', '~> 8.1.3'
+ruby '4.0.6'
 
-gem 'activeadmin', '~> 3.5'
 gem 'bootsnap', require: false
+gem 'cgi'
 gem 'country_select', '~> 8.0'
+gem 'csv'
 gem 'cssbundling-rails'
 gem 'devise', '~> 5.0', '>= 5.0.3'
 gem 'jbuilder'
@@ -14,7 +15,10 @@ gem 'ostruct', '~> 0.6.3'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'redis', '>= 4.0.1'
-gem 'sassc-rails'
+gem 'solid_cable'
+gem 'solid_cache'
+gem 'solid_queue'
+gem 'sprockets-rails'
 gem "sentry-ruby"
 gem "sentry-rails"
 # Required when Sentry profiles_sample_rate is set (see config/initializers/sentry.rb)
@@ -31,14 +35,13 @@ end
 group :development do
   gem 'annotate'
   gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'binding_of_caller', '>= 2.0'
   gem 'web-console'
 end
 
 group :development, :test do
   gem 'capybara'
   gem 'factory_bot_rails'
-  gem 'pry-byebug'
   gem 'pry-rails'
   gem 'rails-controller-testing'
   gem 'rspec-rails'

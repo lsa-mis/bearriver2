@@ -334,28 +334,4 @@ RSpec.describe Application, type: :model do
     # .application_accepted, .application_offered, and .subscription_selected tests
     # since they were all skipped
   end
-
-  describe 'class methods' do
-    describe '.ransackable_associations' do
-      it 'returns the correct associations' do
-        expect(Application.ransackable_associations).to match_array(["partner_registration", "user"])
-      end
-    end
-
-    describe '.ransackable_attributes' do
-      it 'returns the correct attributes' do
-        expected_attributes = [
-          "accessibility_requirements", "applications_conf_year", "birth_year", "city", "conf_year", "country",
-          "created_at", "email", "email_confirmation", "first_name", "food_restrictions",
-          "gender", "how_did_you_hear", "id", "id_value", "last_name", "lodging_selection",
-          "lottery_position", "offer_status", "offer_status_date", "partner_first_name",
-          "partner_last_name", "partner_registration_id", "partner_registration_selection",
-          "phone", "result_email_sent", "special_lodging_request", "state", "street",
-          "street2", "subscription", "updated_at", "user_id", "workshop_selection1",
-          "workshop_selection2", "workshop_selection3", "zip"
-        ]
-        expect(Application.ransackable_attributes).to match_array(expected_attributes)
-      end
-    end
-  end
 end
