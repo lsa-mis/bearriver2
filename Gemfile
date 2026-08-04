@@ -15,6 +15,9 @@ gem 'ostruct', '~> 0.6.3'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'redis', '>= 4.0.1'
+gem 'solid_cable'
+gem 'solid_cache'
+gem 'solid_queue'
 gem 'sprockets-rails'
 gem "sentry-ruby"
 gem "sentry-rails"
