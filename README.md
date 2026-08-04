@@ -13,8 +13,8 @@
 
 ## Tech Stack
 
-- Ruby `3.4.9`
-- Rails `7.2.2`
+- Ruby `4.0.6`
+- Rails `8.1`
 - PostgreSQL
 - Hotwire (`turbo-rails`, `stimulus-rails`)
 - Custom Admin MVC (`/admin`)
@@ -46,7 +46,7 @@
 
 Install the following locally:
 
-- Ruby `3.4.9`
+- Ruby `4.0.6`
 - Bundler
 - Node.js + Yarn
 - PostgreSQL (running locally)
