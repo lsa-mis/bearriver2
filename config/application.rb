@@ -21,7 +21,7 @@ Bundler.require(*Rails.groups)
 module Bearriver2
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 8.1
     
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_record.default_timezone = :local

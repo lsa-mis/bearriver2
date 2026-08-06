@@ -41,3 +41,6 @@
 
 # Ignore SimpleCov coverage reports
 /coverage
+
+# This will ignore all files ending with .old in any directory.
+*.old

@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h1 class="h3 mb-0">Payment #<%= @payment.id %></h1>
+  <div class="d-flex gap-2">
+    <% if @payment.transaction_type == 'ManuallyEntered' %>
+      <%= button_to 'Delete Manual Payment', admin_payment_path(@payment), method: :delete, class: 'btn btn-danger btn-sm', form: { data: { turbo_confirm: 'Are you sure?' } } %>
+    <% end %>
+    <%= link_to 'Back', admin_payments_path, class: 'btn btn-outline-secondary btn-sm' %>
+  </div>
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">User</dt>
+  <dd class="col-sm-9">
+    <% if @current_application %>
+      <%= link_to @current_application.display_name, admin_application_path(@current_application) %>
+    <% else %>
+      <%= @payment.user&.email %>
+    <% end %>
+  </dd>
+  <dt class="col-sm-3">Conf Year</dt>
+  <dd class="col-sm-9"><%= @payment.conf_year %></dd>
+  <dt class="col-sm-3">Transaction Type</dt>
+  <dd class="col-sm-9"><%= @payment.transaction_type %></dd>
+  <dt class="col-sm-3">Transaction Status</dt>
+  <dd class="col-sm-9"><%= @payment.transaction_status %></dd>
+  <dt class="col-sm-3">Transaction ID</dt>
+  <dd class="col-sm-9"><%= @payment.transaction_id %></dd>
+  <dt class="col-sm-3">Total Amount</dt>
+  <dd class="col-sm-9"><%= number_to_currency(@payment.total_amount.to_f / 100) %></dd>
+  <dt class="col-sm-3">Transaction Date</dt>
+  <dd class="col-sm-9"><%= @payment.transaction_date %></dd>
+  <dt class="col-sm-3">Account Type</dt>
+  <dd class="col-sm-9"><%= @payment.account_type %></dd>
+  <dt class="col-sm-3">Result Code</dt>
+  <dd class="col-sm-9"><%= @payment.result_code %></dd>
+  <dt class="col-sm-3">Result Message</dt>
+  <dd class="col-sm-9"><%= @payment.result_message %></dd>
+  <dt class="col-sm-3">Payer Identity</dt>
+  <dd class="col-sm-9"><%= @payment.payer_identity %></dd>
+</dl>
+
+<div class="card mt-4">
+  <div class="card-header">Gateway callbacks</div>
+  <div class="card-body">
+    <% if @callbacks.any? %>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Transaction ID</th>
+              <th>Failure Reason</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @callbacks.each do |callback| %>
+              <tr>
+                <td><%= link_to callback.id, admin_payment_gateway_callback_path(callback) %></td>
+                <td><%= callback.processing_status %></td>
+                <td><%= callback.transaction_id %></td>
+                <td><%= truncate(callback.failure_reason.to_s, length: 60) %></td>
+                <td><%= l(callback.created_at, format: :long) if callback.created_at %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="mb-0">No gateway callback rows are linked to this payment.</p>
+    <% end %>
+  </div>
+</div>

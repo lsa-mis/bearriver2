@@ -8,12 +8,9 @@ class PaymentsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:payment_receipt]
   before_action :verify_payment_callback, only: [:payment_receipt]
 
-  before_action :authenticate_user!, except: %i[delete_manual_payment payment_receipt]
+  before_action :authenticate_user!, except: %i[payment_receipt]
   before_action :current_user, only: %i[make_payment payment_show]
   before_action :current_application, only: %i[payment_show]
-
-  before_action :authenticate_admin_user!, only: [:delete_manual_payment]
-  prepend_before_action :verify_authenticity_token, only: [:delete_manual_payment]
 
   def index
     redirect_to root_url
@@ -54,15 +51,6 @@ class PaymentsController < ApplicationController
     @total_cost = @current_application.total_cost
     @balance_due = @total_cost - @ttl_paid
     @max_payment_amount = max_payment_amount_for(@balance_due)
-  end
-
-  def delete_manual_payment
-    @payment = Payment.find(params[:id])
-    @payment.destroy
-    respond_to do |format|
-      format.html { redirect_to admin_payments_url, notice: 'Payment was successfully deleted.' }
-      format.json { head :no_content }
-    end
   end
 
   private

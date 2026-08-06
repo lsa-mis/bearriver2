@@ -1,16 +1,24 @@
 class ApplicationController < ActionController::Base
-  before_action :strip_null_bytes_from_params
+  # Must run before Devise/Warden and CSRF read credentials from request.params.
+  prepend_before_action :strip_null_bytes_from_params
 
   private
 
   def strip_null_bytes_from_params
-    sanitize_param_object!(request.parameters) if request.parameters.present?
+    sanitize_param_object!(request.request_parameters) if request.request_parameters.present?
+    sanitize_param_object!(request.query_parameters) if request.query_parameters.present?
+
+    # Drop any memoized merge built before this filter so Devise strategies
+    # (which read request.params) see the sanitized values.
+    request.delete_header('action_dispatch.request.parameters')
+    @_params = nil
   end
 
   def sanitize_param_object!(value)
     case value
     when String
-      value.delete("\u0000")
+      value.delete!("\u0000")
+      value
     when Array
       value.map! { |item| sanitize_param_object!(item) }
     when ActionController::Parameters

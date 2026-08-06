@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <%= lsa_tdx_feedback_css %>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>BearriverApplication</title>
   <%= csrf_meta_tags %>
@@ -12,7 +13,7 @@
 <body>
   <%= render "layouts/header" %>
   <%= render "layouts/notifications" %>
-  
+
   <main role="main" id="content">
     <div class="container">
       <%= render 'layouts/aside' %>
@@ -21,5 +22,7 @@
   </main>
 
   <%= render "layouts/footer" %>
+  <%= lsa_tdx_feedback_modal %>
+  <%= lsa_tdx_feedback_js %>
 </body>
 </html>

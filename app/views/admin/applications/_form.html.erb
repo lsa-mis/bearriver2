@@ -1,0 +1,135 @@
+<%= form_with model: [:admin, application], class: 'card card-body' do |f| %>
+  <%= render 'admin/shared/errors', resource: application %>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <%= f.label :user_id, 'User', class: 'form-label' %>
+      <%= f.collection_select :user_id, User.order(:email), :id, :email, { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-3">
+      <%= f.label :conf_year, class: 'form-label' %>
+      <% if application.persisted? %>
+        <p class="form-control-plaintext mb-0"><%= application.conf_year %></p>
+      <% else %>
+        <%= f.number_field :conf_year, value: application.conf_year || ApplicationSetting.get_current_app_year, class: 'form-control' %>
+      <% end %>
+    </div>
+    <div class="col-md-3">
+      <%= f.label :lottery_position, class: 'form-label' %>
+      <%= f.number_field :lottery_position, class: 'form-control', disabled: true %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :offer_status, class: 'form-label' %>
+      <%= f.select :offer_status, offer_status, { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :offer_status_date, class: 'form-label' %>
+      <%= f.datetime_local_field :offer_status_date, class: 'form-control' %>
+    </div>
+    <div class="col-md-4 form-check mt-4">
+      <%= f.check_box :subscription, class: 'form-check-input' %>
+      <%= f.label :subscription, class: 'form-check-label' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :first_name, class: 'form-label' %>
+      <%= f.text_field :first_name, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :last_name, class: 'form-label' %>
+      <%= f.text_field :last_name, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :gender, class: 'form-label' %>
+      <%= f.select :gender, Gender.order(:name).pluck(:name), { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :birth_year, class: 'form-label' %>
+      <%= f.number_field :birth_year, class: 'form-control' %>
+    </div>
+    <div class="col-md-8">
+      <%= f.label :street, class: 'form-label' %>
+      <%= f.text_field :street, class: 'form-control' %>
+    </div>
+    <div class="col-md-6">
+      <%= f.label :street2, class: 'form-label' %>
+      <%= f.text_field :street2, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :city, class: 'form-label' %>
+      <%= f.text_field :city, class: 'form-control' %>
+    </div>
+    <div class="col-md-2">
+      <%= f.label :state, class: 'form-label' %>
+      <%= f.select :state, us_states, {}, class: 'form-select' %>
+    </div>
+    <div class="col-md-2">
+      <%= f.label :zip, class: 'form-label' %>
+      <%= f.text_field :zip, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :country, class: 'form-label' %>
+      <% if application.persisted? %>
+        <p class="form-control-plaintext mb-0"><%= application.country %></p>
+      <% else %>
+        <%= f.country_select :country, { priority_countries: ['US'] }, class: 'form-select' %>
+      <% end %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :phone, class: 'form-label' %>
+      <%= f.text_field :phone, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :email, class: 'form-label' %>
+      <%= f.email_field :email, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :workshop_selection1, 'Workshop First Choice', class: 'form-label' %>
+      <%= f.select :workshop_selection1, Workshop.order(:instructor).pluck(:instructor), { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :workshop_selection2, 'Workshop Second Choice', class: 'form-label' %>
+      <%= f.select :workshop_selection2, Workshop.order(:instructor).pluck(:instructor), { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :workshop_selection3, 'Workshop Third Choice', class: 'form-label' %>
+      <%= f.select :workshop_selection3, Workshop.order(:instructor).pluck(:instructor), { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-6">
+      <%= f.label :lodging_selection, class: 'form-label' %>
+      <%= f.select :lodging_selection, Lodging.all.map { |l| ["Plan:#{l.plan} #{l.description} #{number_to_currency(l.cost.to_f)}", l.description] }, { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-6">
+      <%= f.label :partner_registration_id, 'Partner Registration', class: 'form-label' %>
+      <%= f.select :partner_registration_id, PartnerRegistration.all.map { |p| [p.display_name, p.id] }, { include_blank: true }, class: 'form-select' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :partner_first_name, class: 'form-label' %>
+      <%= f.text_field :partner_first_name, class: 'form-control' %>
+    </div>
+    <div class="col-md-4">
+      <%= f.label :partner_last_name, class: 'form-label' %>
+      <%= f.text_field :partner_last_name, class: 'form-control' %>
+    </div>
+    <div class="col-md-12">
+      <%= f.label :how_did_you_hear, class: 'form-label' %>
+      <%= f.text_area :how_did_you_hear, class: 'form-control', rows: 2 %>
+    </div>
+    <div class="col-md-12">
+      <%= f.label :accessibility_requirements, class: 'form-label' %>
+      <%= f.text_area :accessibility_requirements, class: 'form-control', rows: 2 %>
+    </div>
+    <div class="col-md-12">
+      <%= f.label :special_lodging_request, class: 'form-label' %>
+      <%= f.text_area :special_lodging_request, class: 'form-control', rows: 2 %>
+    </div>
+    <div class="col-md-12">
+      <%= f.label :food_restrictions, class: 'form-label' %>
+      <%= f.text_area :food_restrictions, class: 'form-control', rows: 2 %>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-4">
+    <%= f.submit class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', admin_applications_path, class: 'btn btn-outline-secondary' %>
+  </div>
+<% end %>

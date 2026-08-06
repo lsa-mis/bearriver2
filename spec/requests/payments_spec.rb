@@ -212,31 +212,29 @@ RSpec.describe "Payments", type: :request do
     end
   end
 
-  describe "DELETE /payments/:id/delete_manual_payment" do
-    let!(:manual_payment) { create(:payment, transaction_type: "ManuallyEntered") }
+  describe 'DELETE /admin/payments/:id' do
+    let!(:manual_payment) { create(:payment, transaction_type: 'ManuallyEntered') }
 
-    context "when admin user is not signed in" do
-      it "redirects to admin sign in page" do
-        post delete_manual_payment_path(manual_payment)
+    context 'when admin user is not signed in' do
+      it 'redirects to admin sign in page' do
+        delete admin_payment_path(manual_payment)
         expect(response).to redirect_to(new_admin_user_session_path)
       end
     end
 
-    context "when admin user is signed in" do
-      before do
-        sign_in admin_user
-      end
+    context 'when admin user is signed in' do
+      before { sign_in admin_user }
 
-      it "destroys the payment" do
+      it 'destroys the payment' do
         expect {
-          post delete_manual_payment_path(manual_payment)
+          delete admin_payment_path(manual_payment)
         }.to change(Payment, :count).by(-1)
       end
 
-      it "redirects to admin payments page" do
-        post delete_manual_payment_path(manual_payment)
-        expect(response).to redirect_to(admin_payments_url)
-        expect(flash[:notice]).to eq("Payment was successfully deleted.")
+      it 'redirects to admin payments page' do
+        delete admin_payment_path(manual_payment)
+        expect(response).to redirect_to(admin_payments_path)
+        expect(flash[:notice]).to eq('Payment was successfully deleted.')
       end
     end
   end

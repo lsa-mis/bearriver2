@@ -1,17 +1,33 @@
 Rails.application.routes.draw do
-  resources :genders
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
+  devise_for :admin_users, path: 'admin', path_names: { sign_in: 'login', sign_out: 'logout' },
+             controllers: { sessions: 'admin_users/sessions' }
+
+  namespace :admin do
+    root to: 'dashboard#show'
+    resources :applications do
+      member { post :send_offer }
+    end
+    resources :payments, only: %i[index show new create destroy]
+    resources :application_settings, except: %i[new create] do
+      collection do
+        post :duplicate
+        post :run_lottery
+      end
+    end
+    resources :payment_gateway_callbacks, only: %i[index show]
+    resources :users
+    resources :admin_users
+    resources :workshops
+    resources :lodgings
+    resources :partner_registrations
+    resources :genders
+    post :send_balance_due, to: 'applications#send_balance_due'
+  end
 
   devise_for :users
   root 'static_pages#index'
 
-  # resources :payments
   resources :applications
-  resources :lodgings
-  resources :workshops
-
-  resources :application_settings
 
   get '/about', to: 'static_pages#about'
   get '/contact', to: 'static_pages#contact'
@@ -30,20 +46,8 @@ Rails.application.routes.draw do
   get 'make_payment', to: 'payments#make_payment'
   post 'make_payment', to: 'payments#make_payment'
 
-  post 'delete_manual_payment/:id', to: 'payments#delete_manual_payment', as: :delete_manual_payment
-
-  post 'run_lotto', to: 'application_settings#run_lottery'
-
-  post 'duplicate_conference', to: 'application_settings#duplicate_conference_settings'
-
-  post '/send_offer/:id', to: 'application_settings#send_offer', as: 'send_offer'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-
-  # Send email to applicants who a balance due
-  post '/send_balance_due', to: 'applications#send_balance_due', as: 'send_balance_due'
-
   if Rails.env.development? || Rails.env.staging?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
+  mount LsaTdxFeedback::Engine => '/lsa_tdx_feedback', as: 'lsa_tdx_feedback'
 end
-
