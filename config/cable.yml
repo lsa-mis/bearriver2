@@ -9,12 +9,14 @@ test:
   adapter: test
 
 # Solid Cable uses the primary database (no separate cable DB / connects_to).
+# polling_interval / message_retention must be "<amount>.<units>" strings —
+# SolidCable.parse_duration splits on "." (plain numeric seconds will not work).
 staging:
   adapter: solid_cable
-  polling_interval: 0.1.seconds
-  message_retention: 1.day
+  polling_interval: "0.1.seconds"
+  message_retention: "1.day"
 
 production:
   adapter: solid_cable
-  polling_interval: 0.1.seconds
-  message_retention: 1.day
+  polling_interval: "0.1.seconds"
+  message_retention: "1.day"

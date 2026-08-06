@@ -19,7 +19,7 @@ module Admin
 
     def show
       @callbacks = @payment.payment_gateway_callbacks.order(created_at: :desc)
-      @current_application = @payment.user.applications.find_by(conf_year: ApplicationSetting.get_current_app_year)
+      @current_application = @payment.user&.applications&.find_by(conf_year: ApplicationSetting.get_current_app_year)
     end
 
     def new
@@ -88,9 +88,7 @@ module Admin
 
     def payment_params
       params.require(:payment).permit(
-        :user_id, :conf_year, :total_amount, :transaction_date, :account_type,
-        :transaction_type, :transaction_status, :transaction_id, :result_code,
-        :result_message, :user_account, :payer_identity, :timestamp, :transaction_hash
+        :user_id, :conf_year, :total_amount, :transaction_date, :account_type
       )
     end
 

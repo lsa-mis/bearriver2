@@ -19,11 +19,14 @@ module Admin
     end
 
     def show
+      if @application.partner_registration.nil?
+        redirect_to edit_admin_application_path(@application),
+                    alert: 'Partner registration is missing; set it before viewing balance details.'
+        return
+      end
+
       @ttl_paid = Payment.where(user_id: @application.user_id, conf_year: @application.conf_year, transaction_status: '1')
                          .pluck(:total_amount).map(&:to_f).sum / 100
-      if @application.partner_registration.nil?
-        raise "Partner registration is missing for this application (id=#{@application.id}); cannot compute balance. Fix data and retry."
-      end
       @total_cost = @application.total_cost
       @balance_due = @total_cost - @ttl_paid
       @payments = @application.user.payments.where(conf_year: @application.conf_year).order(created_at: :desc)
@@ -59,9 +62,13 @@ module Admin
     end
 
     def send_offer
-      @application.update(offer_status: 'registration_offered', offer_status_date: Time.current, result_email_sent: true)
-      LotteryMailer.with(application: @application).waitlisted_offer_email.deliver_now
-      redirect_to admin_application_path(@application), notice: 'Offer sent.'
+      if @application.update(offer_status: 'registration_offered', offer_status_date: Time.current, result_email_sent: true)
+        LotteryMailer.with(application: @application).waitlisted_offer_email.deliver_now
+        redirect_to admin_application_path(@application), notice: 'Offer sent.'
+      else
+        redirect_to admin_application_path(@application),
+                    alert: "Could not send offer: #{@application.errors.full_messages.to_sentence}"
+      end
     end
 
     def send_balance_due
