@@ -45,12 +45,22 @@ module Admin
       ]
     end
 
+    # Prefix cells that would be interpreted as spreadsheet formulas when opened
+    # in Excel/LibreOffice/Google Sheets (CSV injection / formula injection).
+    CSV_FORMULA_PREFIX = /\A[=+\-@\t\r]/
+
     def send_csv(filename:, headers:, rows:)
       csv_data = CSV.generate(headers: true) do |csv|
         csv << headers
-        rows.each { |row| csv << row }
+        rows.each { |row| csv << row.map { |cell| csv_safe_cell(cell) } }
       end
       send_data csv_data, filename: filename, type: 'text/csv'
+    end
+
+    def csv_safe_cell(value)
+      return value unless value.is_a?(String) && value.match?(CSV_FORMULA_PREFIX)
+
+      "'#{value}"
     end
   end
 end

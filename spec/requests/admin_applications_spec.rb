@@ -43,6 +43,29 @@ RSpec.describe 'Admin Applications index', type: :request, no_application_mock: 
         expect(response.body).to include('Balance Due')
         expect(response.body).to include('First Name')
       end
+
+      it 'neutralizes formula injection in exported CSV cells' do
+        create(:lodging, description: 'Standard')
+        create(
+          :application,
+          lodging_selection: 'Standard',
+          first_name: '=1+2',
+          last_name: '+Doe',
+          street: '+1234567',
+          city: '-1+1',
+          how_did_you_hear: '@SUM(A1:A10)'
+        )
+
+        get admin_applications_path(format: :csv)
+
+        expect(response).to be_successful
+        # Cell-leading formula chars are prefixed with a single quote.
+        expect(response.body).to include("'=1+2")
+        expect(response.body).to include("'+Doe")
+        expect(response.body).to include("'+1234567")
+        expect(response.body).to include("'-1+1")
+        expect(response.body).to include("'@SUM(A1:A10)")
+      end
     end
   end
 end
