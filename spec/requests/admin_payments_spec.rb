@@ -60,6 +60,15 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         expect(response).to be_successful
         expect(response.body).to include(user.email)
       end
+
+      it 'renders when the associated user record is missing' do
+        orphaned = create(:payment, :manual, user: user, conf_year: application_setting.contest_year)
+        orphaned.update_column(:user_id, nil)
+
+        get admin_payment_path(orphaned)
+
+        expect(response).to be_successful
+      end
     end
 
     describe 'GET /admin/payments/new' do
@@ -88,6 +97,33 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         expect(created.transaction_type).to eq('ManuallyEntered')
         expect(created.result_message).to include(admin_user.email)
         expect(response).to redirect_to(admin_payment_path(created))
+      end
+
+      it 'ignores mass-assigned gateway fields from the form params' do
+        expect {
+          post admin_payments_path, params: {
+            payment: {
+              user_id: user.id,
+              conf_year: application_setting.contest_year,
+              total_amount: '50.00',
+              transaction_date: Time.current.strftime('%m/%d/%Y'),
+              account_type: 'scholarship',
+              transaction_type: 'Credit',
+              transaction_status: '0',
+              transaction_id: 'attacker-controlled-txn',
+              result_code: 'spoofed',
+              result_message: 'should not stick'
+            }
+          }
+        }.to change(Payment, :count).by(1)
+
+        created = Payment.order(:id).last
+        expect(created.transaction_type).to eq('ManuallyEntered')
+        expect(created.transaction_status).to eq('1')
+        expect(created.transaction_id).not_to eq('attacker-controlled-txn')
+        expect(created.result_code).to eq('Manually Entered')
+        expect(created.result_message).to include(admin_user.email)
+        expect(created.result_message).not_to eq('should not stick')
       end
 
       it 're-renders on invalid data' do
