@@ -51,6 +51,23 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         expect(response.body).to include('User')
         expect(response.body).to include('Total Amount')
       end
+
+      it 'neutralizes formula injection in exported CSV cells' do
+        create(
+          :payment,
+          :manual,
+          user: user,
+          conf_year: application_setting.contest_year,
+          account_type: '+Credit',
+          result_message: '@SUM(A1:A10)'
+        )
+
+        get admin_payments_path(format: :csv)
+
+        expect(response).to be_successful
+        expect(response.body).to include("'+Credit")
+        expect(response.body).to include("'@SUM(A1:A10)")
+      end
     end
 
     describe 'GET /admin/payments/:id' do
@@ -59,6 +76,14 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         get admin_payment_path(payment)
         expect(response).to be_successful
         expect(response.body).to include(user.email)
+      end
+
+      it 'renders successfully when the payment has no associated user' do
+        payment.update_columns(user_id: nil)
+
+        get admin_payment_path(payment)
+
+        expect(response).to be_successful
       end
     end
 
@@ -88,6 +113,34 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         expect(created.transaction_type).to eq('ManuallyEntered')
         expect(created.result_message).to include(admin_user.email)
         expect(response).to redirect_to(admin_payment_path(created))
+      end
+
+      it 'ignores mass-assigned gateway fields when creating a manual payment' do
+        expect {
+          post admin_payments_path, params: {
+            payment: {
+              user_id: user.id,
+              conf_year: application_setting.contest_year,
+              total_amount: '80.00',
+              transaction_date: Time.current.strftime('%m/%d/%Y'),
+              account_type: 'scholarship',
+              transaction_type: 'Credit',
+              transaction_status: '0',
+              transaction_id: 'attacker-txn',
+              transaction_hash: 'attacker-hash',
+              result_code: 'FORGED',
+              result_message: 'forged message'
+            }
+          }
+        }.to change(Payment, :count).by(1)
+
+        created = Payment.order(:id).last
+        expect(created.transaction_type).to eq('ManuallyEntered')
+        expect(created.transaction_status).to eq('1')
+        expect(created.result_code).to eq('Manually Entered')
+        expect(created.result_message).to include(admin_user.email)
+        expect(created.transaction_id).not_to eq('attacker-txn')
+        expect(created.transaction_hash).not_to eq('attacker-hash')
       end
 
       it 're-renders on invalid data' do

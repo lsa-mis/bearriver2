@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Admin Applications Show', type: :request do
+RSpec.describe 'Admin Applications Show', type: :request, no_application_mock: true do
   let(:admin_user) { create(:admin_user) }
   let!(:application_setting) do
     create(:application_setting, contest_year: Time.current.year, active_application: true)
@@ -8,6 +8,26 @@ RSpec.describe 'Admin Applications Show', type: :request do
 
   def currency(amount)
     ActionController::Base.helpers.number_to_currency(amount)
+  end
+
+  context 'when partner registration is missing' do
+    it 'redirects to edit with an alert instead of raising' do
+      sign_in admin_user
+
+      lodging = create(:lodging, cost: 100.0, description: 'Standard')
+      application = create(
+        :application,
+        conf_year: application_setting.contest_year,
+        lodging_selection: lodging.description
+      )
+
+      allow_any_instance_of(Application).to receive(:partner_registration).and_return(nil)
+
+      get admin_application_path(application)
+
+      expect(response).to redirect_to(edit_admin_application_path(application))
+      expect(flash[:alert]).to include('Partner registration is missing')
+    end
   end
 
   context 'without subscription' do
