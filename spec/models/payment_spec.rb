@@ -23,6 +23,30 @@ RSpec.describe Payment, type: :model do
       expect(payment).not_to be_valid
     end
 
+    describe 'transaction_date format' do
+      it 'accepts MM/DD/YYYY dates used by manual admin entry' do
+        payment = build(:payment, :manual, transaction_date: '08/16/2026')
+        expect(payment).to be_valid
+      end
+
+      it 'accepts gateway-style timestamp strings that Date.parse can read' do
+        payment = build(:payment, transaction_date: '202608161200')
+        expect(payment).to be_valid
+      end
+
+      it 'rejects a non-date string' do
+        payment = build(:payment, transaction_date: 'not-a-date')
+        expect(payment).not_to be_valid
+        expect(payment.errors[:transaction_date]).to include('must be a valid date')
+      end
+
+      it 'rejects an impossible calendar date' do
+        payment = build(:payment, transaction_date: '02/30/2026')
+        expect(payment).not_to be_valid
+        expect(payment.errors[:transaction_date]).to include('must be a valid date')
+      end
+    end
+
     context 'when transaction_type is ManuallyEntered and account_type is present' do
       it 'is valid' do
         payment = build(:payment, :manual, account_type: 'scholarship')
