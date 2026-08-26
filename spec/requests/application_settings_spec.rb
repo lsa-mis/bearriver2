@@ -117,6 +117,20 @@ RSpec.describe 'Admin Application Settings', type: :request do
         post send_offer_admin_application_path(application)
         expect(response).to redirect_to(admin_application_path(application))
       end
+
+      it 'does not send mail and surfaces errors when the offer update fails' do
+        allow_any_instance_of(Application).to receive(:update).and_return(false)
+        errors = instance_double(ActiveModel::Errors, full_messages: ['Offer status is invalid'])
+        allow_any_instance_of(Application).to receive(:errors).and_return(errors)
+
+        expect(LotteryMailer).not_to receive(:with)
+        post send_offer_admin_application_path(application)
+
+        expect(response).to redirect_to(admin_application_path(application))
+        expect(flash[:alert]).to include('Could not send offer')
+        expect(flash[:alert]).to include('Offer status is invalid')
+        expect(application.reload.offer_status).to eq('not_offered')
+      end
     end
 
     context 'when admin is not signed in' do
