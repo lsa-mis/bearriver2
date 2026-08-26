@@ -13,6 +13,17 @@ RSpec.describe Admin::ApplicationsController, type: :controller do
     allow(LotteryMailer).to receive(:with).and_return(mailer_double)
   end
 
+  describe '#show' do
+    it 'redirects to edit when partner registration is missing' do
+      allow_any_instance_of(Application).to receive(:partner_registration).and_return(nil)
+
+      get :show, params: { id: application.id }
+
+      expect(response).to redirect_to(edit_admin_application_path(application))
+      expect(flash[:alert]).to include('Partner registration is missing')
+    end
+  end
+
   describe '#send_offer' do
     it 'updates the application offer status' do
       expect {
@@ -35,6 +46,22 @@ RSpec.describe Admin::ApplicationsController, type: :controller do
     it 'redirects to admin application path' do
       post :send_offer, params: { id: application.id }
       expect(response).to redirect_to(admin_application_path(application))
+    end
+
+    it 'does not send mail and surfaces errors when the offer update fails' do
+      allow_any_instance_of(Application).to receive(:update) do |record, *_args|
+        record.errors.add(:base, 'offer cannot be sent')
+        false
+      end
+
+      expect(LotteryMailer).not_to receive(:with)
+
+      post :send_offer, params: { id: application.id }
+
+      expect(response).to redirect_to(admin_application_path(application))
+      expect(flash[:alert]).to include('Could not send offer')
+      expect(flash[:alert]).to include('offer cannot be sent')
+      expect(application.reload.offer_status).to eq('not_offered')
     end
   end
 end

@@ -82,6 +82,11 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         payment.update_columns(user_id: nil)
 
         get admin_payment_path(payment)
+      it 'renders when the associated user record is missing' do
+        orphaned = create(:payment, :manual, user: user, conf_year: application_setting.contest_year)
+        orphaned.update_column(:user_id, nil)
+
+        get admin_payment_path(orphaned)
 
         expect(response).to be_successful
       end
@@ -115,17 +120,21 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         expect(response).to redirect_to(admin_payment_path(created))
       end
 
+
       it 'ignores mass-assigned gateway fields when creating a manual payment' do
+
         expect {
           post admin_payments_path, params: {
             payment: {
               user_id: user.id,
               conf_year: application_setting.contest_year,
+
               total_amount: '80.00',
               transaction_date: Time.current.strftime('%m/%d/%Y'),
               account_type: 'scholarship',
               transaction_type: 'Credit',
               transaction_status: '0',
+
               transaction_id: 'attacker-txn',
               transaction_hash: 'attacker-hash',
               result_code: 'FORGED',
@@ -141,6 +150,7 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         expect(created.result_message).to include(admin_user.email)
         expect(created.transaction_id).not_to eq('attacker-txn')
         expect(created.transaction_hash).not_to eq('attacker-hash')
+
       end
 
       it 're-renders on invalid data' do
