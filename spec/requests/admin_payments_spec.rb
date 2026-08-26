@@ -82,11 +82,6 @@ RSpec.describe 'Admin Payments', type: :request, real_application_settings: true
         payment.update_columns(user_id: nil)
 
         get admin_payment_path(payment)
-      it 'renders when the associated user record is missing' do
-        orphaned = create(:payment, :manual, user: user, conf_year: application_setting.contest_year)
-        orphaned.update_column(:user_id, nil)
-
-        get admin_payment_path(orphaned)
 
         expect(response).to be_successful
       end
