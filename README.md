@@ -13,7 +13,7 @@
 
 ## Tech Stack
 
-- Ruby `4.0.6`
+- Ruby `4.0.9`
 - Rails `8.1`
 - PostgreSQL
 - Hotwire (`turbo-rails`, `stimulus-rails`)
@@ -46,7 +46,7 @@
 
 Install the following locally:
 
-- Ruby `4.0.6`
+- Ruby `4.0.9`
 - Bundler
 - Node.js + Yarn
 - PostgreSQL (running locally)
