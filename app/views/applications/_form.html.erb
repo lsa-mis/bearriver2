@@ -1,11 +1,11 @@
 <hr>
-<h5>Lodging Options:</h5>
+<h2 class="h5">Lodging Options:</h2>
 <!-- NOTE: Prices below include a required $100 deposit. -->
 <hr class="w-75">
-<h5>
+<h3 class="h5">
   Plan A:
   <small class="text-muted">Includes tuition, lodging and all meals. Lodging options and pricing for Plan A are listed below.</small>
-</h5>
+</h3>
 <ul>
   <% @lodgings.each do |lodge| %>
     <% if lodge.plan == 'A' %>
@@ -21,10 +21,10 @@
     <% end %>
   <% end %>
 </ul>
-<h5>
+<h3 class="h5">
   Plan B:
   <small class="text-muted">Includes tuition and all meals, but not lodging for those who live in the Petoskey area. In addition, there are many hotels and motels available within twenty minutes of the conference for those who prefer greater privacy.</small>
-</h5>
+</h3>
 <ul>
   <% @lodgings.each do |lodge| %>
     <% if lodge.plan == 'B' %>
@@ -35,13 +35,13 @@
   <% end %>
 </ul>
 <hr class="w-75">
-<h5>
+<h3 class="h5">
   Attending with a spouse/partner:
   <small class="text-muted">
     It is possible to include a spouse/partner when registering for any of the options in Plan A or B for an
     <mark>additional fee:</mark>
   </small>
-</h5>
+</h3>
 <ul>
   <% @partner_registrations.each do |pr| %>
     <% if pr.cost > 0.0 %>
@@ -60,14 +60,14 @@
 </p>
 
 <hr class="w-75">
-<h5>
+<h3 class="h5">
   Register early to secure your workshop choice:
   <small class="text-muted">Workshops will be assigned on a first come first serve basis. In the unlikely event of a workshop cancellation, your entire payment will be refunded upon request if you do not wish to enroll in an alternate workshop.</small>
-</h5>
+</h3>
 
 <%= form_for @application, data: { turbo_frame: dom_id(@application), action: "submit->registration#validateForm" } do |f| %>
   <br>
-  <h5>Registrant Details:</h5>
+  <h2 class="h5">Registrant Details:</h2>
   <hr>
   <div class="form-group row">
     <%= f.label :first_name, class: 'col-sm-3 col-form-label required' %>
@@ -103,7 +103,7 @@
     </div>
   </div>
 
-  <h5>Mailing Address:</h5>
+  <h2 class="h5">Mailing Address:</h2>
   <hr>
   <div class="form-group row">
     <%= f.label :street, class: 'col-sm-3 col-form-label required' %>
@@ -148,7 +148,7 @@
     </div>
   </div>
 
-  <h5>Workshop Selection:</h5>
+  <h2 class="h5">Workshop Selection:</h2>
   <hr>
   <div data-controller="workshop-selection">
     <div class="form-group row">
@@ -171,11 +171,11 @@
     </div>
   </div>
 
-    <h5>Lodging Selection:</h5>
+    <h2 class="h5">Lodging Selection:</h2>
     <hr>
-    <h6>
+    <p class="h6">
       <%= f.label 'Please select a room type:', class: 'required' %>
-    </h6>
+    </p>
     <div class="form-group">
       <%= f.collection_radio_buttons(:lodging_selection, get_lodgings, :description, :display_name) do |b| %>
         <div class="form-check">
@@ -185,9 +185,9 @@
       <% end %>
     </div>
 
-    <h6>
+    <p class="h6">
       <%= f.label 'Please indicate whether your registration includes a spouse/partner:', class: 'required' %>
-    </h6>
+    </p>
     <div data-controller="registration">
       <div id="partner-registration" class="form-group">
         <%= f.collection_radio_buttons(:partner_registration_id, get_partner_registrations, :id, :display_name) do |b| %>
@@ -211,7 +211,7 @@
       </div>
     </div>
 
-  <h5>Additional Information:</h5>
+  <h2 class="h5">Additional Information:</h2>
   <hr>
 
   <div class="form-group row">

@@ -1,5 +1,8 @@
-<% flash.each do |key, value| %>
-  <% if key == 'alert' || key == 'notice' %>
-    <%= content_tag :div, value, class: "flash #{key}" %>
-  <% end %>
+<% messages = flash.select { |key, _| %w[alert notice].include?(key.to_s) } %>
+<% if messages.any? %>
+  <section aria-label="Notifications">
+    <% messages.each do |key, value| %>
+      <%= content_tag :div, value, class: "flash #{key}" %>
+    <% end %>
+  </section>
 <% end %>

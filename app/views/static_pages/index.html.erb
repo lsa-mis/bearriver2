@@ -1,8 +1,8 @@
 <% provide(:title, 'Home') %>
 <h1>Bear River Conference Application</h1>
-<h6 class="pl-3 text-muted">
+<p class="h6 pl-3 text-muted">
   <%= "Time Now #{Time.current.to_formatted_s(:special_date)}" %>
-</h6>
+</p>
 
 <% if current_application_settings.application_open_directions.present? %>
   <%= raw(current_application_settings.application_open_directions) %>
@@ -22,9 +22,9 @@
   <div class="card-footer">
     <% if user_signed_in? %>
       <% if user_has_application?(current_user) %>
-        <h6 class="alert alert-success">
+        <div class="h6 alert alert-success">
           Your application has been successfully submitted for this year's conference. We will contact you soon with further instructions.
-        </h6>
+        </div>
         <br>
         Return to the
         <%= link_to "Bear River Conference site", "https://lsa.umich.edu/bearriver" %>
@@ -36,10 +36,10 @@
         </div>
       <% end %>
     <% else %>
-      <h6>
+      <div class="h6">
         You are required to have an account to apply for the conference.<br>
         <%= link_to "Login", new_user_session_path, class: 'mt-2 btn btn-sm btn-info' %> or <%= link_to "Sign up", new_user_registration_path, class: 'btn btn-sm btn-primary' %>
-      </h6>
+      </div>
     <% end %>
   </div>
 </div>
