@@ -1,22 +1,22 @@
+<h1 class="as-h3">Your Application</h1>
 <% if @application.user.payments.size < 1 %>
-  <h3>Confirm your information then click <span class='btn-sm btn-success disabled'>Confirm</span> below.</h3>
+  <h2 class="h3">Confirm your information then click <span class='btn-sm btn-success disabled'>Confirm</span> below.</h2>
 <% else %>
-  <h3>Your Application</h3>
   <% if @application.offer_status.blank? || @application.offer_status == "not_offered" %>
-    <h6 class="mt-4">
+    <p class="h6 mt-4">
       Thank you for your Bear River Writers' Conference application. You will
       will receive an email after the close of the Application Window notifying
       if you have been admitted to the conference.
-    </h6>
-    <h6 class="mt-4">
+    </p>
+    <p class="h6 mt-4">
       If your application is accepted, you will be emailed with your workshop and housing placement. You will also
       be sent a prompt to continue paying your conference dues at that time.
-    </h6>
+    </p>
   <% else %>
-    <h6 class="mt-4">
+    <p class="h6 mt-4">
       You will be emailed with your workshop and housing placement. You will also
       be sent a prompt to continue paying your conference dues at that time.
-    </h6>
+    </p>
   <% end %>
   <p>
     You may email any questions to:
@@ -25,7 +25,7 @@
 <% end %>
 
 <hr class="w-75">
-<h5>Registration Details:</h5>
+<h2 class="h5">Registration Details:</h2>
 <p>
   <b>First name:</b>
   <%= @application.first_name %>
@@ -41,7 +41,7 @@
 </p>
 
 <hr>
-<h5>Mailing Address:</h5>
+<h2 class="h5">Mailing Address:</h2>
 <p>
   <b>Street:</b>
   <%= @application.street %>
@@ -69,7 +69,7 @@
 </p>
 
 <hr>
-<h5>Workshop Selections:</h5>
+<h2 class="h5">Workshop Selections:</h2>
 <p>
   <b>Workshops you requested:</b>
   <ol>
@@ -80,7 +80,7 @@
 </p>
 
 <hr>
-<h5>Lodging Selection</h5>
+<h2 class="h5">Lodging Selection</h2>
 <p>
   <b>Lodging selection:</b>
   <%= @application.lodging_selection %>
@@ -95,11 +95,11 @@
   <%= @application.partner_last_name %>
   <br>
   <b>Total cost for selected options:</b>
-  <h5><%= number_to_currency(@total_cost) %></h5>
+  <span class="h5 d-block"><%= number_to_currency(@total_cost) %></span>
 </p>
 
 <hr>
-<h5>Additional Details:</h5>
+<h2 class="h5">Additional Details:</h2>
 <p>
   <b>How did you hear about the Bear River Writers' Conference?</b>
   <%= @application.how_did_you_hear %>
@@ -120,14 +120,14 @@
 </p>
 
 <% if @application.offer_status.blank? %>
-  <h6>
+  <p class="h6">
     NOTE:
     <small class="text-muted">If you need to make a correction, please use the edit button below to return to the form.</small>
-  </h6>
+  </p>
   <%= link_to 'Edit', edit_application_path(@application), class: 'btn btn-sm btn-warning' %>
 
   <hr>
-  <h6>Cancel Registration</h6>
+  <h2 class="h6">Cancel Registration</h2>
   <div class="text-muted">
     If you are not prepared to submit your application at this time, please
     use the option below to cancel your registration.
@@ -141,13 +141,13 @@
             class: 'btn btn-sm btn-danger' %>
 
   <hr>
-  <h6>Confirm Registration</h6>
+  <h2 class="h6">Confirm Registration</h2>
   <%= link_to 'Confirm', root_path, class: 'btn btn-success' %>
 
 <% else %>
-  <h6 class="mt-4">
+  <p class="h6 mt-4">
     Note: If you have any questions or would like to request a change to your
     application selections please contact the conference coordinators at
     <%= mail_to "bearriver-questions@umich.edu" %>
-  </h6>
+  </p>
 <% end %>
