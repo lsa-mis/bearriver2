@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 8.1.3'
-ruby '4.0.9'
+ruby '4.0.10'
 
 gem 'bootsnap', require: false
 gem 'cgi'
